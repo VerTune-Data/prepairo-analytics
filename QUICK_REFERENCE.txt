@@ -1,0 +1,81 @@
+════════════════════════════════════════════════════════════════
+   PREPAIRO ANALYTICS - QUICK REFERENCE CARD
+════════════════════════════════════════════════════════════════
+
+📊 DEPLOYED: EC2 65.2.55.151
+🔗 SSH: ssh -i ~/Downloads/ec2_prod.pem ec2-user@65.2.55.151
+
+════════════════════════════════════════════════════════════════
+⏰ SCHEDULE (IST)
+════════════════════════════════════════════════════════════════
+• 11:00 PM - End of day report (24h)
+• 05:00 AM - Morning report (24h)
+• 12:00 PM - Midday update (12h)
+
+════════════════════════════════════════════════════════════════
+🔍 MONITORING COMMANDS
+════════════════════════════════════════════════════════════════
+
+# View today's log
+ssh -i ~/Downloads/ec2_prod.pem ec2-user@65.2.55.151 \
+  "tail -f /home/ec2-user/analytics/logs/analytics_\$(date +%Y%m%d).log"
+
+# View cron log
+ssh -i ~/Downloads/ec2_prod.pem ec2-user@65.2.55.151 \
+  "tail -f /home/ec2-user/analytics/logs/cron.log"
+
+# Run manual test (1 hour)
+ssh -i ~/Downloads/ec2_prod.pem ec2-user@65.2.55.151 \
+  "cd /home/ec2-user/analytics && source venv/bin/activate && python3 prepairo_analytics.py 1"
+
+# Run daily report (24 hours)
+ssh -i ~/Downloads/ec2_prod.pem ec2-user@65.2.55.151 \
+  "cd /home/ec2-user/analytics && source venv/bin/activate && python3 prepairo_analytics.py 24"
+
+════════════════════════════════════════════════════════════════
+📈 WHAT IT TRACKS
+════════════════════════════════════════════════════════════════
+✓ New phone signups (name, email, phone)
+✓ Subscribe Now button clicks
+✓ Conversion funnel (Plus → Subscribe → Payment → Success)
+✓ Referral usage & conversions
+
+════════════════════════════════════════════════════════════════
+🛠 MAINTENANCE
+════════════════════════════════════════════════════════════════
+
+# Check cron status
+ssh -i ~/Downloads/ec2_prod.pem ec2-user@65.2.55.151 \
+  "sudo systemctl status crond"
+
+# View cron jobs
+ssh -i ~/Downloads/ec2_prod.pem ec2-user@65.2.55.151 "crontab -l"
+
+# Edit cron jobs
+ssh -i ~/Downloads/ec2_prod.pem ec2-user@65.2.55.151 "crontab -e"
+
+════════════════════════════════════════════════════════════════
+📂 FILE LOCATIONS
+════════════════════════════════════════════════════════════════
+Script:  /home/ec2-user/analytics/prepairo_analytics.py
+Config:  /home/ec2-user/analytics/.env
+Logs:    /home/ec2-user/analytics/logs/
+Docs:    /home/ec2-user/analytics/DEPLOYMENT_PLAN.md
+
+════════════════════════════════════════════════════════════════
+🚀 QUICK ACTIONS
+════════════════════════════════════════════════════════════════
+
+Test now:
+  ssh -i ~/Downloads/ec2_prod.pem ec2-user@65.2.55.151 \
+    "cd analytics && source venv/bin/activate && python3 prepairo_analytics.py 1"
+
+View last 20 lines of log:
+  ssh -i ~/Downloads/ec2_prod.pem ec2-user@65.2.55.151 \
+    "tail -20 analytics/logs/analytics_\$(date +%Y%m%d).log"
+
+Check if running:
+  ssh -i ~/Downloads/ec2_prod.pem ec2-user@65.2.55.151 \
+    "ps aux | grep prepairo_analytics"
+
+════════════════════════════════════════════════════════════════
