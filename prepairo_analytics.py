@@ -350,6 +350,7 @@ def get_purchase_intent_data(conn, hours: int = 6) -> Dict:
                 up.full_name,
                 up.phone_number,
                 ua.email,
+                COALESCE(NULLIF(up.signup_platform, ''), up.last_used_platform, 'Unknown') as platform,
                 pca.created_at,
                 CASE WHEN us.id IS NOT NULL THEN true ELSE false END as converted
             FROM plus_click_audit pca
@@ -371,6 +372,7 @@ def get_purchase_intent_data(conn, hours: int = 6) -> Dict:
                 up.full_name,
                 up.phone_number,
                 ua.email,
+                COALESCE(NULLIF(up.signup_platform, ''), up.last_used_platform, 'Unknown') as platform,
                 sna.subscription_plan,
                 sna.created_at,
                 CASE WHEN us.id IS NOT NULL THEN true ELSE false END as converted
@@ -393,6 +395,7 @@ def get_purchase_intent_data(conn, hours: int = 6) -> Dict:
                 up.full_name,
                 up.phone_number,
                 ua.email,
+                COALESCE(NULLIF(up.signup_platform, ''), up.last_used_platform, 'Unknown') as platform,
                 posa.payment_method,
                 posa.plan_type,
                 posa.created_at,
@@ -662,6 +665,7 @@ def format_plus_clicks_message(data: Dict, hours: int) -> Dict:
     for click in plus_clicks[:20]:
         status = "✅" if click.get('converted') else "⏳"
         click_time_ist = to_ist(click['created_at'])
+        platform = (click.get('platform') or 'Unknown').upper()
 
         blocks.append({
             "type": "section",
@@ -669,6 +673,7 @@ def format_plus_clicks_message(data: Dict, hours: int) -> Dict:
                 "type": "mrkdwn",
                 "text": f"{status} *{click['full_name']}*\n"
                        f"  📱 `{click['phone_number']}` | 📧 `{click['email']}`\n"
+                       f"  📱 Platform: {platform}\n"
                        f"  🕐 {click_time_ist.strftime('%b %d, %I:%M %p IST')}"
             }
         })
@@ -720,6 +725,7 @@ def format_subscribe_clicks_message(data: Dict, hours: int) -> Dict:
     for click in subscribe_clicks[:20]:
         status = "✅" if click.get('converted') else "⏳"
         click_time_ist = to_ist(click['created_at'])
+        platform = (click.get('platform') or 'Unknown').upper()
 
         blocks.append({
             "type": "section",
@@ -727,6 +733,7 @@ def format_subscribe_clicks_message(data: Dict, hours: int) -> Dict:
                 "type": "mrkdwn",
                 "text": f"{status} *{click['full_name']}*\n"
                        f"  📱 `{click['phone_number']}` | 📧 `{click['email']}`\n"
+                       f"  📱 Platform: {platform}\n"
                        f"  📋 {click['subscription_plan']}\n"
                        f"  🕐 {click_time_ist.strftime('%b %d, %I:%M %p IST')}"
             }
@@ -779,6 +786,7 @@ def format_payment_clicks_message(data: Dict, hours: int) -> Dict:
     for click in payment_clicks[:20]:
         status = "✅" if click.get('converted') else "⏳"
         click_time_ist = to_ist(click['created_at'])
+        platform = (click.get('platform') or 'Unknown').upper()
 
         blocks.append({
             "type": "section",
@@ -786,6 +794,7 @@ def format_payment_clicks_message(data: Dict, hours: int) -> Dict:
                 "type": "mrkdwn",
                 "text": f"{status} *{click['full_name']}*\n"
                        f"  📱 `{click['phone_number']}` | 📧 `{click['email']}`\n"
+                       f"  📱 Platform: {platform}\n"
                        f"  💳 {click['payment_method']} | 📋 {click['plan_type']}\n"
                        f"  🕐 {click_time_ist.strftime('%b %d, %I:%M %p IST')}"
             }
