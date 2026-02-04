@@ -28,6 +28,10 @@ TIMEOUT = 10  # seconds
 # Expected redirect domain
 EXPECTED_REDIRECT_DOMAIN = "upsc.prepairo.ai"
 
+# Expected app store IDs
+ANDROID_APP_ID = "ai.prepairo.app"
+IOS_APP_ID = "id6741750813"
+
 # State file to track last alert time (avoid spam)
 STATE_FILE = Path(__file__).parent / '.clicko_monitor_state.json'
 
@@ -119,14 +123,27 @@ def check_platform_redirects():
 
             final_url = response.url
 
-            # Check if redirected to app store
+            # Check if redirected to correct app store with correct app ID
             if platform == "Android":
-                redirect_ok = "play.google.com" in final_url
+                redirect_ok = ("play.google.com" in final_url and
+                              f"id={ANDROID_APP_ID}" in final_url)
+                if not redirect_ok:
+                    if "play.google.com" in final_url:
+                        logger.error(f"❌ Android redirect to WRONG APP → {final_url}")
+                    else:
+                        logger.error(f"❌ Android redirect to WRONG STORE → {final_url}")
             else:  # iOS
                 # iOS can redirect to apps.apple.com or itms-apps:// protocol
-                redirect_ok = ("apps.apple.com" in final_url or
-                              final_url.startswith("itms-apps") or
-                              final_url.startswith("itms://"))
+                # Must contain the correct app ID
+                is_app_store = ("apps.apple.com" in final_url or
+                               final_url.startswith("itms-apps") or
+                               final_url.startswith("itms://"))
+                redirect_ok = is_app_store and IOS_APP_ID in final_url
+                if not redirect_ok:
+                    if is_app_store:
+                        logger.error(f"❌ iOS redirect to WRONG APP → {final_url}")
+                    else:
+                        logger.error(f"❌ iOS redirect to WRONG STORE → {final_url}")
 
             results.append({
                 'platform': platform,
@@ -136,22 +153,32 @@ def check_platform_redirects():
             })
 
             if redirect_ok:
-                logger.info(f"✅ {platform} redirect OK → {final_url}")
+                logger.info(f"✅ {platform} redirect OK → PrepAiro app")
             else:
-                logger.error(f"❌ {platform} redirect FAILED → {final_url}")
+                logger.error(f"❌ {platform} redirect FAILED")
 
         except Exception as e:
             error_str = str(e)
             # iOS redirects to itms-apps protocol which requests library can't handle
             # This is actually a SUCCESS - it means the redirect is working
+            # BUT we need to verify it's the correct app ID
             if platform == "iOS" and ("itms-apps" in error_str or "itms://" in error_str):
-                logger.info(f"✅ {platform} redirect OK → iOS App Store (itms protocol)")
-                results.append({
-                    'platform': platform,
-                    'final_url': 'iOS App Store (itms-appss:// protocol)',
-                    'redirect_ok': True,
-                    'status_code': 302  # Redirect success
-                })
+                # Check if the error message contains the correct iOS app ID
+                if IOS_APP_ID in error_str:
+                    logger.info(f"✅ {platform} redirect OK → PrepAiro iOS app (itms protocol)")
+                    results.append({
+                        'platform': platform,
+                        'final_url': f'iOS App Store - PrepAiro ({IOS_APP_ID})',
+                        'redirect_ok': True,
+                        'status_code': 302  # Redirect success
+                    })
+                else:
+                    logger.error(f"❌ {platform} redirect to WRONG APP (itms protocol) → {error_str}")
+                    results.append({
+                        'platform': platform,
+                        'error': 'Redirected to wrong iOS app',
+                        'redirect_ok': False
+                    })
             else:
                 logger.error(f"❌ {platform} check failed: {e}")
                 results.append({
@@ -400,7 +427,10 @@ def send_platform_alert(result):
         title = f"📱 {platform} Redirect Check FAILED"
         message = f"*Error:* {error}"
     else:
-        expected = "play.google.com" if platform == "Android" else "apps.apple.com"
+        if platform == "Android":
+            expected = f"play.google.com with app ID: {ANDROID_APP_ID}"
+        else:
+            expected = f"App Store with app ID: {IOS_APP_ID}"
         title = f"📱 {platform} Redirect Error"
         message = f"*Expected:* {expected}\n*Got:* {final_url}"
 
