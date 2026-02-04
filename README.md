@@ -96,14 +96,16 @@ Reports run **5 times daily** at:
 
 ### EC2 Server Setup
 
+**SSH Key:** `~/Downloads/ec2_prod.pem`
+
 1. Copy files to server:
 ```bash
-scp -r ~/analytics ec2-user@65.2.55.151:/home/ec2-user/
+scp -i ~/Downloads/ec2_prod.pem -r ~/analytics ec2-user@65.2.55.151:/home/ec2-user/
 ```
 
 2. SSH into server and setup:
 ```bash
-ssh ec2-user@65.2.55.151
+ssh -i ~/Downloads/ec2_prod.pem ec2-user@65.2.55.151
 cd /home/ec2-user/analytics
 python3 -m venv venv
 source venv/bin/activate

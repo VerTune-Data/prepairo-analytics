@@ -62,6 +62,8 @@ scp -i ~/Downloads/ec2_prod.pem -r ~/analytics ec2-user@65.2.55.151:/home/ec2-us
 
 #### **Step 2.2: SSH into EC2 and setup**
 
+**SSH Key Location:** `~/Downloads/ec2_prod.pem`
+
 ```bash
 # SSH into server
 ssh -i ~/Downloads/ec2_prod.pem ec2-user@65.2.55.151
