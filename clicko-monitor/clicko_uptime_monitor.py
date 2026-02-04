@@ -22,7 +22,7 @@ if not SLACK_WEBHOOK:
     raise ValueError("SLACK_WEBHOOK_UPTIME environment variable not set")
 
 # Thresholds
-SLOW_RESPONSE_THRESHOLD = 3.0  # seconds
+SLOW_RESPONSE_THRESHOLD = 0.01  # seconds (10ms - very aggressive for testing)
 TIMEOUT = 10  # seconds
 
 # State file to track last alert time (avoid spam)
