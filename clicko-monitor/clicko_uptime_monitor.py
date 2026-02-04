@@ -122,8 +122,19 @@ def check_uptime():
         hostname = CLICKO_URL.replace('https://', '').replace('http://', '').split('/')[0]
         ssl_info = check_ssl_certificate(hostname)
 
+        # Determine status - only 2xx is truly "up"
+        if 200 <= response.status_code < 300:
+            status = 'up'
+            log_msg = f"✅ Clicko UP - Status: {response.status_code}, Response: {round(response_time, 2)}s"
+        elif 400 <= response.status_code < 500:
+            status = 'client_error'
+            log_msg = f"❌ Clicko CLIENT ERROR - Status: {response.status_code}, Response: {round(response_time, 2)}s"
+        else:
+            status = 'server_error'
+            log_msg = f"❌ Clicko SERVER ERROR - Status: {response.status_code}, Response: {round(response_time, 2)}s"
+
         result = {
-            'status': 'up' if response.status_code < 500 else 'error',
+            'status': status,
             'status_code': response.status_code,
             'response_time': round(response_time, 2),
             'is_slow': response_time > SLOW_RESPONSE_THRESHOLD,
@@ -133,8 +144,7 @@ def check_uptime():
             'url': CLICKO_URL
         }
 
-        logger.info(f"✅ Clicko UP - Status: {result['status_code']}, "
-                   f"Response: {result['response_time']}s")
+        logger.info(log_msg)
 
         return result
 
@@ -207,7 +217,16 @@ def send_slack_alert(result):
         title = "🔒 Clicko SSL Certificate Error"
         message = f"*Error:* {result.get('error', 'SSL validation failed')}"
 
-    elif result.get('status_code', 200) >= 500:
+    elif status == 'client_error':
+        if not should_alert('client_error', cooldown_minutes=15):
+            logger.info("Skipping client error alert (cooldown)")
+            return
+
+        color = "danger"
+        title = f"❌ Clicko Client Error ({result['status_code']})"
+        message = f"HTTP {result['status_code']} error - Page not found or invalid request"
+
+    elif status == 'server_error' or result.get('status_code', 200) >= 500:
         if not should_alert('server_error', cooldown_minutes=15):
             logger.info("Skipping server error alert (cooldown)")
             return
