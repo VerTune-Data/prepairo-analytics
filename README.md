@@ -4,10 +4,11 @@ Automated analytics reporting system for PrepAiro that tracks user engagement, c
 
 ## 🚀 Features
 
-- **6 Automated Slack Reports** sent 4 times daily
+- **9 Automated Slack Reports** sent 5 times daily
 - **Channel Attribution** tracking via Play Store referrer and AppsFlyer
 - **Conversion Funnel** tracking from Plus page to payment
-- **IST Timezone** support for all timestamps
+- **Drop-off Analysis** by channel
+- **IST Timezone** support with explicit time ranges
 - **Unique User Tracking** for purchase intents
 - **Production-Ready** with error handling and logging
 
@@ -15,7 +16,7 @@ Automated analytics reporting system for PrepAiro that tracks user engagement, c
 
 ### 1. App Installs
 - Total installs vs phone verified users
-- Platform breakdown (iOS/Android)
+- Platform breakdown for ALL installs AND phone verified
 - Channel attribution (Google Ads, Instagram, Telegram, etc.)
 - UTM campaign tracking
 
@@ -23,16 +24,23 @@ Automated analytics reporting system for PrepAiro that tracks user engagement, c
 - Total conversions with platform breakdown
 - Channel-wise conversion tracking
 - Campaign attribution
+- 💎 CONVERTED indicator for converted users
 
-### 3. Purchase Intents Summary
+### 3. Drop-off Analysis
+- Install → Phone Verified drop-off by channel
+- Phone Verified → Conversion drop-off by channel
+- Percentage calculations for each stage
+
+### 4. Purchase Intents Summary
 - Quick metrics dashboard
 - Plus page clicks, Subscribe clicks, Payment clicks
 - Coupon applications
 
-### 4-6. Detailed User Lists
+### 5-7. Detailed User Lists
 - Plus Page Clicks with user details
 - Subscribe Now Clicks with plan info
 - Payment Method Clicks with conversion status
+- 💎 CONVERTED indicator for converted users
 
 ## 🛠️ Setup
 
@@ -68,18 +76,21 @@ cp .env.example .env
 
 5. Test locally:
 ```bash
-python3 prepairo_analytics.py 6  # Last 6 hours
+# Last 6 hours
+python3 prepairo_analytics.py 6
+
+# Last 24 hours with 12-hour offset (yesterday's data)
+python3 prepairo_analytics.py 24 12
 ```
 
 ## 📅 Scheduled Reports
 
-Reports run **4 times daily** at:
-- **23:00 IST** (17:30 UTC) - Night Report
-- **05:00 IST** (23:30 UTC) - Early Morning Report
-- **11:00 IST** (05:30 UTC) - Late Morning Report
-- **17:00 IST** (11:30 UTC) - Evening Report
-
-Each report covers the **last 6 hours** of data.
+Reports run **5 times daily** at:
+- **23:00 IST** (17:30 UTC) - Night Report (last 6 hours)
+- **05:00 IST** (23:30 UTC) - Early Morning Report (last 6 hours)
+- **11:00 IST** (05:30 UTC) - Late Morning Report (last 6 hours)
+- **12:00 PM IST** (06:30 UTC) - **Daily Summary** (yesterday's 24 hours)
+- **17:00 IST** (11:30 UTC) - Evening Report (last 6 hours)
 
 ## 🖥️ Production Deployment
 
@@ -108,16 +119,19 @@ crontab -e
 
 Add these lines:
 ```cron
-# Analytics Reports - 23:00 IST (17:30 UTC)
+# Analytics Reports - 23:00 IST (17:30 UTC) - Last 6 hours
 30 17 * * * cd /home/ec2-user/analytics && source venv/bin/activate && python3 prepairo_analytics.py 6 >> logs/cron.log 2>&1
 
-# Analytics Reports - 05:00 IST (23:30 UTC)
+# Analytics Reports - 05:00 IST (23:30 UTC) - Last 6 hours
 30 23 * * * cd /home/ec2-user/analytics && source venv/bin/activate && python3 prepairo_analytics.py 6 >> logs/cron.log 2>&1
 
-# Analytics Reports - 11:00 IST (05:30 UTC)
+# Analytics Reports - 11:00 IST (05:30 UTC) - Last 6 hours
 30 5 * * * cd /home/ec2-user/analytics && source venv/bin/activate && python3 prepairo_analytics.py 6 >> logs/cron.log 2>&1
 
-# Analytics Reports - 17:00 IST (11:30 UTC)
+# Daily Summary - 12:00 PM IST (06:30 UTC) - Yesterday's 24 hours
+30 6 * * * cd /home/ec2-user/analytics && source venv/bin/activate && python3 prepairo_analytics.py 24 12 >> logs/cron.log 2>&1
+
+# Analytics Reports - 17:00 IST (11:30 UTC) - Last 6 hours
 30 11 * * * cd /home/ec2-user/analytics && source venv/bin/activate && python3 prepairo_analytics.py 6 >> logs/cron.log 2>&1
 ```
 
@@ -151,15 +165,25 @@ tail -f logs/cron.log
 cd /home/ec2-user/analytics
 source venv/bin/activate
 
-# Last 6 hours
+# Last 6 hours (standard report)
 python3 prepairo_analytics.py 6
 
-# Last 24 hours
+# Last 1 hour (testing)
+python3 prepairo_analytics.py 1
+
+# Yesterday's full 24 hours (12-36 hours ago)
+python3 prepairo_analytics.py 24 12
+
+# Last 24 hours (0-24 hours ago)
 python3 prepairo_analytics.py 24
 
-# Last 7 days
-python3 prepairo_analytics.py 168
+# Custom: 24 hours starting 48 hours ago
+python3 prepairo_analytics.py 24 48
 ```
+
+**Usage:** `python3 prepairo_analytics.py <hours> [offset_hours]`
+- `hours`: Duration of the report window
+- `offset_hours`: Optional offset to look back from (default: 0)
 
 ## 🎯 Channel Attribution
 
@@ -221,5 +245,15 @@ For issues or questions, contact the development team or create an issue in this
 
 ---
 
-**Last Updated:** 2026-02-03
-**Version:** 2.0
+**Last Updated:** 2026-02-04
+**Version:** 2.1
+
+## 🆕 Version 2.1 Changes (2026-02-04)
+
+- Added **💎 CONVERTED** indicator for converted users (replaced ✅)
+- Added **platform breakdown for ALL installs** (in addition to phone verified)
+- Added **Drop-off Analysis** message showing channel-wise conversion funnels
+- Added **Daily Summary** cron at 12 PM IST showing yesterday's data
+- Added **explicit time ranges** in message headers (e.g., "11:00 to 17:00 IST")
+- Increased total messages from 7 to **9 messages** (7 content + 2 delimiters)
+- Added `offset_hours` parameter for time-shifted reports

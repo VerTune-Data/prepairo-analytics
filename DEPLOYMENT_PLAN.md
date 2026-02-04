@@ -11,9 +11,11 @@ Automated analytics script that tracks subscription metrics and sends reports to
 - Referral usage and conversions
 
 **When it runs:**
-- 11:00 PM IST (5:30 PM UTC) - End of day report
-- 5:00 AM IST (11:30 PM UTC) - Morning report
-- 12:00 PM IST (6:30 AM UTC) - Midday update
+- 23:00 IST (17:30 UTC) - Night report (6 hours)
+- 05:00 IST (23:30 UTC) - Early morning report (6 hours)
+- 11:00 IST (05:30 UTC) - Late morning report (6 hours)
+- 12:00 PM IST (06:30 UTC) - **Daily summary** (yesterday's 24 hours)
+- 17:00 IST (11:30 UTC) - Evening report (6 hours)
 
 ---
 
@@ -108,14 +110,20 @@ crontab -e
 
 # Add these lines (press 'i' to insert mode in vim):
 
-# Analytics Reports - 11 PM IST (17:30 UTC)
-30 17 * * * cd /home/ec2-user/analytics && source venv/bin/activate && python3 prepairo_analytics.py 24 >> logs/cron.log 2>&1
+# Analytics Reports - 23:00 IST (17:30 UTC) - Last 6 hours
+30 17 * * * cd /home/ec2-user/analytics && source venv/bin/activate && python3 prepairo_analytics.py 6 >> logs/cron.log 2>&1
 
-# Analytics Reports - 5 AM IST (23:30 UTC previous day)
-30 23 * * * cd /home/ec2-user/analytics && source venv/bin/activate && python3 prepairo_analytics.py 24 >> logs/cron.log 2>&1
+# Analytics Reports - 05:00 IST (23:30 UTC) - Last 6 hours
+30 23 * * * cd /home/ec2-user/analytics && source venv/bin/activate && python3 prepairo_analytics.py 6 >> logs/cron.log 2>&1
 
-# Analytics Reports - 12 PM IST (06:30 UTC)
-30 6 * * * cd /home/ec2-user/analytics && source venv/bin/activate && python3 prepairo_analytics.py 12 >> logs/cron.log 2>&1
+# Analytics Reports - 11:00 IST (05:30 UTC) - Last 6 hours
+30 5 * * * cd /home/ec2-user/analytics && source venv/bin/activate && python3 prepairo_analytics.py 6 >> logs/cron.log 2>&1
+
+# Daily Summary - 12:00 PM IST (06:30 UTC) - Yesterday's 24 hours
+30 6 * * * cd /home/ec2-user/analytics && source venv/bin/activate && python3 prepairo_analytics.py 24 12 >> logs/cron.log 2>&1
+
+# Analytics Reports - 17:00 IST (11:30 UTC) - Last 6 hours
+30 11 * * * cd /home/ec2-user/analytics && source venv/bin/activate && python3 prepairo_analytics.py 6 >> logs/cron.log 2>&1
 
 # Press ESC, then type :wq and press ENTER to save and quit
 ```
@@ -182,17 +190,26 @@ tail -50 /home/ec2-user/analytics/logs/analytics_$(date +%Y%m%d).log
 ### **Manual Execution**
 
 ```bash
-# Run for last 24 hours
 cd /home/ec2-user/analytics
 source venv/bin/activate
-python3 prepairo_analytics.py 24
 
-# Run for last 7 days (weekly report)
-python3 prepairo_analytics.py 168
+# Run for last 6 hours (standard report)
+python3 prepairo_analytics.py 6
 
 # Run for last hour (testing)
 python3 prepairo_analytics.py 1
+
+# Run for yesterday's full day (12-36 hours ago)
+python3 prepairo_analytics.py 24 12
+
+# Run for last 24 hours (0-24 hours ago)
+python3 prepairo_analytics.py 24
+
+# Custom: 24 hours starting 48 hours ago
+python3 prepairo_analytics.py 24 48
 ```
+
+**Usage:** `python3 prepairo_analytics.py <hours> [offset_hours]`
 
 ### **Troubleshooting**
 
@@ -324,6 +341,18 @@ You'll know it's working when:
 
 ---
 
+## 🆕 Version 2.1 Changes (2026-02-04)
+
+- **💎 CONVERTED indicator** replaces ✅ for better visibility
+- **Platform breakdown for ALL installs** added (in addition to phone verified)
+- **Drop-off Analysis message** shows conversion funnels by channel
+- **Daily Summary cron** at 12 PM IST shows yesterday's data
+- **Explicit time ranges** in headers (e.g., "11:00 to 17:00 IST")
+- **9 messages total** (up from 7): 7 content + 2 delimiters
+- **offset_hours parameter** enables time-shifted reports
+
+---
+
 **Deployed by:** Claude Code
-**Date:** 2026-02-03
-**Version:** 1.0
+**Date:** 2026-02-04
+**Version:** 2.1

@@ -85,6 +85,39 @@ def to_ist(utc_datetime) -> datetime:
     return utc_datetime
 
 
+def format_time_range_header(hours: int, offset_hours: int = 0) -> tuple:
+    """
+    Format time range header for messages.
+    Returns (period_description, time_range_text) tuple.
+
+    Examples:
+        - format_time_range_header(6, 0) -> ("Last 6 Hours", "11:00 to 17:00 IST")
+        - format_time_range_header(24, 12) -> ("Yesterday", "Feb 3, 12:00 to Feb 4, 12:00 IST")
+    """
+    now_ist = to_ist(datetime.utcnow())
+    end_time = now_ist - timedelta(hours=offset_hours)
+    start_time = end_time - timedelta(hours=hours)
+
+    # For regular reports (no offset)
+    if offset_hours == 0:
+        period = f"Last {hours} Hours" if hours != 1 else "Last Hour"
+        time_range = f"{start_time.strftime('%H:%M')} to {end_time.strftime('%H:%M IST')}"
+    # For daily reports (24 hours with offset)
+    elif hours == 24:
+        # Check if start and end are on different days
+        if start_time.day != end_time.day:
+            time_range = f"{start_time.strftime('%b %d, %H:%M')} to {end_time.strftime('%b %d, %H:%M IST')}"
+        else:
+            time_range = f"{start_time.strftime('%b %d, %H:%M')} to {end_time.strftime('%H:%M IST')}"
+        period = "Yesterday"
+    else:
+        # Generic format for other combinations
+        period = f"{hours} Hours"
+        time_range = f"{start_time.strftime('%b %d, %H:%M')} to {end_time.strftime('%b %d, %H:%M IST')}"
+
+    return (period, time_range)
+
+
 def extract_param(query_string: str, param_name: str) -> Optional[str]:
     """Extract parameter value from URL query string"""
     try:
@@ -193,19 +226,39 @@ def parse_install_channel(play_refer_data: dict) -> str:
         return 'Unknown'
 
 
-def get_install_data(conn, hours: int = 6) -> Dict:
+def get_install_data(conn, hours: int = 6, offset_hours: int = 0) -> Dict:
     """Fetch app install data with channel attribution"""
 
-    logger.info(f"Fetching install data for last {hours} hours...")
+    logger.info(f"Fetching install data for last {hours} hours (offset: {offset_hours})...")
+
+    # Build time condition
+    if offset_hours > 0:
+        time_condition = f"""
+            created_at >= NOW() - INTERVAL '{hours + offset_hours} hours'
+            AND created_at < NOW() - INTERVAL '{offset_hours} hours'
+        """
+    else:
+        time_condition = f"created_at >= NOW() - INTERVAL '{hours} hours'"
 
     # Get total installs (all new users created)
     total_installs_result = execute_query(conn, f"""
         SELECT COUNT(*) as count
         FROM users_profile up
-        WHERE up.created_at >= NOW() - INTERVAL '{hours} hours'
+        WHERE {time_condition}
             AND up.is_fake_user = false;
     """)
     total_installs = total_installs_result[0]['count'] if total_installs_result else 0
+
+    # Get platform breakdown for ALL installs
+    all_installs_platform = execute_query(conn, f"""
+        SELECT
+            up.signup_platform,
+            COUNT(*) as count
+        FROM users_profile up
+        WHERE {time_condition}
+            AND up.is_fake_user = false
+        GROUP BY up.signup_platform;
+    """)
 
     # Get phone verified users with platform and channel data
     phone_verified = execute_query(conn, f"""
@@ -217,21 +270,21 @@ def get_install_data(conn, hours: int = 6) -> Dict:
         FROM users_profile up
         JOIN users_auth ua ON up.id = ua.id
         WHERE ua.is_phone_no_verified = TRUE
-            AND up.created_at >= NOW() - INTERVAL '{hours} hours'
+            AND up.{time_condition}
             AND up.is_fake_user = false
         ORDER BY up.created_at DESC;
     """)
 
     # Parse and categorize phone verified users
     total_phone_verified = len(phone_verified)
-    platform_breakdown = {}
+    platform_breakdown_verified = {}
     channel_breakdown = {}
     campaign_breakdown = {}
 
     for user in phone_verified:
         # Platform
         platform = user['signup_platform'] or 'Unknown'
-        platform_breakdown[platform] = platform_breakdown.get(platform, 0) + 1
+        platform_breakdown_verified[platform] = platform_breakdown_verified.get(platform, 0) + 1
 
         # Channel (from play_refer for Android, "iOS (No Attribution)" for iOS)
         if platform.lower() == 'ios':
@@ -252,20 +305,36 @@ def get_install_data(conn, hours: int = 6) -> Dict:
         if campaign:
             campaign_breakdown[campaign] = campaign_breakdown.get(campaign, 0) + 1
 
+    # Parse platform breakdown for all installs
+    platform_breakdown_all = {}
+    for row in all_installs_platform:
+        platform = row['signup_platform'] or 'Unknown'
+        platform_breakdown_all[platform] = row['count']
+
     return {
         'total_installs': total_installs,
         'total_phone_verified': total_phone_verified,
-        'by_platform': platform_breakdown,
+        'by_platform_all': platform_breakdown_all,
+        'by_platform_verified': platform_breakdown_verified,
         'by_channel': channel_breakdown,
         'by_campaign': campaign_breakdown,
         'raw_data': phone_verified
     }
 
 
-def get_conversion_data(conn, hours: int = 6) -> Dict:
+def get_conversion_data(conn, hours: int = 6, offset_hours: int = 0) -> Dict:
     """Fetch conversion data with channel attribution"""
 
-    logger.info(f"Fetching conversion data for last {hours} hours...")
+    logger.info(f"Fetching conversion data for last {hours} hours (offset: {offset_hours})...")
+
+    # Build time condition
+    if offset_hours > 0:
+        time_condition = f"""
+            us.created_at >= NOW() - INTERVAL '{hours + offset_hours} hours'
+            AND us.created_at < NOW() - INTERVAL '{offset_hours} hours'
+        """
+    else:
+        time_condition = f"us.created_at >= NOW() - INTERVAL '{hours} hours'"
 
     # Get all conversions with platform and channel data
     conversions = execute_query(conn, f"""
@@ -283,7 +352,7 @@ def get_conversion_data(conn, hours: int = 6) -> Dict:
         FROM user_subscriptions us
         JOIN users_profile up ON us.user_id = up.id
         JOIN users_auth ua ON us.user_id = ua.id
-        WHERE us.created_at >= NOW() - INTERVAL '{hours} hours'
+        WHERE {time_condition}
             AND us.subscription_status = 'ACTIVE'
             AND up.is_fake_user = false
         ORDER BY us.created_at DESC;
@@ -338,10 +407,112 @@ def get_conversion_data(conn, hours: int = 6) -> Dict:
     }
 
 
-def get_purchase_intent_data(conn, hours: int = 6) -> Dict:
+def get_dropoff_data(conn, hours: int = 6, offset_hours: int = 0) -> Dict:
+    """Fetch drop-off data by channel (install -> phone verified -> conversion)"""
+
+    logger.info(f"Fetching drop-off data for last {hours} hours (offset: {offset_hours})...")
+
+    # Build time condition
+    if offset_hours > 0:
+        time_condition = f"""
+            created_at >= NOW() - INTERVAL '{hours + offset_hours} hours'
+            AND created_at < NOW() - INTERVAL '{offset_hours} hours'
+        """
+    else:
+        time_condition = f"created_at >= NOW() - INTERVAL '{hours} hours'"
+
+    # Get all installs with play_refer data
+    all_installs = execute_query(conn, f"""
+        SELECT
+            up.id,
+            up.signup_platform,
+            up.play_refer
+        FROM users_profile up
+        WHERE up.{time_condition}
+            AND up.is_fake_user = false;
+    """)
+
+    # Get phone verified users with play_refer data
+    phone_verified = execute_query(conn, f"""
+        SELECT
+            up.id,
+            up.signup_platform,
+            up.play_refer
+        FROM users_profile up
+        JOIN users_auth ua ON up.id = ua.id
+        WHERE ua.is_phone_no_verified = TRUE
+            AND up.{time_condition}
+            AND up.is_fake_user = false;
+    """)
+
+    # Get conversions with play_refer data
+    conversions = execute_query(conn, f"""
+        SELECT
+            up.id,
+            up.signup_platform,
+            up.play_refer
+        FROM user_subscriptions us
+        JOIN users_profile up ON us.user_id = up.id
+        WHERE {time_condition.replace('created_at', 'us.created_at').replace('up.created_at', 'us.created_at')}
+            AND us.subscription_status = 'ACTIVE'
+            AND up.is_fake_user = false;
+    """)
+
+    # Parse channels and aggregate
+    channel_data = {}
+
+    # Count total installs per channel
+    for user in all_installs:
+        platform = user['signup_platform'] or 'Unknown'
+        if platform.lower() == 'ios':
+            channel = 'iOS (No Attribution)'
+        else:
+            channel = parse_install_channel(user['play_refer'])
+
+        if channel not in channel_data:
+            channel_data[channel] = {'total_installs': 0, 'phone_verified': 0, 'conversions': 0}
+        channel_data[channel]['total_installs'] += 1
+
+    # Count phone verified per channel
+    for user in phone_verified:
+        platform = user['signup_platform'] or 'Unknown'
+        if platform.lower() == 'ios':
+            channel = 'iOS (No Attribution)'
+        else:
+            channel = parse_install_channel(user['play_refer'])
+
+        if channel not in channel_data:
+            channel_data[channel] = {'total_installs': 0, 'phone_verified': 0, 'conversions': 0}
+        channel_data[channel]['phone_verified'] += 1
+
+    # Count conversions per channel
+    for user in conversions:
+        platform = user['signup_platform'] or 'Unknown'
+        if platform.lower() == 'ios':
+            channel = 'iOS (No Attribution)'
+        else:
+            channel = parse_install_channel(user['play_refer'])
+
+        if channel not in channel_data:
+            channel_data[channel] = {'total_installs': 0, 'phone_verified': 0, 'conversions': 0}
+        channel_data[channel]['conversions'] += 1
+
+    return {'by_channel': channel_data}
+
+
+def get_purchase_intent_data(conn, hours: int = 6, offset_hours: int = 0) -> Dict:
     """Fetch all purchase intent data: plus clicks, subscribe clicks, payment clicks, coupon applications"""
 
-    logger.info(f"Fetching purchase intent data for last {hours} hours...")
+    logger.info(f"Fetching purchase intent data for last {hours} hours (offset: {offset_hours})...")
+
+    # Build time condition
+    if offset_hours > 0:
+        time_condition = f"""
+            created_at >= NOW() - INTERVAL '{hours + offset_hours} hours'
+            AND created_at < NOW() - INTERVAL '{offset_hours} hours'
+        """
+    else:
+        time_condition = f"created_at >= NOW() - INTERVAL '{hours} hours'"
 
     # Plus Page Clicks (unique users only - most recent click per user, sorted by time)
     plus_clicks = execute_query(conn, f"""
@@ -358,7 +529,7 @@ def get_purchase_intent_data(conn, hours: int = 6) -> Dict:
             JOIN users_auth ua ON pca.user_id = ua.id
             LEFT JOIN user_subscriptions us ON pca.user_id = us.user_id
                 AND us.created_at >= pca.created_at
-            WHERE pca.created_at >= NOW() - INTERVAL '{hours} hours'
+            WHERE pca.{time_condition}
             ORDER BY pca.user_id, pca.created_at DESC
         ) AS unique_users
         ORDER BY created_at DESC
@@ -381,7 +552,7 @@ def get_purchase_intent_data(conn, hours: int = 6) -> Dict:
             JOIN users_auth ua ON sna.user_id = ua.id
             LEFT JOIN user_subscriptions us ON sna.user_id = us.user_id
                 AND us.created_at >= sna.created_at
-            WHERE sna.created_at >= NOW() - INTERVAL '{hours} hours'
+            WHERE sna.{time_condition}
             ORDER BY sna.user_id, sna.created_at DESC
         ) AS unique_users
         ORDER BY created_at DESC
@@ -405,7 +576,7 @@ def get_purchase_intent_data(conn, hours: int = 6) -> Dict:
             JOIN users_auth ua ON posa.user_id = ua.id
             LEFT JOIN user_subscriptions us ON posa.user_id = us.user_id
                 AND us.created_at >= posa.created_at
-            WHERE posa.created_at >= NOW() - INTERVAL '{hours} hours'
+            WHERE posa.{time_condition}
             ORDER BY posa.user_id, posa.created_at DESC
         ) AS unique_users
         ORDER BY created_at DESC
@@ -416,7 +587,7 @@ def get_purchase_intent_data(conn, hours: int = 6) -> Dict:
     coupon_result = execute_query(conn, f"""
         SELECT COUNT(DISTINCT user_id) as count
         FROM holiday_coupon_applied_audit
-        WHERE created_at >= NOW() - INTERVAL '{hours} hours';
+        WHERE {time_condition};
     """)
     coupon_count = coupon_result[0]['count'] if coupon_result else 0
 
@@ -428,7 +599,7 @@ def get_purchase_intent_data(conn, hours: int = 6) -> Dict:
     }
 
 
-def format_install_message(data: Dict, hours: int) -> Dict:
+def format_install_message(data: Dict, hours: int, time_range: str) -> Dict:
     """Format Message 1: App Installs"""
 
     now_ist = to_ist(datetime.utcnow())
@@ -438,7 +609,7 @@ def format_install_message(data: Dict, hours: int) -> Dict:
             "type": "header",
             "text": {
                 "type": "plain_text",
-                "text": f"📱 App Installs - Last {hours} Hours",
+                "text": f"📱 App Installs - {time_range}",
                 "emoji": True
             }
         },
@@ -463,17 +634,22 @@ def format_install_message(data: Dict, hours: int) -> Dict:
     })
     blocks.append({"type": "divider"})
 
-    # Note: Breakdowns are for phone verified users only
-    blocks.append({
-        "type": "context",
-        "elements": [{"type": "mrkdwn", "text": "_Breakdowns below are for phone verified users only_"}]
-    })
-    blocks.append({"type": "divider"})
+    # Platform breakdown for ALL installs
+    if data['by_platform_all']:
+        platform_text = "*🔹 Platform (All Installs):*\n"
+        for platform, count in sorted(data['by_platform_all'].items(), key=lambda x: x[1], reverse=True):
+            platform_text += f"• {platform.upper()}: `{count}`\n"
 
-    # Platform breakdown
-    if data['by_platform']:
-        platform_text = "*🔹 By Platform:*\n"
-        for platform, count in sorted(data['by_platform'].items(), key=lambda x: x[1], reverse=True):
+        blocks.append({
+            "type": "section",
+            "text": {"type": "mrkdwn", "text": platform_text}
+        })
+        blocks.append({"type": "divider"})
+
+    # Platform breakdown for phone verified
+    if data['by_platform_verified']:
+        platform_text = "*🔹 Platform (Phone Verified):*\n"
+        for platform, count in sorted(data['by_platform_verified'].items(), key=lambda x: x[1], reverse=True):
             platform_text += f"• {platform.upper()}: `{count}`\n"
 
         blocks.append({
@@ -508,7 +684,7 @@ def format_install_message(data: Dict, hours: int) -> Dict:
     return {"blocks": blocks}
 
 
-def format_conversion_message(data: Dict, hours: int) -> Dict:
+def format_conversion_message(data: Dict, hours: int, time_range: str) -> Dict:
     """Format Message 2: Conversions"""
 
     now_ist = to_ist(datetime.utcnow())
@@ -518,7 +694,7 @@ def format_conversion_message(data: Dict, hours: int) -> Dict:
             "type": "header",
             "text": {
                 "type": "plain_text",
-                "text": f"💰 Conversions - Last {hours} Hours",
+                "text": f"💰 Conversions - {time_range}",
                 "emoji": True
             }
         },
@@ -583,8 +759,103 @@ def format_conversion_message(data: Dict, hours: int) -> Dict:
     return {"blocks": blocks}
 
 
-def format_purchase_intent_summary(data: Dict, hours: int) -> Dict:
-    """Format Message 3: User Purchase Intents Summary (metrics only)"""
+def format_delimiter() -> Dict:
+    """Format delimiter message"""
+    return {
+        "blocks": [
+            {
+                "type": "section",
+                "text": {
+                    "type": "mrkdwn",
+                    "text": "─────────────────────────────────"
+                }
+            }
+        ]
+    }
+
+
+def format_dropoff_message(data: Dict, time_range: str) -> Dict:
+    """Format Message 3: Drop-off Analysis by Channel"""
+
+    now_ist = to_ist(datetime.utcnow())
+
+    blocks = [
+        {
+            "type": "header",
+            "text": {
+                "type": "plain_text",
+                "text": f"📉 Conversion Drop-offs - {time_range}",
+                "emoji": True
+            }
+        },
+        {
+            "type": "context",
+            "elements": [{
+                "type": "mrkdwn",
+                "text": f"_{now_ist.strftime('%Y-%m-%d %H:%M IST')}_"
+            }]
+        },
+        {"type": "divider"}
+    ]
+
+    channel_data = data['by_channel']
+
+    # Sort by total installs descending
+    sorted_channels = sorted(channel_data.items(), key=lambda x: x[1]['total_installs'], reverse=True)
+
+    # Install → Phone Verification drop-off
+    if sorted_channels:
+        blocks.append({
+            "type": "section",
+            "text": {
+                "type": "mrkdwn",
+                "text": "*🔹 Install → Phone Verification:*"
+            }
+        })
+
+        for channel, stats in sorted_channels:
+            total = stats['total_installs']
+            verified = stats['phone_verified']
+            if total > 0:
+                dropoff_pct = ((total - verified) / total) * 100
+                blocks.append({
+                    "type": "section",
+                    "text": {
+                        "type": "mrkdwn",
+                        "text": f"• {channel}: `{verified}/{total}` verified *({dropoff_pct:.1f}% drop-off)*"
+                    }
+                })
+
+        blocks.append({"type": "divider"})
+
+    # Phone Verified → Conversion drop-off
+    if sorted_channels:
+        blocks.append({
+            "type": "section",
+            "text": {
+                "type": "mrkdwn",
+                "text": "*🔹 Phone Verified → Conversion:*"
+            }
+        })
+
+        for channel, stats in sorted_channels:
+            verified = stats['phone_verified']
+            conversions = stats['conversions']
+            if verified > 0:
+                dropoff_pct = ((verified - conversions) / verified) * 100
+                blocks.append({
+                    "type": "section",
+                    "text": {
+                        "type": "mrkdwn",
+                        "text": f"• {channel}: `{conversions}/{verified}` converted *({dropoff_pct:.1f}% drop-off)*"
+                    }
+                })
+
+    return {"blocks": blocks}
+
+
+def format_purchase_intent_summary(data: Dict, hours: int, time_range: str) -> Dict:
+    """Format Message 4: User Purchase Intents Summary (metrics only)"""
 
     now_ist = to_ist(datetime.utcnow())
 
@@ -597,7 +868,7 @@ def format_purchase_intent_summary(data: Dict, hours: int) -> Dict:
             "type": "header",
             "text": {
                 "type": "plain_text",
-                "text": f"🎯 User Purchase Intents - Last {hours} Hours",
+                "text": f"🎯 User Purchase Intents - {time_range}",
                 "emoji": True
             }
         },
@@ -627,8 +898,8 @@ def format_purchase_intent_summary(data: Dict, hours: int) -> Dict:
     return {"blocks": blocks}
 
 
-def format_plus_clicks_message(data: Dict, hours: int) -> Dict:
-    """Format Message 4: Plus Page Clicks Details"""
+def format_plus_clicks_message(data: Dict, hours: int, time_range: str) -> Dict:
+    """Format Message 5: Plus Page Clicks Details"""
 
     now_ist = to_ist(datetime.utcnow())
     plus_clicks = data['plus_clicks']
@@ -639,7 +910,7 @@ def format_plus_clicks_message(data: Dict, hours: int) -> Dict:
             "type": "header",
             "text": {
                 "type": "plain_text",
-                "text": f"➕ Plus Page Clicks - Last {hours} Hours",
+                "text": f"➕ Plus Page Clicks - {time_range}",
                 "emoji": True
             }
         },
@@ -663,7 +934,7 @@ def format_plus_clicks_message(data: Dict, hours: int) -> Dict:
     blocks.append({"type": "divider"})
 
     for click in plus_clicks[:20]:
-        status = "✅" if click.get('converted') else "⏳"
+        status = "💎 CONVERTED" if click.get('converted') else "⏳"
         click_time_ist = to_ist(click['created_at'])
         platform = (click.get('platform') or 'Unknown').upper()
 
@@ -687,8 +958,8 @@ def format_plus_clicks_message(data: Dict, hours: int) -> Dict:
     return {"blocks": blocks}
 
 
-def format_subscribe_clicks_message(data: Dict, hours: int) -> Dict:
-    """Format Message 5: Subscribe Now Clicks Details"""
+def format_subscribe_clicks_message(data: Dict, hours: int, time_range: str) -> Dict:
+    """Format Message 6: Subscribe Now Clicks Details"""
 
     now_ist = to_ist(datetime.utcnow())
     subscribe_clicks = data['subscribe_clicks']
@@ -699,7 +970,7 @@ def format_subscribe_clicks_message(data: Dict, hours: int) -> Dict:
             "type": "header",
             "text": {
                 "type": "plain_text",
-                "text": f"🔔 Subscribe Now Clicks - Last {hours} Hours",
+                "text": f"🔔 Subscribe Now Clicks - {time_range}",
                 "emoji": True
             }
         },
@@ -723,7 +994,7 @@ def format_subscribe_clicks_message(data: Dict, hours: int) -> Dict:
     blocks.append({"type": "divider"})
 
     for click in subscribe_clicks[:20]:
-        status = "✅" if click.get('converted') else "⏳"
+        status = "💎 CONVERTED" if click.get('converted') else "⏳"
         click_time_ist = to_ist(click['created_at'])
         platform = (click.get('platform') or 'Unknown').upper()
 
@@ -748,8 +1019,8 @@ def format_subscribe_clicks_message(data: Dict, hours: int) -> Dict:
     return {"blocks": blocks}
 
 
-def format_payment_clicks_message(data: Dict, hours: int) -> Dict:
-    """Format Message 6: Payment Method Clicks Details"""
+def format_payment_clicks_message(data: Dict, hours: int, time_range: str) -> Dict:
+    """Format Message 7: Payment Method Clicks Details"""
 
     now_ist = to_ist(datetime.utcnow())
     payment_clicks = data['payment_clicks']
@@ -760,7 +1031,7 @@ def format_payment_clicks_message(data: Dict, hours: int) -> Dict:
             "type": "header",
             "text": {
                 "type": "plain_text",
-                "text": f"💳 Payment Method Clicks - Last {hours} Hours",
+                "text": f"💳 Payment Method Clicks - {time_range}",
                 "emoji": True
             }
         },
@@ -784,7 +1055,7 @@ def format_payment_clicks_message(data: Dict, hours: int) -> Dict:
     blocks.append({"type": "divider"})
 
     for click in payment_clicks[:20]:
-        status = "✅" if click.get('converted') else "⏳"
+        status = "💎 CONVERTED" if click.get('converted') else "⏳"
         click_time_ist = to_ist(click['created_at'])
         platform = (click.get('platform') or 'Unknown').upper()
 
@@ -822,17 +1093,22 @@ def send_to_slack(message: Dict, message_name: str):
 def main():
     """Main execution function"""
     hours = int(sys.argv[1]) if len(sys.argv) > 1 else 6
+    offset_hours = int(sys.argv[2]) if len(sys.argv) > 2 else 0
 
     try:
-        logger.info(f"🚀 Starting analytics report for last {hours} hours...")
+        logger.info(f"🚀 Starting analytics report for last {hours} hours (offset: {offset_hours})...")
+
+        # Format time range for headers
+        period, time_range = format_time_range_header(hours, offset_hours)
 
         # Connect to database
         conn = get_db_connection()
 
         # Fetch all data
-        install_data = get_install_data(conn, hours)
-        conversion_data = get_conversion_data(conn, hours)
-        purchase_intent_data = get_purchase_intent_data(conn, hours)
+        install_data = get_install_data(conn, hours, offset_hours)
+        conversion_data = get_conversion_data(conn, hours, offset_hours)
+        dropoff_data = get_dropoff_data(conn, hours, offset_hours)
+        purchase_intent_data = get_purchase_intent_data(conn, hours, offset_hours)
 
         # Close connection
         conn.close()
@@ -841,26 +1117,34 @@ def main():
                    f"{install_data['total_phone_verified']} phone verified, "
                    f"{conversion_data['total']} conversions")
 
-        # Format and send 6 separate messages
-        msg1 = format_install_message(install_data, hours)
+        # Format and send messages with delimiters
+        # Start delimiter
+        delimiter = format_delimiter()
+        send_to_slack(delimiter, "Start Delimiter")
+
+        # Content messages
+        msg1 = format_install_message(install_data, hours, time_range)
         send_to_slack(msg1, "Message 1: Installs")
 
-        msg2 = format_conversion_message(conversion_data, hours)
+        msg2 = format_conversion_message(conversion_data, hours, time_range)
         send_to_slack(msg2, "Message 2: Conversions")
 
-        msg3 = format_purchase_intent_summary(purchase_intent_data, hours)
-        send_to_slack(msg3, "Message 3: Purchase Intents Summary")
+        msg3 = format_dropoff_message(dropoff_data, time_range)
+        send_to_slack(msg3, "Message 3: Drop-offs")
 
-        msg4 = format_plus_clicks_message(purchase_intent_data, hours)
-        send_to_slack(msg4, "Message 4: Plus Clicks")
+        msg4 = format_purchase_intent_summary(purchase_intent_data, hours, time_range)
+        send_to_slack(msg4, "Message 4: Purchase Intents Summary")
 
-        msg5 = format_subscribe_clicks_message(purchase_intent_data, hours)
+        msg5 = format_subscribe_clicks_message(purchase_intent_data, hours, time_range)
         send_to_slack(msg5, "Message 5: Subscribe Clicks")
 
-        msg6 = format_payment_clicks_message(purchase_intent_data, hours)
+        msg6 = format_payment_clicks_message(purchase_intent_data, hours, time_range)
         send_to_slack(msg6, "Message 6: Payment Clicks")
 
-        logger.info("✅ All 6 messages sent successfully")
+        # End delimiter
+        send_to_slack(delimiter, "End Delimiter")
+
+        logger.info("✅ All 9 messages sent successfully (7 content + 2 delimiters)")
 
     except Exception as e:
         logger.error(f"❌ Report generation failed: {e}")
