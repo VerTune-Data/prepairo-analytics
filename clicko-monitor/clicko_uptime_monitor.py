@@ -22,8 +22,11 @@ if not SLACK_WEBHOOK:
     raise ValueError("SLACK_WEBHOOK_UPTIME environment variable not set")
 
 # Thresholds
-SLOW_RESPONSE_THRESHOLD = 0.01  # seconds (10ms - very aggressive for testing)
+SLOW_RESPONSE_THRESHOLD = 1.0  # seconds
 TIMEOUT = 10  # seconds
+
+# Expected redirect domain
+EXPECTED_REDIRECT_DOMAIN = "upsc.prepairo.ai"
 
 # State file to track last alert time (avoid spam)
 STATE_FILE = Path(__file__).parent / '.clicko_monitor_state.json'
@@ -95,6 +98,71 @@ def check_ssl_certificate(hostname):
         }
 
 
+def check_platform_redirects():
+    """Check Android and iOS redirects"""
+    results = []
+
+    # Android User-Agent
+    android_ua = "Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.120 Mobile Safari/537.36"
+    # iOS User-Agent
+    ios_ua = "Mozilla/5.0 (iPhone; CPU iPhone OS 14_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0 Mobile/15E148 Safari/604.1"
+
+    for platform, user_agent in [("Android", android_ua), ("iOS", ios_ua)]:
+        try:
+            response = requests.get(
+                CLICKO_URL,
+                headers={'User-Agent': user_agent},
+                timeout=TIMEOUT,
+                allow_redirects=True,
+                verify=True
+            )
+
+            final_url = response.url
+
+            # Check if redirected to app store
+            if platform == "Android":
+                redirect_ok = "play.google.com" in final_url
+            else:  # iOS
+                # iOS can redirect to apps.apple.com or itms-apps:// protocol
+                redirect_ok = ("apps.apple.com" in final_url or
+                              final_url.startswith("itms-apps") or
+                              final_url.startswith("itms://"))
+
+            results.append({
+                'platform': platform,
+                'final_url': final_url,
+                'redirect_ok': redirect_ok,
+                'status_code': response.status_code
+            })
+
+            if redirect_ok:
+                logger.info(f"✅ {platform} redirect OK → {final_url}")
+            else:
+                logger.error(f"❌ {platform} redirect FAILED → {final_url}")
+
+        except Exception as e:
+            error_str = str(e)
+            # iOS redirects to itms-apps protocol which requests library can't handle
+            # This is actually a SUCCESS - it means the redirect is working
+            if platform == "iOS" and ("itms-apps" in error_str or "itms://" in error_str):
+                logger.info(f"✅ {platform} redirect OK → iOS App Store (itms protocol)")
+                results.append({
+                    'platform': platform,
+                    'final_url': 'iOS App Store (itms-appss:// protocol)',
+                    'redirect_ok': True,
+                    'status_code': 302  # Redirect success
+                })
+            else:
+                logger.error(f"❌ {platform} check failed: {e}")
+                results.append({
+                    'platform': platform,
+                    'error': str(e),
+                    'redirect_ok': False
+                })
+
+    return results
+
+
 def check_uptime():
     """Perform uptime check"""
     start_time = time.time()
@@ -113,10 +181,19 @@ def check_uptime():
         hostname = CLICKO_URL.replace('https://', '').replace('http://', '').split('/')[0]
         ssl_info = check_ssl_certificate(hostname)
 
+        # Check final URL after redirects
+        final_url = response.url
+        final_domain = final_url.replace('https://', '').replace('http://', '').split('/')[0]
+        redirect_ok = EXPECTED_REDIRECT_DOMAIN in final_domain
+
         # Determine status - only 2xx is truly "up"
         if 200 <= response.status_code < 300:
-            status = 'up'
-            log_msg = f"✅ Clicko UP - Status: {response.status_code}, Response: {round(response_time, 2)}s"
+            if not redirect_ok:
+                status = 'redirect_error'
+                log_msg = f"❌ Clicko REDIRECT ERROR - Expected {EXPECTED_REDIRECT_DOMAIN}, got {final_domain}"
+            else:
+                status = 'up'
+                log_msg = f"✅ Clicko UP - Status: {response.status_code}, Response: {round(response_time, 2)}s, Domain: {final_domain}"
         elif 400 <= response.status_code < 500:
             status = 'client_error'
             log_msg = f"❌ Clicko CLIENT ERROR - Status: {response.status_code}, Response: {round(response_time, 2)}s"
@@ -131,6 +208,9 @@ def check_uptime():
             'is_slow': response_time > SLOW_RESPONSE_THRESHOLD,
             'ssl_valid': ssl_info.get('valid', False),
             'ssl_info': ssl_info,
+            'final_url': final_url,
+            'final_domain': final_domain,
+            'redirect_ok': redirect_ok,
             'timestamp': datetime.now().isoformat(),
             'url': CLICKO_URL
         }
@@ -207,6 +287,15 @@ def send_slack_alert(result):
         color = "danger"
         title = "🔒 Clicko SSL Certificate Error"
         message = f"*Error:* {result.get('error', 'SSL validation failed')}"
+
+    elif status == 'redirect_error':
+        if not should_alert('redirect_error', cooldown_minutes=15):
+            logger.info("Skipping redirect error alert (cooldown)")
+            return
+
+        color = "danger"
+        title = "🔀 Clicko Redirect Error"
+        message = f"*Expected:* {EXPECTED_REDIRECT_DOMAIN}\n*Got:* {result.get('final_domain', 'unknown')}"
 
     elif status == 'client_error':
         if not should_alert('client_error', cooldown_minutes=15):
@@ -301,14 +390,83 @@ def send_slack_alert(result):
         logger.error(f"❌ Failed to send Slack alert: {e}")
 
 
+def send_platform_alert(result):
+    """Send platform-specific redirect alert"""
+    platform = result.get('platform')
+    final_url = result.get('final_url', 'unknown')
+    error = result.get('error')
+
+    if error:
+        title = f"📱 {platform} Redirect Check FAILED"
+        message = f"*Error:* {error}"
+    else:
+        expected = "play.google.com" if platform == "Android" else "apps.apple.com"
+        title = f"📱 {platform} Redirect Error"
+        message = f"*Expected:* {expected}\n*Got:* {final_url}"
+
+    timestamp = datetime.fromisoformat(result['timestamp']).strftime('%Y-%m-%d %I:%M:%S %p IST')
+
+    slack_message = {
+        "attachments": [{
+            "color": "danger",
+            "title": title,
+            "text": message,
+            "fields": [
+                {
+                    "title": "Platform",
+                    "value": platform,
+                    "short": True
+                },
+                {
+                    "title": "Time",
+                    "value": timestamp,
+                    "short": True
+                },
+                {
+                    "title": "Test URL",
+                    "value": result['url'],
+                    "short": False
+                }
+            ],
+            "footer": "Clicko Platform Monitor",
+            "ts": int(time.time())
+        }]
+    }
+
+    try:
+        response = requests.post(SLACK_WEBHOOK, json=slack_message)
+        response.raise_for_status()
+        logger.info(f"✅ Slack alert sent: {title}")
+    except Exception as e:
+        logger.error(f"❌ Failed to send Slack alert: {e}")
+
+
 def main():
     """Main execution"""
     logger.info("🚀 Starting Clicko uptime check...")
 
+    # Check main uptime
     result = check_uptime()
-
-    # Send alert if there's an issue
     send_slack_alert(result)
+
+    # Check platform-specific redirects (Android/iOS)
+    logger.info("🔍 Checking platform redirects...")
+    platform_results = check_platform_redirects()
+
+    # Alert if any platform redirect failed
+    for platform_result in platform_results:
+        if not platform_result.get('redirect_ok'):
+            platform_alert = {
+                'status': 'platform_redirect_error',
+                'platform': platform_result['platform'],
+                'final_url': platform_result.get('final_url', 'unknown'),
+                'error': platform_result.get('error'),
+                'timestamp': datetime.now().isoformat(),
+                'url': CLICKO_URL
+            }
+
+            # Send platform redirect alert (no cooldown)
+            send_platform_alert(platform_alert)
 
     logger.info("✅ Uptime check completed")
 
