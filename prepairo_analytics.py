@@ -1,9 +1,12 @@
 #!/usr/bin/env python3
 """
-PrepAiro Analytics - 3-Message Format
-- Message 1: App Installs with channel attribution
+PrepAiro Analytics - 6-Message Format
+- Message 1: App Installs with channel attribution and drop-off analysis
 - Message 2: Conversions with channel breakdown
-- Message 3: Raw records of Subscribe Now clicks
+- Message 3: Purchase Intents Summary
+- Message 4: Subscribe Now clicks
+- Message 5: Payment Method clicks
+- (Plus 2 delimiter messages = 8 total)
 """
 
 import os
@@ -628,8 +631,8 @@ def get_purchase_intent_data(conn, hours: int = 6, offset_hours: int = 0) -> Dic
     }
 
 
-def format_install_message(data: Dict, hours: int, time_range: str) -> Dict:
-    """Format Message 1: App Installs"""
+def format_install_message(data: Dict, dropoff_data: Dict, hours: int, time_range: str) -> Dict:
+    """Format Message 1: App Installs with Drop-off Analysis"""
 
     now_ist = to_ist(datetime.utcnow())
 
@@ -685,6 +688,43 @@ def format_install_message(data: Dict, hours: int, time_range: str) -> Dict:
             "type": "section",
             "text": {"type": "mrkdwn", "text": platform_text}
         })
+        blocks.append({"type": "divider"})
+
+    # Drop-off analysis by channel
+    channel_data = dropoff_data['by_channel']
+    if channel_data:
+        sorted_channels = sorted(channel_data.items(), key=lambda x: x[1]['total_installs'], reverse=True)
+
+        blocks.append({
+            "type": "section",
+            "text": {
+                "type": "mrkdwn",
+                "text": "*📉 Conversion Drop-offs:*"
+            }
+        })
+
+        # Install → Phone Verification drop-off
+        blocks.append({
+            "type": "section",
+            "text": {
+                "type": "mrkdwn",
+                "text": "*Install → Phone Verified:*"
+            }
+        })
+
+        for channel, stats in sorted_channels:
+            total = stats['total_installs']
+            verified = stats['phone_verified']
+            if total > 0:
+                dropoff_pct = ((total - verified) / total) * 100
+                blocks.append({
+                    "type": "section",
+                    "text": {
+                        "type": "mrkdwn",
+                        "text": f"• {channel}: `{verified}/{total}` verified *({dropoff_pct:.1f}% drop-off)*"
+                    }
+                })
+
         blocks.append({"type": "divider"})
 
     # Channel breakdown
@@ -803,88 +843,8 @@ def format_delimiter() -> Dict:
     }
 
 
-def format_dropoff_message(data: Dict, time_range: str) -> Dict:
-    """Format Message 3: Drop-off Analysis by Channel"""
-
-    now_ist = to_ist(datetime.utcnow())
-
-    blocks = [
-        {
-            "type": "header",
-            "text": {
-                "type": "plain_text",
-                "text": f"📉 Conversion Drop-offs - {time_range}",
-                "emoji": True
-            }
-        },
-        {
-            "type": "context",
-            "elements": [{
-                "type": "mrkdwn",
-                "text": f"_{now_ist.strftime('%Y-%m-%d %H:%M IST')}_"
-            }]
-        },
-        {"type": "divider"}
-    ]
-
-    channel_data = data['by_channel']
-
-    # Sort by total installs descending
-    sorted_channels = sorted(channel_data.items(), key=lambda x: x[1]['total_installs'], reverse=True)
-
-    # Install → Phone Verification drop-off
-    if sorted_channels:
-        blocks.append({
-            "type": "section",
-            "text": {
-                "type": "mrkdwn",
-                "text": "*🔹 Install → Phone Verification:*"
-            }
-        })
-
-        for channel, stats in sorted_channels:
-            total = stats['total_installs']
-            verified = stats['phone_verified']
-            if total > 0:
-                dropoff_pct = ((total - verified) / total) * 100
-                blocks.append({
-                    "type": "section",
-                    "text": {
-                        "type": "mrkdwn",
-                        "text": f"• {channel}: `{verified}/{total}` verified *({dropoff_pct:.1f}% drop-off)*"
-                    }
-                })
-
-        blocks.append({"type": "divider"})
-
-    # Phone Verified → Conversion drop-off
-    if sorted_channels:
-        blocks.append({
-            "type": "section",
-            "text": {
-                "type": "mrkdwn",
-                "text": "*🔹 Phone Verified → Conversion:*"
-            }
-        })
-
-        for channel, stats in sorted_channels:
-            verified = stats['phone_verified']
-            conversions = stats['conversions']
-            if verified > 0:
-                dropoff_pct = ((verified - conversions) / verified) * 100
-                blocks.append({
-                    "type": "section",
-                    "text": {
-                        "type": "mrkdwn",
-                        "text": f"• {channel}: `{conversions}/{verified}` converted *({dropoff_pct:.1f}% drop-off)*"
-                    }
-                })
-
-    return {"blocks": blocks}
-
-
 def format_purchase_intent_summary(data: Dict, hours: int, time_range: str) -> Dict:
-    """Format Message 4: User Purchase Intents Summary (metrics only)"""
+    """Format Message 3: User Purchase Intents Summary (metrics only)"""
 
     now_ist = to_ist(datetime.utcnow())
 
@@ -928,7 +888,7 @@ def format_purchase_intent_summary(data: Dict, hours: int, time_range: str) -> D
 
 
 def format_plus_clicks_message(data: Dict, hours: int, time_range: str) -> Dict:
-    """Format Message 5: Plus Page Clicks Details"""
+    """Format Message 4: Plus Page Clicks Details"""
 
     now_ist = to_ist(datetime.utcnow())
     plus_clicks = data['plus_clicks']
@@ -988,7 +948,7 @@ def format_plus_clicks_message(data: Dict, hours: int, time_range: str) -> Dict:
 
 
 def format_subscribe_clicks_message(data: Dict, hours: int, time_range: str) -> Dict:
-    """Format Message 6: Subscribe Now Clicks Details"""
+    """Format Message 4: Subscribe Now Clicks Details"""
 
     now_ist = to_ist(datetime.utcnow())
     subscribe_clicks = data['subscribe_clicks']
@@ -1049,7 +1009,7 @@ def format_subscribe_clicks_message(data: Dict, hours: int, time_range: str) -> 
 
 
 def format_payment_clicks_message(data: Dict, hours: int, time_range: str) -> Dict:
-    """Format Message 7: Payment Method Clicks Details"""
+    """Format Message 5: Payment Method Clicks Details"""
 
     now_ist = to_ist(datetime.utcnow())
     payment_clicks = data['payment_clicks']
@@ -1152,28 +1112,25 @@ def main():
         send_to_slack(delimiter, "Start Delimiter")
 
         # Content messages
-        msg1 = format_install_message(install_data, hours, time_range)
-        send_to_slack(msg1, "Message 1: Installs")
+        msg1 = format_install_message(install_data, dropoff_data, hours, time_range)
+        send_to_slack(msg1, "Message 1: Installs & Drop-offs")
 
         msg2 = format_conversion_message(conversion_data, hours, time_range)
         send_to_slack(msg2, "Message 2: Conversions")
 
-        msg3 = format_dropoff_message(dropoff_data, time_range)
-        send_to_slack(msg3, "Message 3: Drop-offs")
+        msg3 = format_purchase_intent_summary(purchase_intent_data, hours, time_range)
+        send_to_slack(msg3, "Message 3: Purchase Intents Summary")
 
-        msg4 = format_purchase_intent_summary(purchase_intent_data, hours, time_range)
-        send_to_slack(msg4, "Message 4: Purchase Intents Summary")
+        msg4 = format_subscribe_clicks_message(purchase_intent_data, hours, time_range)
+        send_to_slack(msg4, "Message 4: Subscribe Clicks")
 
-        msg5 = format_subscribe_clicks_message(purchase_intent_data, hours, time_range)
-        send_to_slack(msg5, "Message 5: Subscribe Clicks")
-
-        msg6 = format_payment_clicks_message(purchase_intent_data, hours, time_range)
-        send_to_slack(msg6, "Message 6: Payment Clicks")
+        msg5 = format_payment_clicks_message(purchase_intent_data, hours, time_range)
+        send_to_slack(msg5, "Message 5: Payment Clicks")
 
         # End delimiter
         send_to_slack(delimiter, "End Delimiter")
 
-        logger.info("✅ All 9 messages sent successfully (7 content + 2 delimiters)")
+        logger.info("✅ All 8 messages sent successfully (6 content + 2 delimiters)")
 
     except Exception as e:
         logger.error(f"❌ Report generation failed: {e}")
