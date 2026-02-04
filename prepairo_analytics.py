@@ -94,8 +94,8 @@ def format_time_range_header(hours: int, offset_hours: int = 0) -> tuple:
     Returns (period_description, time_range_text) tuple.
 
     Examples:
-        - format_time_range_header(6, 0) -> ("Last 6 Hours", "11:00 to 17:00 IST")
-        - format_time_range_header(24, 12) -> ("Yesterday", "Feb 3, 12:00 to Feb 4, 12:00 IST")
+        - format_time_range_header(6, 0) -> ("Last 6 Hours", "11:00 AM to 05:00 PM IST")
+        - format_time_range_header(24, 12) -> ("Yesterday", "Feb 3, 12:00 PM to Feb 4, 12:00 PM IST")
     """
     now_ist = to_ist(datetime.utcnow())
     end_time = now_ist - timedelta(hours=offset_hours)
@@ -104,19 +104,19 @@ def format_time_range_header(hours: int, offset_hours: int = 0) -> tuple:
     # For regular reports (no offset)
     if offset_hours == 0:
         period = f"Last {hours} Hours" if hours != 1 else "Last Hour"
-        time_range = f"{start_time.strftime('%H:%M')} to {end_time.strftime('%H:%M IST')}"
+        time_range = f"{start_time.strftime('%I:%M %p')} to {end_time.strftime('%I:%M %p IST')}"
     # For daily reports (24 hours with offset)
     elif hours == 24:
         # Check if start and end are on different days
         if start_time.day != end_time.day:
-            time_range = f"{start_time.strftime('%b %d, %H:%M')} to {end_time.strftime('%b %d, %H:%M IST')}"
+            time_range = f"{start_time.strftime('%b %d, %I:%M %p')} to {end_time.strftime('%b %d, %I:%M %p IST')}"
         else:
-            time_range = f"{start_time.strftime('%b %d, %H:%M')} to {end_time.strftime('%H:%M IST')}"
+            time_range = f"{start_time.strftime('%b %d, %I:%M %p')} to {end_time.strftime('%I:%M %p IST')}"
         period = "Yesterday"
     else:
         # Generic format for other combinations
         period = f"{hours} Hours"
-        time_range = f"{start_time.strftime('%b %d, %H:%M')} to {end_time.strftime('%b %d, %H:%M IST')}"
+        time_range = f"{start_time.strftime('%b %d, %I:%M %p')} to {end_time.strftime('%b %d, %I:%M %p IST')}"
 
     return (period, time_range)
 
@@ -727,9 +727,9 @@ def format_install_message(data: Dict, dropoff_data: Dict, hours: int, time_rang
 
         blocks.append({"type": "divider"})
 
-    # Channel breakdown
+    # Channel breakdown (for phone verified users only)
     if data['by_channel']:
-        channel_text = "*🔹 By Channel:*\n"
+        channel_text = "*🔹 By Channel (Phone Verified Users):*\n"
         for channel, count in sorted(data['by_channel'].items(), key=lambda x: x[1], reverse=True):
             channel_text += f"• {channel}: `{count}`\n"
 
@@ -739,9 +739,9 @@ def format_install_message(data: Dict, dropoff_data: Dict, hours: int, time_rang
         })
         blocks.append({"type": "divider"})
 
-    # Campaign breakdown
+    # Campaign breakdown (for phone verified users only)
     if data['by_campaign']:
-        campaign_text = "*🔹 By UTM Campaign:*\n"
+        campaign_text = "*🔹 By UTM Campaign (Phone Verified Users):*\n"
         for campaign, count in sorted(data['by_campaign'].items(), key=lambda x: x[1], reverse=True):
             campaign_text += f"• {campaign}: `{count}`\n"
 
