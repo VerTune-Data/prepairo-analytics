@@ -59,19 +59,10 @@ def save_state(state):
         json.dump(state, f)
 
 
-def should_alert(alert_type, cooldown_minutes=15):
+def should_alert(alert_type, cooldown_minutes=0):
     """Check if enough time has passed since last alert of this type"""
-    state = load_state()
-    last_alert_key = f"last_{alert_type}_alert"
-
-    if last_alert_key in state:
-        last_alert = datetime.fromisoformat(state[last_alert_key])
-        if datetime.now() - last_alert < timedelta(minutes=cooldown_minutes):
-            return False
-
-    # Update state
-    state[last_alert_key] = datetime.now().isoformat()
-    save_state(state)
+    # CRITICAL SERVICE MODE: No cooldown - always alert
+    # Every check sends an alert if there's an issue
     return True
 
 
