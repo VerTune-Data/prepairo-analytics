@@ -260,6 +260,15 @@ def get_install_data(conn, hours: int = 6, offset_hours: int = 0) -> Dict:
         GROUP BY up.signup_platform;
     """)
 
+    # Build qualified time condition for phone verified (need up. prefix due to JOIN)
+    if offset_hours > 0:
+        phone_verified_time_condition = f"""
+            up.created_at >= NOW() - INTERVAL '{hours + offset_hours} hours'
+            AND up.created_at < NOW() - INTERVAL '{offset_hours} hours'
+        """
+    else:
+        phone_verified_time_condition = f"up.created_at >= NOW() - INTERVAL '{hours} hours'"
+
     # Get phone verified users with platform and channel data
     phone_verified = execute_query(conn, f"""
         SELECT
@@ -270,7 +279,7 @@ def get_install_data(conn, hours: int = 6, offset_hours: int = 0) -> Dict:
         FROM users_profile up
         JOIN users_auth ua ON up.id = ua.id
         WHERE ua.is_phone_no_verified = TRUE
-            AND up.{time_condition}
+            AND {phone_verified_time_condition}
             AND up.is_fake_user = false
         ORDER BY up.created_at DESC;
     """)
@@ -412,14 +421,19 @@ def get_dropoff_data(conn, hours: int = 6, offset_hours: int = 0) -> Dict:
 
     logger.info(f"Fetching drop-off data for last {hours} hours (offset: {offset_hours})...")
 
-    # Build time condition
+    # Build time conditions with proper table qualifiers
     if offset_hours > 0:
-        time_condition = f"""
-            created_at >= NOW() - INTERVAL '{hours + offset_hours} hours'
-            AND created_at < NOW() - INTERVAL '{offset_hours} hours'
+        up_time_condition = f"""
+            up.created_at >= NOW() - INTERVAL '{hours + offset_hours} hours'
+            AND up.created_at < NOW() - INTERVAL '{offset_hours} hours'
+        """
+        us_time_condition = f"""
+            us.created_at >= NOW() - INTERVAL '{hours + offset_hours} hours'
+            AND us.created_at < NOW() - INTERVAL '{offset_hours} hours'
         """
     else:
-        time_condition = f"created_at >= NOW() - INTERVAL '{hours} hours'"
+        up_time_condition = f"up.created_at >= NOW() - INTERVAL '{hours} hours'"
+        us_time_condition = f"us.created_at >= NOW() - INTERVAL '{hours} hours'"
 
     # Get all installs with play_refer data
     all_installs = execute_query(conn, f"""
@@ -428,7 +442,7 @@ def get_dropoff_data(conn, hours: int = 6, offset_hours: int = 0) -> Dict:
             up.signup_platform,
             up.play_refer
         FROM users_profile up
-        WHERE up.{time_condition}
+        WHERE {up_time_condition}
             AND up.is_fake_user = false;
     """)
 
@@ -441,7 +455,7 @@ def get_dropoff_data(conn, hours: int = 6, offset_hours: int = 0) -> Dict:
         FROM users_profile up
         JOIN users_auth ua ON up.id = ua.id
         WHERE ua.is_phone_no_verified = TRUE
-            AND up.{time_condition}
+            AND {up_time_condition}
             AND up.is_fake_user = false;
     """)
 
@@ -453,7 +467,7 @@ def get_dropoff_data(conn, hours: int = 6, offset_hours: int = 0) -> Dict:
             up.play_refer
         FROM user_subscriptions us
         JOIN users_profile up ON us.user_id = up.id
-        WHERE {time_condition.replace('created_at', 'us.created_at').replace('up.created_at', 'us.created_at')}
+        WHERE {us_time_condition}
             AND us.subscription_status = 'ACTIVE'
             AND up.is_fake_user = false;
     """)
@@ -505,14 +519,29 @@ def get_purchase_intent_data(conn, hours: int = 6, offset_hours: int = 0) -> Dic
 
     logger.info(f"Fetching purchase intent data for last {hours} hours (offset: {offset_hours})...")
 
-    # Build time condition
+    # Build time conditions with proper table qualifiers
     if offset_hours > 0:
-        time_condition = f"""
+        pca_time_condition = f"""
+            pca.created_at >= NOW() - INTERVAL '{hours + offset_hours} hours'
+            AND pca.created_at < NOW() - INTERVAL '{offset_hours} hours'
+        """
+        sna_time_condition = f"""
+            sna.created_at >= NOW() - INTERVAL '{hours + offset_hours} hours'
+            AND sna.created_at < NOW() - INTERVAL '{offset_hours} hours'
+        """
+        posa_time_condition = f"""
+            posa.created_at >= NOW() - INTERVAL '{hours + offset_hours} hours'
+            AND posa.created_at < NOW() - INTERVAL '{offset_hours} hours'
+        """
+        coupon_time_condition = f"""
             created_at >= NOW() - INTERVAL '{hours + offset_hours} hours'
             AND created_at < NOW() - INTERVAL '{offset_hours} hours'
         """
     else:
-        time_condition = f"created_at >= NOW() - INTERVAL '{hours} hours'"
+        pca_time_condition = f"pca.created_at >= NOW() - INTERVAL '{hours} hours'"
+        sna_time_condition = f"sna.created_at >= NOW() - INTERVAL '{hours} hours'"
+        posa_time_condition = f"posa.created_at >= NOW() - INTERVAL '{hours} hours'"
+        coupon_time_condition = f"created_at >= NOW() - INTERVAL '{hours} hours'"
 
     # Plus Page Clicks (unique users only - most recent click per user, sorted by time)
     plus_clicks = execute_query(conn, f"""
@@ -529,7 +558,7 @@ def get_purchase_intent_data(conn, hours: int = 6, offset_hours: int = 0) -> Dic
             JOIN users_auth ua ON pca.user_id = ua.id
             LEFT JOIN user_subscriptions us ON pca.user_id = us.user_id
                 AND us.created_at >= pca.created_at
-            WHERE pca.{time_condition}
+            WHERE {pca_time_condition}
             ORDER BY pca.user_id, pca.created_at DESC
         ) AS unique_users
         ORDER BY created_at DESC
@@ -552,7 +581,7 @@ def get_purchase_intent_data(conn, hours: int = 6, offset_hours: int = 0) -> Dic
             JOIN users_auth ua ON sna.user_id = ua.id
             LEFT JOIN user_subscriptions us ON sna.user_id = us.user_id
                 AND us.created_at >= sna.created_at
-            WHERE sna.{time_condition}
+            WHERE {sna_time_condition}
             ORDER BY sna.user_id, sna.created_at DESC
         ) AS unique_users
         ORDER BY created_at DESC
@@ -576,7 +605,7 @@ def get_purchase_intent_data(conn, hours: int = 6, offset_hours: int = 0) -> Dic
             JOIN users_auth ua ON posa.user_id = ua.id
             LEFT JOIN user_subscriptions us ON posa.user_id = us.user_id
                 AND us.created_at >= posa.created_at
-            WHERE posa.{time_condition}
+            WHERE {posa_time_condition}
             ORDER BY posa.user_id, posa.created_at DESC
         ) AS unique_users
         ORDER BY created_at DESC
@@ -587,7 +616,7 @@ def get_purchase_intent_data(conn, hours: int = 6, offset_hours: int = 0) -> Dic
     coupon_result = execute_query(conn, f"""
         SELECT COUNT(DISTINCT user_id) as count
         FROM holiday_coupon_applied_audit
-        WHERE {time_condition};
+        WHERE {coupon_time_condition};
     """)
     coupon_count = coupon_result[0]['count'] if coupon_result else 0
 
