@@ -26,8 +26,8 @@ from modules.s3_uploader import S3ChartUploader
 
 # Parse command line arguments
 parser = argparse.ArgumentParser(description='Meta Ads 8-Hour Intelligent Reporter')
-parser.add_argument('--account', type=str, required=True, choices=['upsc', 'gre'], 
-                    help='Account to run report for (upsc or gre)')
+parser.add_argument('--account', type=str, required=True, choices=['upsc', 'gre', 'test'], 
+                    help='Account to run report for (upsc, gre, or test)')
 args = parser.parse_args()
 
 # Load environment variables for specific account
