@@ -1,23 +1,6 @@
 ---
 name: meta-ads-analyze
 description: "Deep AI-powered Meta Ads analysis with trends, conversions, and visual charts"
-version: "1.0.0"
-author: "Analytics Team"
-tags:
-  - meta-ads
-  - ai-analysis
-  - conversions
-  - charts
-  - reporting
-requirements:
-  - "Meta Ads API access"
-  - "Slack webhook configured"
-  - "Claude API key (optional, for AI analysis)"
-  - "AWS S3 access (optional, for charts)"
-  - "SQLite database"
-  - "Python 3.8+"
-aiPowered: true
-needsDatabase: true
 ---
 
 # Meta Ads Analyze
