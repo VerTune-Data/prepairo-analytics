@@ -1,15 +1,15 @@
 ---
 name: meta-ads-quick
-description: "Fast daily Meta Ads performance snapshot with top campaigns and metrics"
+description: "Fetch Meta Ads performance data for conversational analysis with product managers and marketers"
 ---
 
-# Meta Ads Quick Report
+# Meta Ads Quick Data Fetcher
 
-Get a fast daily performance snapshot of your Meta Ads campaigns.
+Fetches current Meta Ads campaign performance data and returns it to Claude for conversational presentation.
 
-## What This Does
+## Purpose
 
-Provides a rapid overview of your Meta advertising performance without the overhead of AI analysis or historical tracking. Perfect for quick daily check-ins.
+This skill enables Claude to answer questions about Meta Ads performance by fetching real-time data from the Meta Ads API. The data is returned to Claude, who then presents it conversationally based on the user's questions.
 
 ## Usage
 
@@ -33,28 +33,33 @@ Provides a rapid overview of your Meta advertising performance without the overh
 
 ## Output
 
-Report is delivered directly to your configured Slack channel.
+Returns structured JSON data to Claude containing:
+- Campaign performance metrics
+- Top campaigns by spend
+- Daily breakdown
+- Status information
+
+Claude then presents this information conversationally to the user.
 
 ## Performance
 
 Completes in ~30 seconds - faster than the full intelligent analysis.
 
-## When to Use This Skill
+## When Claude Should Use This
 
-✅ **Use /meta-ads-quick when:**
-- You need a quick morning check-in
-- You want to see yesterday's or last week's performance
-- You need a fast overview without deep analysis
-- You're in a hurry and don't need AI insights
-- You want to check top campaigns by spend
-- You need daily metrics for a standup meeting
+✅ **Use when user asks:**
+- "How are my ads performing?"
+- "What's my ad spend today/this week?"
+- "Which campaigns are spending the most?"
+- "Show me yesterday's performance"
+- "Quick overview of my Meta Ads"
+- "What's the status of my campaigns?"
 
-❌ **Don't use this when:**
-- You need conversion metrics (CPI, CPR, CPA) → Use /meta-ads-analyze
-- You want AI-powered insights → Use /meta-ads-analyze
-- You need historical trends → Use /meta-ads-analyze
-- You want to check platform configuration → Use /meta-ads-audit
-- You need visual charts → Use /meta-ads-analyze
+❌ **Don't use when user asks:**
+- "Deep analysis with insights" → Use /meta-ads-analyze
+- "Which platforms am I running on?" → Use /meta-ads-audit
+- "Show me conversion metrics" → Use /meta-ads-analyze
+- "Give me AI recommendations" → Use /meta-ads-analyze
 
 ## Examples
 
@@ -73,7 +78,7 @@ Completes in ~30 seconds - faster than the full intelligent analysis.
 
 - Meta Ads account configured in `.env` file
 - Valid Meta access token
-- Slack webhook URL configured
+- Python 3.8+
 
 ## Tool Implementation
 
@@ -84,6 +89,26 @@ The tool:
 2. Connects to Meta Ads API
 3. Fetches campaign insights and metrics
 4. Aggregates data by campaign and day
-5. Formats as Slack-compatible message
-6. Sends to configured webhook
-7. Returns success/failure status
+5. Outputs structured JSON to stdout
+6. Claude reads the output and presents conversationally
+
+## Example Conversation
+
+```
+User: "How are my GRE ads doing today?"
+
+Claude: [Executes /meta-ads-quick --account gre --days 1]
+        [Receives data about spend, impressions, campaigns]
+
+Claude: "Your GRE ads are performing well today! Here's what I see:
+
+        💰 Total spend so far: ₹5,234
+        👁️ Impressions: 245K
+        👆 Clicks: 3,421 (1.4% CTR)
+
+        Top spending campaigns:
+        1. GRE Core Conversions - ₹3,100 (active)
+        2. GRE Retargeting - ₹1,890 (active)
+
+        Would you like me to analyze any specific campaign in detail?"
+```

@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
 """
-Meta Ads Quick Report Tool
-Fast daily performance snapshot without AI overhead
+Meta Ads Quick Data Fetcher
+Fetches Meta Ads data and outputs as JSON for Claude to present conversationally
 """
 
 import os
 import sys
 import logging
 import argparse
-import requests
+import json
 from datetime import datetime, timedelta
 from pathlib import Path
 from facebook_business.api import FacebookAdsApi
@@ -298,29 +298,70 @@ def format_slack_message(aggregated_data, campaigns_data, date_range, account_na
     return {"text": full_message}
 
 
-def send_to_slack(message, slack_webhook):
-    """Send message to Slack webhook"""
-    try:
-        response = requests.post(
-            slack_webhook,
-            json=message,
-            timeout=10
-        )
+def output_json(aggregated_data, campaigns_data, date_range, account_name, report_days):
+    """Output data as JSON for Claude to process"""
+    import json
 
-        if response.status_code == 200:
-            logger.info("Successfully sent report to Slack")
-            return True
-        else:
-            error_msg = handle_slack_error(Exception(response.text), response.status_code)
-            logger.error(error_msg)
-            print(error_msg)
-            return False
-
-    except Exception as e:
-        error_msg = handle_slack_error(e)
-        logger.error(error_msg)
-        print(error_msg)
+    if not aggregated_data:
+        output = {
+            "status": "no_data",
+            "message": "No Meta Ads data available for the specified period"
+        }
+        print(json.dumps(output, indent=2))
         return False
+
+    total = aggregated_data['total']
+
+    # Format top campaigns
+    campaign_status_map = {c.get('name'): c.get('effective_status', 'UNKNOWN') for c in campaigns_data}
+
+    top_campaigns = []
+    for campaign_name, stats in aggregated_data['top_campaigns']:
+        status = campaign_status_map.get(campaign_name, 'UNKNOWN')
+        ctr = (stats['clicks'] / stats['impressions'] * 100) if stats['impressions'] > 0 else 0
+
+        top_campaigns.append({
+            "name": campaign_name,
+            "status": status,
+            "spend": stats['spend'],
+            "impressions": stats['impressions'],
+            "reach": stats['reach'],
+            "clicks": stats['clicks'],
+            "ctr": ctr
+        })
+
+    # Format daily breakdown
+    daily_breakdown = []
+    for date_str, stats in aggregated_data['daily_breakdown'][:7]:
+        daily_breakdown.append({
+            "date": date_str,
+            "spend": stats['spend'],
+            "impressions": stats['impressions'],
+            "clicks": stats['clicks']
+        })
+
+    # Output structured data
+    output = {
+        "status": "success",
+        "account": account_name,
+        "period": {
+            "days": report_days,
+            "start": date_range['since'],
+            "end": date_range['until']
+        },
+        "summary": {
+            "total_spend": total['spend'],
+            "total_impressions": total['impressions'],
+            "total_reach": total['reach'],
+            "total_clicks": total['clicks'],
+            "average_ctr": total['ctr']
+        },
+        "top_campaigns": top_campaigns,
+        "daily_breakdown": daily_breakdown
+    }
+
+    print(json.dumps(output, indent=2))
+    return True
 
 
 def main():
@@ -368,18 +409,21 @@ def main():
 
         if not insights_data:
             print("⚠️  No insights data available for this period")
-            error_message = {
-                "text": f"⚠️ No Meta Ads data available for {date_range['start_date_formatted']} to {date_range['end_date_formatted']}"
+            import json
+            error_output = {
+                "status": "no_data",
+                "message": f"No Meta Ads data available for {date_range['start_date_formatted']} to {date_range['end_date_formatted']}"
             }
-            send_to_slack(error_message, config['slack_webhook'])
+            print(json.dumps(error_output, indent=2))
             return
 
         # Aggregate data
         print("Processing data...")
         aggregated_data = aggregate_insights(insights_data)
 
-        # Format message
-        slack_message = format_slack_message(
+        # Output JSON for Claude
+        print("Fetching Meta Ads data...")
+        success = output_json(
             aggregated_data,
             campaigns_data,
             date_range,
@@ -387,15 +431,10 @@ def main():
             args.days
         )
 
-        # Send to Slack
-        print("Sending report to Slack...")
-        success = send_to_slack(slack_message, config['slack_webhook'])
-
         if success:
-            print("✅ Report sent successfully to Slack")
             logger.info("Meta Ads Quick Report completed successfully")
         else:
-            print("❌ Failed to send report to Slack")
+            logger.warning("No data available")
             sys.exit(1)
 
     except ConfigurationError as e:
@@ -408,15 +447,13 @@ def main():
         print(error_msg)
         logger.error(f"Error in main execution: {e}", exc_info=True)
 
-        # Try to send error to Slack
-        try:
-            config = load_account_config(args.account)
-            error_message = {
-                "text": f"❌ *Meta Ads Quick Report Error*\n\n{error_msg}"
-            }
-            send_to_slack(error_message, config['slack_webhook'])
-        except:
-            pass
+        # Output error as JSON
+        import json
+        error_output = {
+            "status": "error",
+            "error": error_msg
+        }
+        print(json.dumps(error_output, indent=2))
 
         sys.exit(1)
 
