@@ -1,0 +1,72 @@
+{
+  "name": "meta-ads-reporter",
+  "version": "1.0.0",
+  "description": "Meta Ads reporting tools for product teams",
+  "skills": [
+    {
+      "name": "meta-ads-quick",
+      "description": "Fast daily Meta Ads performance snapshot",
+      "command": "python3",
+      "args": ["skills/meta-ads-quick/tools/quick_report.py"],
+      "parameters": {
+        "account": {
+          "type": "string",
+          "description": "Account to report on (gre, upsc, test)",
+          "default": "gre",
+          "enum": ["gre", "upsc", "test"]
+        },
+        "days": {
+          "type": "integer",
+          "description": "Number of days to include in report",
+          "default": 7
+        }
+      }
+    },
+    {
+      "name": "meta-ads-analyze",
+      "description": "Deep AI-powered Meta Ads analysis with trends and conversions",
+      "command": "python3",
+      "args": ["skills/meta-ads-analyze/tools/analyze_report.py"],
+      "parameters": {
+        "account": {
+          "type": "string",
+          "description": "Account to report on (gre, upsc, test)",
+          "default": "gre",
+          "enum": ["gre", "upsc", "test"]
+        },
+        "range": {
+          "type": "string",
+          "description": "Time range for analysis",
+          "default": "yesterday",
+          "enum": ["yesterday", "7d", "30d"]
+        },
+        "ai": {
+          "type": "string",
+          "description": "Enable/disable AI analysis",
+          "default": "on",
+          "enum": ["on", "off"]
+        },
+        "charts": {
+          "type": "string",
+          "description": "Enable/disable chart generation",
+          "default": "on",
+          "enum": ["on", "off"]
+        }
+      }
+    },
+    {
+      "name": "meta-ads-audit",
+      "description": "Check platform configuration (Facebook vs Instagram)",
+      "command": "python3",
+      "args": ["skills/meta-ads-audit/tools/audit_platforms.py"],
+      "parameters": {
+        "account": {
+          "type": "string",
+          "description": "Account to audit (gre, upsc, test)",
+          "default": "gre",
+          "enum": ["gre", "upsc", "test"]
+        }
+      }
+    }
+  ]
+}
