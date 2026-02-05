@@ -1,11 +1,11 @@
 ---
 name: meta-ads-audit
-description: "Check platform configuration (Facebook vs Instagram) for all campaigns and adsets"
+description: "Audit Meta Ads platform configuration to answer questions about Facebook vs Instagram targeting"
 ---
 
-# Meta Ads Audit
+# Meta Ads Platform Audit
 
-Check which platforms (Facebook vs Instagram) are configured for your campaigns and adsets.
+Checks platform configuration (Facebook vs Instagram) for all campaigns and adsets. Returns findings as structured data for Claude to present conversationally.
 
 ## What This Does
 
@@ -36,29 +36,31 @@ Inspects the platform configuration for all campaigns and adsets to identify whi
 
 ## Output
 
-Terminal report showing:
-- All campaigns with their status
-- All adsets under each campaign
-- Platform configuration for each adset
-- Warnings for Facebook-enabled active adsets
-- Summary with actionable recommendations
+Returns JSON data to Claude containing:
+- Campaign hierarchy with platform configuration
+- Active adsets with Facebook enabled (warnings)
+- Instagram-only adsets
+- Automatic placement adsets
+- Summary with recommendations
 
-## When to Use This Skill
+Claude then answers the user's questions about platform configuration conversationally.
 
-✅ **Use /meta-ads-audit when:**
-- Facebook ads are appearing despite being turned off
-- You want to verify Instagram-only configuration
-- You need to check which platforms campaigns are targeting
-- You're troubleshooting unexpected platform delivery
-- You want to audit where your ad budget is going
-- You need to validate Meta Ads Manager configuration
-- Someone on team asks "Are we running on Facebook?"
-- You're investigating platform-related issues
+## When Claude Should Use This
 
-❌ **Don't use this when:**
-- You need performance metrics → Use /meta-ads-quick or /meta-ads-analyze
-- You want to see spend/conversions → Use /meta-ads-quick or /meta-ads-analyze
-- You need AI insights → Use /meta-ads-analyze
+✅ **Use when user asks:**
+- "Am I running ads on Facebook?"
+- "Which platforms are my campaigns on?"
+- "Are my ads Instagram-only?"
+- "Why am I seeing Facebook ads?"
+- "Check my platform configuration"
+- "Which campaigns use automatic placements?"
+- "Verify Instagram targeting"
+- "Show me Facebook vs Instagram campaigns"
+
+❌ **Don't use when user asks:**
+- "How much am I spending?" → Use /meta-ads-quick
+- "Conversion metrics?" → Use /meta-ads-analyze
+- "Performance data?" → Use /meta-ads-quick or /meta-ads-analyze
 
 💡 **Pro tip:** Run this after making platform changes in Meta Ads Manager to verify they took effect (allow 15-30 minutes for changes to propagate).
 

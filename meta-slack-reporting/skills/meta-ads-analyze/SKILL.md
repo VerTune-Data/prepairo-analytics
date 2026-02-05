@@ -1,11 +1,11 @@
 ---
 name: meta-ads-analyze
-description: "Deep AI-powered Meta Ads analysis with trends, conversions, and visual charts"
+description: "Deep analysis of Meta Ads with conversions, trends, and AI insights for interactive Q&A"
 ---
 
-# Meta Ads Analyze
+# Meta Ads Deep Analysis
 
-Deep AI-powered analysis of your Meta Ads campaigns with historical trends and conversion tracking.
+Fetches comprehensive Meta Ads data with conversion tracking and historical trends. Returns structured data to Claude for conversational presentation to product managers and performance marketers.
 
 ## What This Does
 
@@ -56,33 +56,35 @@ Provides comprehensive analysis using Claude AI to identify insights, trends, an
 
 ## Output
 
-Multi-message report delivered to your configured Slack channel with:
-- AI analysis
-- Traffic chart (hosted on S3)
-- Conversion chart (hosted on S3)
-- Detailed campaign breakdown
-- Converted users details
+Returns comprehensive JSON data to Claude containing:
+- Conversion metrics (installs, registrations, purchases, CPI, CPR, CPA)
+- Historical trend comparison (vs previous period)
+- Campaign hierarchy (campaigns → adsets → ads)
+- Performance deltas and changes
+- AI insights and recommendations (optional)
+
+Claude then presents this information conversationally based on user questions.
 
 ## Performance
 
 Completes in ~2-3 minutes depending on data volume and AI analysis.
 
-## When to Use This Skill
+## When Claude Should Use This
 
-✅ **Use /meta-ads-analyze when:**
-- You need deep AI-powered insights and recommendations
-- You want to see conversion metrics (installs, registrations, purchases)
-- You need historical trend analysis vs previous period
-- You're preparing for a team meeting or presentation
-- You want visual charts to share
-- You need to optimize campaign performance
-- You want to identify money-bleeding campaigns
-- You're doing weekly or monthly performance reviews
+✅ **Use when user asks:**
+- "What are my conversion metrics?"
+- "Show me CPI/CPR/CPA"
+- "How do conversions compare to last week?"
+- "Give me detailed campaign analysis"
+- "Which campaigns are converting best?"
+- "What should I optimize?"
+- "Deep dive into performance"
+- "Show me app install costs"
 
-❌ **Don't use this when:**
-- You just need a quick overview → Use /meta-ads-quick (faster)
-- You want to check platform configuration → Use /meta-ads-audit
-- You're in a hurry (this takes 2-3 minutes)
+❌ **Don't use when user asks:**
+- "Quick overview" → Use /meta-ads-quick (faster)
+- "Platform configuration" → Use /meta-ads-audit
+- "Just today's spend" → Use /meta-ads-quick
 
 ⚠️ **Note:** First run has no historical comparison. Run it at least twice to get trend analysis.
 
@@ -106,10 +108,9 @@ Completes in ~2-3 minutes depending on data volume and AI analysis.
 
 - Meta Ads account configured in `.env` file
 - Valid Meta access token
-- Slack webhook URL configured
-- Claude API key in AWS Secrets Manager or environment variable (for AI analysis)
-- AWS credentials configured (for S3 chart hosting)
 - SQLite database for historical tracking
+- Python 3.8+
+- Optional: Claude API key (for AI insights)
 
 ## Notes
 
