@@ -113,6 +113,15 @@ class SlackFormatter:
                     "text": {"type": "mrkdwn", "text": trend_analysis}
                 })
             
+            # Add PNG chart image if available
+            if charts.get('png_url'):
+                message1_blocks.append({"type": "divider"})
+                message1_blocks.append({
+                    "type": "image",
+                    "image_url": charts['png_url'],
+                    "alt_text": "Campaign Performance Chart"
+                })
+            
             # MESSAGE 2: Campaign Details
             message2_blocks = [
                 {
