@@ -1,0 +1,11 @@
+# Existing dependencies
+facebook-business==19.0.0
+requests==2.31.0
+python-dotenv==1.0.0
+
+# New dependencies for 6-hour intelligent system
+anthropic==0.43.0
+boto3==1.36.0
+matplotlib==3.9.3
+Pillow==11.0.0
+pytz==2024.2

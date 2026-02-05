@@ -46,6 +46,27 @@ python3 clicko_uptime_monitor.py
 
 ---
 
+### 📱 [Meta Ads Slack Reporter](./meta-slack-reporting/)
+
+Daily Meta (Facebook) Ads performance reporting with Slack notifications.
+
+**Features:**
+- Campaign performance metrics (impressions, reach, spend, clicks)
+- Top 5 campaigns by spend with status indicators
+- Daily breakdown for last 7 days
+- Scheduled reports via cron
+
+**Quick Start:**
+```bash
+cd meta-slack-reporting
+source venv/bin/activate
+python3 meta_ads_reporter.py
+```
+
+[📖 Full Documentation](./meta-slack-reporting/README.md)
+
+---
+
 ## Deployment
 
 **EC2 Server:** `65.2.55.151`
@@ -71,6 +92,13 @@ chmod 600 .env
 cd /home/ec2-user/analytics/clicko-monitor
 chmod +x clicko_uptime_monitor.py
 chmod 600 .env
+
+# Setup meta ads reporter
+cd /home/ec2-user/analytics/meta-slack-reporting
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+chmod 600 .env
 ```
 
 ### Cron Jobs
@@ -89,6 +117,9 @@ crontab -e
 
 # Clicko Uptime Monitor - Every 5 minutes
 */5 * * * * cd /home/ec2-user/analytics/clicko-monitor && export $(grep -v "^#" .env | xargs) && python3 clicko_uptime_monitor.py >> logs/cron.log 2>&1
+
+# Meta Ads Reporter - Daily at 9:00 AM IST (3:30 AM UTC)
+30 3 * * * cd /home/ec2-user/analytics/meta-slack-reporting && source venv/bin/activate && python3 meta_ads_reporter.py >> logs/cron.log 2>&1
 ```
 
 ## Repository Structure
@@ -107,11 +138,19 @@ analytics/
 │   ├── README.md
 │   └── logs/
 │
-└── clicko-monitor/               # Clicko uptime monitoring
-    ├── clicko_uptime_monitor.py
+├── clicko-monitor/               # Clicko uptime monitoring
+│   ├── clicko_uptime_monitor.py
+│   ├── .env (gitignored)
+│   ├── .env.example
+│   ├── .gitignore
+│   ├── README.md
+│   └── logs/
+│
+└── meta-slack-reporting/         # Meta Ads performance reports
+    ├── meta_ads_reporter.py
     ├── .env (gitignored)
     ├── .env.example
-    ├── .gitignore
+    ├── requirements.txt
     ├── README.md
     └── logs/
 ```
@@ -128,9 +167,13 @@ tail -f /home/ec2-user/analytics/conversion-analytics/logs/analytics_$(date +%Y%
 # View uptime monitor logs
 tail -f /home/ec2-user/analytics/clicko-monitor/logs/clicko_monitor_$(date +%Y%m%d).log
 
+# View meta ads reporter logs
+tail -f /home/ec2-user/analytics/meta-slack-reporting/logs/meta_ads_$(date +%Y%m%d).log
+
 # View cron logs
 tail -f /home/ec2-user/analytics/conversion-analytics/logs/cron.log
 tail -f /home/ec2-user/analytics/clicko-monitor/logs/cron.log
+tail -f /home/ec2-user/analytics/meta-slack-reporting/logs/cron.log
 
 # Check cron jobs
 crontab -l
@@ -144,10 +187,16 @@ python3 prepairo_analytics.py 6
 cd /home/ec2-user/analytics/clicko-monitor
 export $(grep -v "^#" .env | xargs)
 python3 clicko_uptime_monitor.py
+
+# Manual run - Meta Ads Reporter
+cd /home/ec2-user/analytics/meta-slack-reporting
+source venv/bin/activate
+python3 meta_ads_reporter.py
 ```
 
 ## Version History
 
+- **v3.0** - Meta Ads Slack Reporter added
 - **v2.1** - Analytics enhancements (drop-offs, daily summary, improved formatting)
 - **v2.0** - Rewrite with 6-message format and channel attribution
 - **v1.0** - Clicko uptime monitoring added
