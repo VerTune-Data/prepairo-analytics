@@ -187,16 +187,23 @@ class SlackFormatter:
             ads_sorted = sorted(ads, key=lambda x: float(x.get('spend', 0)), reverse=True)
             
             for ad_idx, ad in enumerate(ads_sorted, 1):
-                ad_name = ad.get('ad_name', 'Unknown')[:40]
+                # Extract full hierarchy
+                campaign_name = ad.get('campaign_name', 'Unknown Campaign')[:30]
+                adset_name = ad.get('adset_name', 'Unknown AdSet')[:30]
+                ad_name = ad.get('ad_name', 'Unknown Ad')[:35]
+                
                 ad_spend = float(ad.get('spend', 0))
                 ad_imp = int(ad.get('impressions', 0))
                 ad_clicks = int(ad.get('clicks', 0))
                 ad_ctr = (ad_clicks / ad_imp * 100) if ad_imp > 0 else 0
-                ad_cpc = (ad_spend / ad_clicks) if ad_clicks > 0 else 0
                 
                 ad_text = (
-                    f"*{ad_idx}. {ad_name}*\n"
-                    f"💰 ₹{ad_spend:,.2f} | 👁️ {ad_imp:,} | 🖱️ {ad_clicks} | 📊 CTR: {ad_ctr:.2f}% | 💵 CPC: ₹{ad_cpc:.2f}"
+                    f"\n*{ad_idx}. {ad_name}*\n"
+                    f"   📁 Campaign: {campaign_name}\n"
+                    f"   📂 AdSet: {adset_name}\n"
+                    f"   💰 Spend: ₹{ad_spend:,.2f} | "
+                    f"{ad_imp:,} imp | "
+                    f"{ad_clicks:,} clicks ({ad_ctr:.2f}%)"
                 )
                 
                 message3_blocks.append({
