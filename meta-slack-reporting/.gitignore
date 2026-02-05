@@ -2,12 +2,17 @@
 .env
 .env.upsc
 .env.gre
+.env.test
 *.bak
 !.env.example
 
 # Logs
 logs/
 *.log
+
+# Database and Charts
+*.db
+charts/
 
 # Python
 __pycache__/

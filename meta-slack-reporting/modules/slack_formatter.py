@@ -29,23 +29,25 @@ class SlackFormatter:
             
             # Extract data
             snapshot_time = snapshot_data.get('snapshot_time', datetime.now())
+            date_since = snapshot_data.get('date_since', '')
             window_number = snapshot_data.get('window_number', 0)
             balance = snapshot_data.get('balance', {})
             campaigns = snapshot_data.get('campaigns', [])
             adsets = snapshot_data.get('adsets', [])
             ads = snapshot_data.get('ads', [])
             
-            # Format time
+            # Format time and date
             if isinstance(snapshot_time, str):
                 snapshot_time = datetime.fromisoformat(snapshot_time)
             time_str = snapshot_time.strftime('%b %d, %Y %I:%M %p IST')
-            
-            window_labels = {
-                1: ("🌅 Morning", "03:00 AM - 11:00 AM IST"),
-                2: ("☀️ Afternoon/Evening", "11:00 AM - 07:00 PM IST"),
-                3: ("🌙 Night/Early Morning", "07:00 PM - 03:00 AM IST")
-            }
-            window_emoji, time_range = window_labels.get(window_number, ("Unknown", "Unknown"))
+
+            # Format yesterday's date nicely
+            if date_since:
+                from datetime import datetime as dt
+                yesterday_dt = dt.strptime(date_since, '%Y-%m-%d')
+                date_display = yesterday_dt.strftime('%b %d, %Y')
+            else:
+                date_display = "Yesterday"
             
             account_deltas = deltas.get('account', {})
             spend_delta = account_deltas.get('spend', {})
@@ -58,7 +60,7 @@ class SlackFormatter:
                     "type": "header",
                     "text": {
                         "type": "plain_text",
-                        "text": f"📊 {account_name} - 8-Hour Report",
+                        "text": f"📊 {account_name} - Daily Report",
                         "emoji": True
                     }
                 },
@@ -66,7 +68,7 @@ class SlackFormatter:
                     "type": "section",
                     "text": {
                         "type": "mrkdwn",
-                        "text": f"*🕐 {time_str}*\n*Window {window_number}:* {window_emoji}\n*📅 Time Range:* Last 8 hours ({time_range})\n*💰 Balance:* {balance.get('balance_formatted', '₹0.00')}"
+                        "text": f"*📅 Data:* {date_display} (Full Day - IST)\n*🕐 Report Generated:* {time_str}\n*💰 Balance:* {balance.get('balance_formatted', '₹0.00')}"
                     }
                 },
                 {"type": "divider"},
@@ -75,7 +77,7 @@ class SlackFormatter:
                     "text": {
                         "type": "mrkdwn",
                         "text": (
-                            f"*📈 Account Summary (vs. {interval_hours}hrs ago)*\n"
+                            f"*📈 Account Summary (vs. Previous Day)*\n"
                             f"• Spend: ₹{spend_delta.get('current', 0):,.2f} ({self._format_delta(spend_delta.get('percent', 0))})\n"
                             f"• Impressions: {int(imp_delta.get('current', 0)):,} ({self._format_delta(imp_delta.get('percent', 0))})\n"
                             f"• Clicks: {int(clicks_delta.get('current', 0)):,} ({self._format_delta(clicks_delta.get('percent', 0))})"
@@ -145,18 +147,20 @@ class SlackFormatter:
                 camp_reach = int(campaign.get('reach', 0))
                 camp_clicks = int(campaign.get('clicks', 0))
                 camp_ctr = (camp_clicks / camp_imp * 100) if camp_imp > 0 else 0
-                
+                camp_status = campaign.get('effective_status', 'UNKNOWN')
+
                 campaign_delta = deltas.get('campaigns', [])
                 delta_pct = 0
                 for cd in campaign_delta:
                     if cd.get('campaign_id') == camp_id:
                         delta_pct = cd.get('delta_spend', {}).get('percent', 0)
                         break
-                
+
                 trend_emoji = self._get_trend_emoji(delta_pct)
-                
+                status_emoji = self._get_status_emoji(camp_status)
+
                 campaign_text = (
-                    f"*{camp_idx}. {camp_name[:45]}* {trend_emoji}\n"
+                    f"*{camp_idx}. {camp_name[:45]}* {status_emoji} {trend_emoji}\n"
                     f"💰 ₹{camp_spend:,.2f} | 👁️ {camp_imp:,} | 👥 {camp_reach:,} | 🖱️ {camp_clicks} | 📊 {camp_ctr:.2f}%\n"
                 )
                 
@@ -172,8 +176,10 @@ class SlackFormatter:
                         adset_imp = int(adset.get('impressions', 0))
                         adset_clicks = int(adset.get('clicks', 0))
                         adset_ctr = (adset_clicks / adset_imp * 100) if adset_imp > 0 else 0
-                        
-                        campaign_text += f"  • {adset_name}: ₹{adset_spend:,.2f} | {adset_imp:,} imp | {adset_clicks} clicks | {adset_ctr:.2f}%\n"
+                        adset_status = adset.get('effective_status', 'UNKNOWN')
+                        adset_status_emoji = self._get_status_emoji(adset_status)
+
+                        campaign_text += f"  • {adset_status_emoji} {adset_name}: ₹{adset_spend:,.2f} | {adset_imp:,} imp | {adset_clicks} clicks | {adset_ctr:.2f}%\n"
                 
                 message2_blocks.append({
                     "type": "section",
@@ -200,14 +206,17 @@ class SlackFormatter:
                 campaign_name = ad.get('campaign_name', 'Unknown Campaign')[:30]
                 adset_name = ad.get('adset_name', 'Unknown AdSet')[:30]
                 ad_name = ad.get('ad_name', 'Unknown Ad')[:35]
-                
+                ad_status = ad.get('effective_status', 'UNKNOWN')
+
                 ad_spend = float(ad.get('spend', 0))
                 ad_imp = int(ad.get('impressions', 0))
                 ad_clicks = int(ad.get('clicks', 0))
                 ad_ctr = (ad_clicks / ad_imp * 100) if ad_imp > 0 else 0
-                
+
+                status_emoji = self._get_status_emoji(ad_status)
+
                 ad_text = (
-                    f"\n*{ad_idx}. {ad_name}*\n"
+                    f"\n*{ad_idx}. {ad_name}* {status_emoji}\n"
                     f"   📁 Campaign: {campaign_name}\n"
                     f"   📂 AdSet: {adset_name}\n"
                     f"   💰 Spend: ₹{ad_spend:,.2f} | "
@@ -259,6 +268,24 @@ class SlackFormatter:
         elif delta_pct < -5:
             return "⚠️"
         return ""
+
+    def _get_status_emoji(self, status: str) -> str:
+        """Get status emoji for campaign/adset/ad status"""
+        status_map = {
+            'ACTIVE': '✅',
+            'PAUSED': '⏸️',
+            'DELETED': '🗑️',
+            'ARCHIVED': '📦',
+            'PENDING_REVIEW': '⏳',
+            'DISAPPROVED': '❌',
+            'PREAPPROVED': '🟡',
+            'PENDING_BILLING_INFO': '💳',
+            'CAMPAIGN_PAUSED': '⏸️',
+            'ADSET_PAUSED': '⏸️',
+            'IN_PROCESS': '🔄',
+            'WITH_ISSUES': '⚠️'
+        }
+        return status_map.get(status, '❓')
     
     def _format_conversion_metrics(self, parsed_actions: dict) -> str:
         """Format conversion metrics for display"""
@@ -325,7 +352,7 @@ class SlackFormatter:
                 'significant_changes': []
             }
             
-            claude_insights = (current_analysis, "⏳ No previous data - trend analysis will be available in next report ({interval_hours} hours)")
+            claude_insights = (current_analysis, "⏳ No previous data - trend analysis will be available in next daily report")
             
             messages = self.format_6hour_report(snapshot_data, deltas, claude_insights, charts, account_name)
             self.send_to_slack(messages)

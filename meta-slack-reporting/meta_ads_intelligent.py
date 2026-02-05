@@ -127,25 +127,30 @@ def main():
             if claude_api_key:
                 logger.info("Using Claude API key from environment variable")
         
-        # 3. Fetch today's data from Meta Ads API
+        # 3. Fetch YESTERDAY's complete data (IST-based)
         now = datetime.now()
-        today = now.strftime('%Y-%m-%d')
         window_number = get_window_number(now.hour)
-        
-        logger.info(f"Fetching data for {today}, Window {window_number}")
-        
-        campaigns = meta_client.fetch_todays_insights(level='campaign')
-        adsets = meta_client.fetch_todays_insights(level='adset')
-        ads = meta_client.fetch_todays_insights(level='ad')
+
+        logger.info(f"Fetching YESTERDAY's data (full day, IST)")
+
+        campaigns = meta_client.fetch_yesterday_insights(level='campaign')
+        adsets = meta_client.fetch_yesterday_insights(level='adset')
+        ads = meta_client.fetch_yesterday_insights(level='ad')
         balance = meta_client.fetch_account_balance()
+
+        # Get yesterday's date for snapshot
+        from datetime import timedelta
+        import pytz
+        ist = pytz.timezone('Asia/Kolkata')
+        yesterday = (datetime.now(ist) - timedelta(days=1)).strftime('%Y-%m-%d')
         
         logger.info(f"Fetched {len(campaigns)} campaigns, {len(adsets)} adsets, {len(ads)} ads")
-        
+
         # 4. Save snapshot
         snapshot_data = {
             'account_id': META_ADS_ACCOUNT_ID,
             'snapshot_time': now,
-            'date_since': today,
+            'date_since': yesterday,
             'window_number': window_number,
             'campaigns': campaigns,
             'adsets': adsets,
@@ -189,20 +194,16 @@ def main():
                            for c in snapshot_data.get('campaigns', [])]
             emoji_chart = chart_gen.generate_emoji_chart(campaign_data[:10], 'spend')
             
-            # Generate PNG chart for first run too
+            # Generate multi-metric PNG chart for first run
             png_path = CHARTS_PATH / f'campaigns_{snapshot_id}.png'
-            campaign_data_for_chart = [
-                {'name': c.get('campaign_name', 'Unknown'), 'spend': float(c.get('spend', 0))}
-                for c in snapshot_data.get('campaigns', [])
-            ]
-            
+            campaigns_for_chart = snapshot_data.get('campaigns', [])
+
             png_url = None
-            if campaign_data_for_chart:
-                chart_gen.generate_png_bar_chart(
-                    campaign_data_for_chart[:10],
-                    f'{ACCOUNT_NAME} - Campaign Performance',
-                    str(png_path),
-                    'spend'
+            if campaigns_for_chart:
+                chart_gen.generate_multi_metric_chart(
+                    campaigns_for_chart,
+                    f'{ACCOUNT_NAME} - Campaign Performance (Yesterday)',
+                    str(png_path)
                 )
                 
                 # Upload to S3
@@ -254,16 +255,16 @@ def main():
         # 7. Generate charts
         logger.info("Generating charts...")
         chart_gen = ChartGenerator()
-        
+
         campaign_deltas = deltas.get('campaigns', [])
         emoji_chart = chart_gen.generate_emoji_chart(campaign_deltas[:10], 'spend')
-        
+
+        # Generate multi-metric chart with raw campaign data
         png_path = CHARTS_PATH / f'campaigns_{snapshot_id}.png'
-        chart_gen.generate_png_bar_chart(
-            campaign_deltas[:10],
-            f'{ACCOUNT_NAME} - Top Campaigns',
-            str(png_path),
-            'spend'
+        chart_gen.generate_multi_metric_chart(
+            campaigns,
+            f'{ACCOUNT_NAME} - Campaign Performance (Yesterday)',
+            str(png_path)
         )
         
         # Upload to S3

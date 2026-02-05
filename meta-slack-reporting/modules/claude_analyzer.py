@@ -19,20 +19,20 @@ class ClaudeAnalyzer:
     
     def analyze_6hour_window(self, current_data: Dict, previous_data: Optional[Dict], account_name: str) -> Tuple[str, str]:
         """
-        Analyze current 8-hour window with Slack formatting
+        Analyze yesterday's complete data with Slack formatting
         Returns tuple: (current_analysis, trend_analysis)
         """
         try:
             current_prompt = self._build_current_analysis_prompt(current_data, account_name)
             current_analysis = self._call_claude(current_prompt)
-            
+
             trend_analysis = ""
             if previous_data:
                 trend_prompt = self._build_trend_analysis_prompt(current_data, previous_data, account_name)
                 trend_analysis = self._call_claude(trend_prompt)
             else:
-                trend_analysis = "⏳ No previous data - trend analysis will be available in next report (8 hours)"
-            
+                trend_analysis = "⏳ No previous data - trend analysis will be available in next daily report"
+
             return current_analysis, trend_analysis
         
         except Exception as e:
@@ -121,43 +121,50 @@ class ClaudeAnalyzer:
             
             detailed_breakdown.append(camp_detail)
         
-        prompt = f"""You are a Meta Ads analyst for {account_name}. Provide actionable insights.
+        prompt = f"""CRITICAL META ADS ANALYSIS for {account_name} - YESTERDAY'S DATA
 
-DATA:
+You are analyzing a full day of Meta Ads performance. Find what's BLEEDING MONEY and what's PRINTING MONEY.
+
+YESTERDAY'S FULL DATA:
 {chr(10).join(detailed_breakdown)}
-Balance: {balance.get('balance_formatted', '₹0.00')}
 
-IMPORTANT FORMATTING RULES FOR SLACK:
-- Use *bold* for emphasis (NOT ** or ##)
-- Use • for bullets (NOT - or *)
-- NO markdown headings (##, ###) - use *SECTION NAME* instead
-- Keep formatting simple and Slack-compatible
-- Use emojis for visual breaks
+Current Balance: {balance.get('balance_formatted', '₹0.00')}
 
-Provide insights in this EXACT format:
+YOUR MISSION: Identify game-changing insights that could 10x results or prevent disaster.
 
-*📊 Performance Overview*
-• Overall account health assessment
-• Key efficiency metrics (CTR, CPI trends)
+SLACK FORMATTING (CRITICAL):
+• Use *bold* for emphasis (NOT ** or ##)
+• Use bullet points with •
+• NO markdown headings (##, ###)
+• Keep it punchy and actionable
 
-*🏆 Top Performers*
-• Best campaign/adset/ad and why
-• What's working well
+Provide insights in this format:
 
-*⚠️ Underperformers*
-• Worst performing elements
-• Specific problems identified
+*🚨 CRITICAL ALERTS*
+• What's bleeding money NOW? (name specific campaigns/adsets with exact ₹ wasted)
+• Which campaigns to PAUSE immediately? (with reasoning)
+• Any budget crisis? (days remaining at current burn rate)
 
-*💡 Immediate Actions*
-1. Specific action with exact amounts
-2. Which ads to pause
-3. Budget reallocation suggestions
+*💎 HIDDEN GEMS*
+• Which campaign/adset has best ROI but low budget? (exact CPI/CPR numbers)
+• What psychological trigger or creative is working? (be specific)
+• What audience segment is converting best?
 
-*💰 Budget Status*
-• Days remaining at current spend
-• Top-up urgency level
+*⚡ IMMEDIATE ACTIONS*
+1. PAUSE: [Campaign X] - ₹[Y] wasted at [Z] CPI (target: [A])
+2. INCREASE: [Campaign B] - ₹[C] to ₹[D] (currently at [E] CPI vs target [F])
+3. TEST: [Specific creative/audience angle to try]
 
-Keep each point to 1-2 lines max. Be specific with numbers."""
+*📊 EFFICIENCY BREAKDOWN*
+• Best performing creative type/message
+• Worst performing (and why it's failing)
+• CTR trends - what's driving clicks vs impressions
+
+*🎯 STRATEGIC MOVE*
+• ONE game-changing recommendation that could transform results
+• Be bold. Be specific. Include exact numbers.
+
+Be ruthlessly honest. If something sucks, say it. If something's amazing, say why."""
         
         return prompt
     
@@ -181,39 +188,43 @@ Keep each point to 1-2 lines max. Be specific with numbers."""
         delta_clicks = curr_clicks - prev_clicks
         delta_clicks_pct = (delta_clicks / prev_clicks * 100) if prev_clicks > 0 else 0
         
-        prompt = f"""Analyze 8-HOUR TRENDS for {account_name}.
+        prompt = f"""DAY-OVER-DAY TREND ANALYSIS for {account_name}
 
-PREVIOUS: ₹{prev_spend:,.2f} | {prev_impressions:,} imp | {prev_clicks:,} clicks
-CURRENT: ₹{curr_spend:,.2f} | {curr_impressions:,} imp | {curr_clicks:,} clicks
-DELTAS: {delta_spend:+,.2f} ({delta_spend_pct:+.1f}%) | {delta_impressions:+,} ({delta_impressions_pct:+.1f}%) | {delta_clicks:+,} ({delta_clicks_pct:+.1f}%)
+PREVIOUS DAY: ₹{prev_spend:,.2f} | {prev_impressions:,} imp | {prev_clicks:,} clicks
+YESTERDAY: ₹{curr_spend:,.2f} | {curr_impressions:,} imp | {curr_clicks:,} clicks
+CHANGE: {delta_spend:+,.2f} ({delta_spend_pct:+.1f}%) spend | {delta_impressions:+,} ({delta_impressions_pct:+.1f}%) imp | {delta_clicks:+,} ({delta_clicks_pct:+.1f}%) clicks
 
-SLACK FORMATTING RULES:
-- Use *bold* NOT ## or **
-- Use • for bullets
-- Keep it simple
+SLACK FORMATTING:
+• Use *bold* NOT ## or **
+• Use • for bullets
 
 Provide in this format:
 
-*📈 Key Changes*
-• What changed most and why
-• Is this positive or concerning?
+*📊 WHAT CHANGED*
+• Biggest shift in performance (good or bad)
+• Is this a pattern or anomaly?
+• Root cause analysis
 
-*🎯 Efficiency Trends*
-• CTR/CPI movement
-• What's driving the change
+*🚀 MOMENTUM PLAYS*
+• What's accelerating? (campaigns gaining traction)
+• Should we increase budgets? (where and by how much)
+• What to replicate from winning campaigns
 
-*⚠️ Red Flags*
-• Urgent issues requiring immediate action
-• Timeline to crisis if trend continues
+*🛑 DETERIORATING ASSETS*
+• What's declining? (campaigns losing efficiency)
+• Is this recoverable or should we kill it?
+• Estimated money saved by pausing
 
-*✅ Positive Momentum*
-• What to double down on
+*⚡ IMMEDIATE COURSE CORRECTIONS*
+1. [Specific action with exact budget amounts]
+2. [Creative/audience changes needed]
+3. [Timeline for next check-in]
 
-*🔮 Predictions*
-• Expected outcome if trend continues
-• Recommended course corrections
+*🔮 TRAJECTORY*
+• If this trend continues for 7 days, what happens?
+• Critical threshold to watch (spend, CPI, CTR)
 
-Keep concise. Be specific."""
+Be SPECIFIC. Use exact campaign names and numbers."""
         
         return prompt
 
