@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Meta Ads 6-Hour Intelligent Reporting System
+Meta Ads {REPORT_INTERVAL_HOURS}-Hour Intelligent Reporting System
 Runs every 6 hours with AI-powered insights and historical tracking
 """
 
@@ -48,6 +48,7 @@ CLAUDE_MODEL = os.getenv('CLAUDE_MODEL', 'claude-sonnet-4-5-20250929')
 DB_PATH = os.getenv('DB_PATH', 'meta_ads_history.db')
 CHARTS_DIR = os.getenv('CHARTS_DIR', 'charts')
 S3_BUCKET = os.getenv('S3_BUCKET', 'prepairo-analytics-reports')
+REPORT_INTERVAL_HOURS = int(os.getenv('REPORT_INTERVAL_HOURS', '8'))  # Reporting interval in hours
 
 # Logging setup
 LOG_DIR = Path(__file__).parent / 'logs'
@@ -87,7 +88,7 @@ def get_window_number(hour: int) -> int:
 def main():
     """Main execution flow"""
     logger.info("=" * 80)
-    logger.info(f"Starting Meta Ads 6-Hour Intelligent Reporter for {ACCOUNT_NAME}")
+    logger.info(f"Starting Meta Ads {REPORT_INTERVAL_HOURS}-Hour Intelligent Reporter for {ACCOUNT_NAME}")
     logger.info("=" * 80)
     
     # Validate environment
@@ -164,7 +165,7 @@ def main():
             db.save_ad_metrics(snapshot_id, ads)
         
         # 5. Get previous snapshot and calculate deltas
-        previous = db.get_previous_snapshot(META_ADS_ACCOUNT_ID, now)
+        previous = db.get_previous_snapshot(META_ADS_ACCOUNT_ID, now, hours_ago=REPORT_INTERVAL_HOURS)
         
         if not previous:
             logger.info("No previous snapshot found - this is the first run")
@@ -290,7 +291,8 @@ def main():
             deltas,
             claude_insights,
             charts,
-            ACCOUNT_NAME
+            ACCOUNT_NAME,
+            interval_hours=REPORT_INTERVAL_HOURS
         )
         
         success = slack.send_to_slack(messages)
@@ -308,7 +310,7 @@ def main():
         db.close()
         
         logger.info("=" * 80)
-        logger.info(f"Meta Ads 6-Hour Intelligent Reporter completed successfully")
+        logger.info(f"Meta Ads {REPORT_INTERVAL_HOURS}-Hour Intelligent Reporter completed successfully")
         logger.info("=" * 80)
     
     except Exception as e:

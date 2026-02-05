@@ -19,7 +19,7 @@ class SlackFormatter:
         self.webhook_url = webhook_url
     
     def format_6hour_report(self, snapshot_data: Dict, deltas: Dict, claude_insights: Tuple[str, str], 
-                           charts: Dict, account_name: str) -> List[List[Dict]]:
+                           charts: Dict, account_name: str, interval_hours: int = 8) -> List[List[Dict]]:
         """
         Format report and split into multiple messages if needed
         Returns list of message blocks
@@ -75,7 +75,7 @@ class SlackFormatter:
                     "text": {
                         "type": "mrkdwn",
                         "text": (
-                            f"*📈 Account Summary (vs. 8hrs ago)*\n"
+                            f"*📈 Account Summary (vs. {interval_hours}hrs ago)*\n"
                             f"• Spend: ₹{spend_delta.get('current', 0):,.2f} ({self._format_delta(spend_delta.get('percent', 0))})\n"
                             f"• Impressions: {int(imp_delta.get('current', 0)):,} ({self._format_delta(imp_delta.get('percent', 0))})\n"
                             f"• Clicks: {int(clicks_delta.get('current', 0)):,} ({self._format_delta(clicks_delta.get('percent', 0))})"
@@ -325,7 +325,7 @@ class SlackFormatter:
                 'significant_changes': []
             }
             
-            claude_insights = (current_analysis, "⏳ No previous data - trend analysis will be available in next report (6 hours)")
+            claude_insights = (current_analysis, "⏳ No previous data - trend analysis will be available in next report ({interval_hours} hours)")
             
             messages = self.format_6hour_report(snapshot_data, deltas, claude_insights, charts, account_name)
             self.send_to_slack(messages)

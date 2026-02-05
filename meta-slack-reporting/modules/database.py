@@ -178,7 +178,7 @@ class MetaAdsDatabase:
             return dict(row)
         return None
     
-    def get_previous_snapshot(self, account_id: str, current_time: datetime) -> Optional[Dict]:
+    def get_previous_snapshot(self, account_id: str, current_time: datetime, hours_ago: int = 8) -> Optional[Dict]:
         """Get snapshot from 6 hours before current_time"""
         conn = self.get_connection()
         cursor = conn.cursor()
