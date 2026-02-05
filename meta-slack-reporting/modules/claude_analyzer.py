@@ -97,27 +97,91 @@ class ClaudeAnalyzer:
             camp_id = camp.get('campaign_id')
             camp_name = camp.get('campaign_name', 'Unknown')
             camp_spend = float(camp.get('spend', 0))
+
+            # Skip campaigns with 0 spend
+            if camp_spend == 0:
+                continue
+
             camp_imp = int(camp.get('impressions', 0))
             camp_clicks = int(camp.get('clicks', 0))
-            
+
+            # Extract conversions
+            parsed = camp.get('parsed_actions', {})
+            installs = int(parsed.get('omni_app_install', 0) or parsed.get('app_install', 0) or parsed.get('mobile_app_install', 0))
+            registrations = int(parsed.get('omni_complete_registration', 0) or parsed.get('complete_registration', 0))
+            checkouts = int(parsed.get('omni_initiated_checkout', 0) or parsed.get('initiated_checkout', 0))
+            purchases = int(parsed.get('omni_purchase', 0) or parsed.get('purchase', 0))
+
+            # Calculate costs
+            cpi = (camp_spend / installs) if installs > 0 else 0
+            cpr = (camp_spend / registrations) if registrations > 0 else 0
+            cpa = (camp_spend / purchases) if purchases > 0 else 0
+
             camp_detail = f"Campaign: {camp_name}\n"
             camp_detail += f"  Spend: ₹{camp_spend:,.2f} | Impressions: {camp_imp:,} | Clicks: {camp_clicks}\n"
+
+            # Add conversions if available
+            conv_parts = []
+            if installs > 0:
+                conv_parts.append(f"{installs} installs (CPI: ₹{cpi:.2f})")
+            if registrations > 0:
+                conv_parts.append(f"{registrations} registrations (CPR: ₹{cpr:.2f})")
+            if checkouts > 0:
+                conv_parts.append(f"{checkouts} checkouts")
+            if purchases > 0:
+                conv_parts.append(f"{purchases} purchases (CPA: ₹{cpa:.2f})")
+
+            if conv_parts:
+                camp_detail += f"  Conversions: {' | '.join(conv_parts)}\n"
             
-            camp_adsets = [a for a in adsets if a.get('campaign_id') == camp_id]
+            camp_adsets = [a for a in adsets if a.get('campaign_id') == camp_id and float(a.get('spend', 0)) > 0]
             if camp_adsets:
                 camp_detail += f"  AdSets ({len(camp_adsets)}):\n"
                 for adset in sorted(camp_adsets, key=lambda x: float(x.get('spend', 0)), reverse=True):
                     adset_id = adset.get('adset_id')
                     adset_name = adset.get('adset_name', 'Unknown')[:35]
                     adset_spend = float(adset.get('spend', 0))
-                    camp_detail += f"    - {adset_name}: ₹{adset_spend:,.2f}\n"
-                    
-                    adset_ads = [a for a in ads if a.get('adset_id') == adset_id]
+
+                    # Extract conversions
+                    parsed = adset.get('parsed_actions', {})
+                    installs = int(parsed.get('omni_app_install', 0) or parsed.get('app_install', 0) or parsed.get('mobile_app_install', 0))
+                    registrations = int(parsed.get('omni_complete_registration', 0) or parsed.get('complete_registration', 0))
+                    purchases = int(parsed.get('omni_purchase', 0) or parsed.get('purchase', 0))
+
+                    conv_str = ""
+                    if installs > 0:
+                        cpi = adset_spend / installs
+                        conv_str += f" | {installs}i(₹{cpi:.0f})"
+                    if registrations > 0:
+                        cpr = adset_spend / registrations
+                        conv_str += f" {registrations}r(₹{cpr:.0f})"
+                    if purchases > 0:
+                        cpa = adset_spend / purchases
+                        conv_str += f" {purchases}p(₹{cpa:.0f})"
+
+                    camp_detail += f"    - {adset_name}: ₹{adset_spend:,.2f}{conv_str}\n"
+
+                    adset_ads = [a for a in ads if a.get('adset_id') == adset_id and float(a.get('spend', 0)) > 0]
                     for ad in sorted(adset_ads, key=lambda x: float(x.get('spend', 0)), reverse=True):
                         ad_name = ad.get('ad_name', 'Unknown')[:30]
                         ad_spend = float(ad.get('spend', 0))
                         ad_clicks = int(ad.get('clicks', 0))
-                        camp_detail += f"      • {ad_name}: ₹{ad_spend:,.2f} | {ad_clicks} clicks\n"
+
+                        # Extract ad conversions
+                        parsed_ad = ad.get('parsed_actions', {})
+                        ad_installs = int(parsed_ad.get('omni_app_install', 0) or parsed_ad.get('app_install', 0) or parsed_ad.get('mobile_app_install', 0))
+                        ad_regs = int(parsed_ad.get('omni_complete_registration', 0) or parsed_ad.get('complete_registration', 0))
+                        ad_purchases = int(parsed_ad.get('omni_purchase', 0) or parsed_ad.get('purchase', 0))
+
+                        ad_conv_str = ""
+                        if ad_installs > 0:
+                            ad_conv_str += f" {ad_installs}i"
+                        if ad_regs > 0:
+                            ad_conv_str += f" {ad_regs}r"
+                        if ad_purchases > 0:
+                            ad_conv_str += f" {ad_purchases}p"
+
+                        camp_detail += f"      • {ad_name}: ₹{ad_spend:,.2f} | {ad_clicks}c{ad_conv_str}\n"
             
             detailed_breakdown.append(camp_detail)
         
@@ -128,7 +192,8 @@ You are analyzing a full day of Meta Ads performance. Find what's BLEEDING MONEY
 YESTERDAY'S FULL DATA:
 {chr(10).join(detailed_breakdown)}
 
-Current Balance: {balance.get('balance_formatted', '₹0.00')}
+BUDGET STATUS: {balance.get('balance_formatted', '₹0.00 available')}
+Prepaid Balance: ₹{balance.get('balance', 0):,.2f}
 
 YOUR MISSION: Identify game-changing insights that could 10x results or prevent disaster.
 
@@ -141,28 +206,31 @@ SLACK FORMATTING (CRITICAL):
 Provide insights in this format:
 
 *🚨 CRITICAL ALERTS*
-• What's bleeding money NOW? (name specific campaigns/adsets with exact ₹ wasted)
-• Which campaigns to PAUSE immediately? (with reasoning)
-• Any budget crisis? (days remaining at current burn rate)
+• What's bleeding money NOW? (campaigns/adsets with high CPI/CPA/CPR but no conversions)
+• Which campaigns to PAUSE immediately? (with exact ₹ wasted and poor conversion rates)
+• Budget runway: How many days left at yesterday's spend rate?
+• Any campaigns spending heavily with 0 installs/registrations/purchases?
 
-*💎 HIDDEN GEMS*
-• Which campaign/adset has best ROI but low budget? (exact CPI/CPR numbers)
-• What psychological trigger or creative is working? (be specific)
-• What audience segment is converting best?
+*💎 CONVERSION WINNERS*
+• Best CPI (Cost Per Install) - which campaign/adset/ad?
+• Best CPR (Cost Per Registration) - exact numbers
+• Best CPA (Cost Per Purchase) - which creative is converting?
+• Highest conversion volume - installs, registrations, checkouts, purchases
 
 *⚡ IMMEDIATE ACTIONS*
-1. PAUSE: [Campaign X] - ₹[Y] wasted at [Z] CPI (target: [A])
-2. INCREASE: [Campaign B] - ₹[C] to ₹[D] (currently at [E] CPI vs target [F])
-3. TEST: [Specific creative/audience angle to try]
+1. PAUSE: [Campaign X] - ₹[Y] spent, 0 conversions OR ₹[Z] CPI (target: ₹[A])
+2. SCALE: [Campaign B] with ₹[C] CPI (best performer) - increase budget from ₹[D] to ₹[E]
+3. OPTIMIZE: [Campaign C] - [F] installs but high CPI of ₹[G], test new creative
 
-*📊 EFFICIENCY BREAKDOWN*
-• Best performing creative type/message
-• Worst performing (and why it's failing)
-• CTR trends - what's driving clicks vs impressions
+*📊 CONVERSION EFFICIENCY*
+• Install funnel: impressions → clicks → installs (conversion rates)
+• Registration funnel: where are users dropping off?
+• Purchase funnel: checkouts vs completed purchases
+• Which stage needs immediate attention?
 
 *🎯 STRATEGIC MOVE*
-• ONE game-changing recommendation that could transform results
-• Be bold. Be specific. Include exact numbers.
+• ONE game-changing recommendation focusing on conversion optimization
+• Be specific with campaign names, exact CPI/CPA/CPR targets, and budget changes
 
 Be ruthlessly honest. If something sucks, say it. If something's amazing, say why."""
         

@@ -53,6 +53,24 @@ class SlackFormatter:
             spend_delta = account_deltas.get('spend', {})
             imp_delta = account_deltas.get('impressions', {})
             clicks_delta = account_deltas.get('clicks', {})
+
+            # Calculate total conversions
+            total_installs = 0
+            total_registrations = 0
+            total_checkouts = 0
+            total_purchases = 0
+            for camp in campaigns:
+                parsed = camp.get('parsed_actions', {})
+                total_installs += int(parsed.get('omni_app_install', 0) or parsed.get('app_install', 0) or parsed.get('mobile_app_install', 0))
+                total_registrations += int(parsed.get('omni_complete_registration', 0) or parsed.get('complete_registration', 0))
+                total_checkouts += int(parsed.get('omni_initiated_checkout', 0) or parsed.get('initiated_checkout', 0))
+                total_purchases += int(parsed.get('omni_purchase', 0) or parsed.get('purchase', 0))
+
+            # Calculate average costs
+            total_spend = spend_delta.get('current', 0)
+            avg_cpi = (total_spend / total_installs) if total_installs > 0 else 0
+            avg_cpr = (total_spend / total_registrations) if total_registrations > 0 else 0
+            avg_cpa = (total_spend / total_purchases) if total_purchases > 0 else 0
             
             # MESSAGE 1: Header + Summary + AI Insights
             message1_blocks = [
@@ -68,7 +86,7 @@ class SlackFormatter:
                     "type": "section",
                     "text": {
                         "type": "mrkdwn",
-                        "text": f"*📅 Data:* {date_display} (Full Day - IST)\n*🕐 Report Generated:* {time_str}\n*💰 Balance:* {balance.get('balance_formatted', '₹0.00')}"
+                        "text": f"*📅 Data:* {date_display} (Full Day - IST)\n*🕐 Report Generated:* {time_str}\n*💰 Budget:* {balance.get('balance_formatted', '₹0.00 available')}"
                     }
                 },
                 {"type": "divider"},
@@ -80,7 +98,12 @@ class SlackFormatter:
                             f"*📈 Account Summary (vs. Previous Day)*\n"
                             f"• Spend: ₹{spend_delta.get('current', 0):,.2f} ({self._format_delta(spend_delta.get('percent', 0))})\n"
                             f"• Impressions: {int(imp_delta.get('current', 0)):,} ({self._format_delta(imp_delta.get('percent', 0))})\n"
-                            f"• Clicks: {int(clicks_delta.get('current', 0)):,} ({self._format_delta(clicks_delta.get('percent', 0))})"
+                            f"• Clicks: {int(clicks_delta.get('current', 0)):,} ({self._format_delta(clicks_delta.get('percent', 0))})\n\n"
+                            f"*🎯 Conversions Yesterday:*\n"
+                            f"• App Installs: {total_installs} (Avg CPI: ₹{avg_cpi:.0f})\n"
+                            f"• Registrations: {total_registrations} (Avg CPR: ₹{avg_cpr:.0f})\n"
+                            f"• Checkouts: {total_checkouts}\n"
+                            f"• Purchases: {total_purchases} (Avg CPA: ₹{avg_cpa:.0f})"
                         )
                     }
                 },
@@ -115,39 +138,76 @@ class SlackFormatter:
                     "text": {"type": "mrkdwn", "text": trend_analysis}
                 })
             
-            # Add PNG chart image if available
-            if charts.get('png_url'):
+            # Add PNG chart images if available
+            if charts.get('traffic_url'):
                 message1_blocks.append({"type": "divider"})
                 message1_blocks.append({
+                    "type": "section",
+                    "text": {"type": "mrkdwn", "text": "*📊 Traffic Metrics Chart*"}
+                })
+                message1_blocks.append({
                     "type": "image",
-                    "image_url": charts['png_url'],
-                    "alt_text": "Campaign Performance Chart"
+                    "image_url": charts['traffic_url'],
+                    "alt_text": "Traffic Metrics Chart (Spend, Clicks, Impressions, CTR)"
+                })
+
+            if charts.get('conversion_url'):
+                message1_blocks.append({"type": "divider"})
+                message1_blocks.append({
+                    "type": "section",
+                    "text": {"type": "mrkdwn", "text": "*🎯 Conversion Metrics Chart*"}
+                })
+                message1_blocks.append({
+                    "type": "image",
+                    "image_url": charts['conversion_url'],
+                    "alt_text": "Conversion Metrics Chart (Installs, Registrations, Purchases)"
                 })
             
             # MESSAGE 2: Campaign Details
+            # Filter campaigns with spend > 0
+            campaigns_with_spend = [c for c in campaigns if float(c.get('spend', 0)) > 0]
+            campaigns_sorted = sorted(campaigns_with_spend, key=lambda x: float(x.get('spend', 0)), reverse=True)
+
             message2_blocks = [
                 {
                     "type": "header",
                     "text": {
                         "type": "plain_text",
-                        "text": f"📊 Campaign Breakdown ({len(campaigns)} Campaigns)",
+                        "text": f"📊 Campaign Breakdown ({len(campaigns_sorted)} Active)",
                         "emoji": True
                     }
                 },
                 {"type": "divider"}
             ]
-            
-            campaigns_sorted = sorted(campaigns, key=lambda x: float(x.get('spend', 0)), reverse=True)
-            
-            for camp_idx, campaign in enumerate(campaigns_sorted, 1):
+
+            actual_idx = 0
+            for campaign in campaigns_sorted:
+                actual_idx += 1
                 camp_id = campaign.get('campaign_id')
                 camp_name = campaign.get('campaign_name', 'Unknown')
                 camp_spend = float(campaign.get('spend', 0))
+
+                # Skip campaigns with 0 spend
+                if camp_spend == 0:
+                    continue
+
                 camp_imp = int(campaign.get('impressions', 0))
                 camp_reach = int(campaign.get('reach', 0))
                 camp_clicks = int(campaign.get('clicks', 0))
                 camp_ctr = (camp_clicks / camp_imp * 100) if camp_imp > 0 else 0
                 camp_status = campaign.get('effective_status', 'UNKNOWN')
+
+                # Extract conversions
+                parsed = campaign.get('parsed_actions', {})
+                installs = int(parsed.get('omni_app_install', 0) or parsed.get('app_install', 0) or parsed.get('mobile_app_install', 0))
+                registrations = int(parsed.get('omni_complete_registration', 0) or parsed.get('complete_registration', 0))
+                checkouts = int(parsed.get('omni_initiated_checkout', 0) or parsed.get('initiated_checkout', 0))
+                purchases = int(parsed.get('omni_purchase', 0) or parsed.get('purchase', 0))
+
+                # Calculate costs
+                cpi = (camp_spend / installs) if installs > 0 else 0
+                cpr = (camp_spend / registrations) if registrations > 0 else 0
+                cpa = (camp_spend / purchases) if purchases > 0 else 0
 
                 campaign_delta = deltas.get('campaigns', [])
                 delta_pct = 0
@@ -160,26 +220,62 @@ class SlackFormatter:
                 status_emoji = self._get_status_emoji(camp_status)
 
                 campaign_text = (
-                    f"*{camp_idx}. {camp_name[:45]}* {status_emoji} {trend_emoji}\n"
+                    f"*{actual_idx}. {camp_name[:45]}* {status_emoji} {trend_emoji}\n"
                     f"💰 ₹{camp_spend:,.2f} | 👁️ {camp_imp:,} | 👥 {camp_reach:,} | 🖱️ {camp_clicks} | 📊 {camp_ctr:.2f}%\n"
                 )
+
+                # Add conversion metrics if available
+                conv_parts = []
+                if installs > 0:
+                    conv_parts.append(f"📲 {installs} installs (CPI ₹{cpi:.0f})")
+                if registrations > 0:
+                    conv_parts.append(f"✍️ {registrations} regs (CPR ₹{cpr:.0f})")
+                if checkouts > 0:
+                    conv_parts.append(f"🛒 {checkouts} checkouts")
+                if purchases > 0:
+                    conv_parts.append(f"💳 {purchases} purchases (CPA ₹{cpa:.0f})")
+
+                if conv_parts:
+                    campaign_text += f"🎯 {' | '.join(conv_parts)}\n"
                 
                 # AdSets for this campaign
                 camp_adsets = [a for a in adsets if a.get('campaign_id') == camp_id]
                 camp_adsets_sorted = sorted(camp_adsets, key=lambda x: float(x.get('spend', 0)), reverse=True)
                 
                 if camp_adsets_sorted:
-                    campaign_text += f"\n*AdSets ({len(camp_adsets_sorted)}):*\n"
-                    for adset in camp_adsets_sorted:
-                        adset_name = adset.get('adset_name', 'Unknown')[:35]
-                        adset_spend = float(adset.get('spend', 0))
-                        adset_imp = int(adset.get('impressions', 0))
-                        adset_clicks = int(adset.get('clicks', 0))
-                        adset_ctr = (adset_clicks / adset_imp * 100) if adset_imp > 0 else 0
-                        adset_status = adset.get('effective_status', 'UNKNOWN')
-                        adset_status_emoji = self._get_status_emoji(adset_status)
+                    # Filter out 0 spend adsets
+                    active_adsets = [a for a in camp_adsets_sorted if float(a.get('spend', 0)) > 0]
+                    if active_adsets:
+                        campaign_text += f"\n*AdSets ({len(active_adsets)}):*\n"
+                        for adset in active_adsets:
+                            adset_name = adset.get('adset_name', 'Unknown')[:35]
+                            adset_spend = float(adset.get('spend', 0))
+                            adset_imp = int(adset.get('impressions', 0))
+                            adset_clicks = int(adset.get('clicks', 0))
+                            adset_ctr = (adset_clicks / adset_imp * 100) if adset_imp > 0 else 0
+                            adset_status = adset.get('effective_status', 'UNKNOWN')
+                            adset_status_emoji = self._get_status_emoji(adset_status)
 
-                        campaign_text += f"  • {adset_status_emoji} {adset_name}: ₹{adset_spend:,.2f} | {adset_imp:,} imp | {adset_clicks} clicks | {adset_ctr:.2f}%\n"
+                            # Extract conversions
+                            parsed = adset.get('parsed_actions', {})
+                            installs = int(parsed.get('omni_app_install', 0) or parsed.get('app_install', 0) or parsed.get('mobile_app_install', 0))
+                            registrations = int(parsed.get('omni_complete_registration', 0) or parsed.get('complete_registration', 0))
+                            purchases = int(parsed.get('omni_purchase', 0) or parsed.get('purchase', 0))
+
+                            conv_summary = []
+                            if installs > 0:
+                                adset_cpi = adset_spend / installs
+                                conv_summary.append(f"{installs}inst(₹{adset_cpi:.0f})")
+                            if registrations > 0:
+                                adset_cpr = adset_spend / registrations
+                                conv_summary.append(f"{registrations}reg(₹{adset_cpr:.0f})")
+                            if purchases > 0:
+                                adset_cpa = adset_spend / purchases
+                                conv_summary.append(f"{purchases}pur(₹{adset_cpa:.0f})")
+
+                            conv_str = f" | {' '.join(conv_summary)}" if conv_summary else ""
+
+                            campaign_text += f"  • {adset_status_emoji} {adset_name}: ₹{adset_spend:,.2f} | {adset_imp:,} imp | {adset_clicks} clicks | {adset_ctr:.2f}%{conv_str}\n"
                 
                 message2_blocks.append({
                     "type": "section",
@@ -187,20 +283,28 @@ class SlackFormatter:
                 })
             
             # MESSAGE 3: Ad Details
+            # Filter out ads with 0 spend
+            ads_with_spend = [ad for ad in ads if float(ad.get('spend', 0)) > 0]
+            ads_sorted = sorted(ads_with_spend, key=lambda x: float(x.get('spend', 0)), reverse=True)
+
             message3_blocks = [
                 {
                     "type": "header",
                     "text": {
                         "type": "plain_text",
-                        "text": f"🎨 Ad Performance ({len(ads)} Ads)",
+                        "text": f"🎨 Ad Performance ({len(ads_sorted)} Active)",
                         "emoji": True
                     }
                 },
                 {"type": "divider"}
             ]
-            
-            ads_sorted = sorted(ads, key=lambda x: float(x.get('spend', 0)), reverse=True)
-            
+
+            if not ads_sorted:
+                message3_blocks.append({
+                    "type": "section",
+                    "text": {"type": "mrkdwn", "text": "_No ads with spend in this period_"}
+                })
+
             for ad_idx, ad in enumerate(ads_sorted, 1):
                 # Extract full hierarchy
                 campaign_name = ad.get('campaign_name', 'Unknown Campaign')[:30]
@@ -213,6 +317,13 @@ class SlackFormatter:
                 ad_clicks = int(ad.get('clicks', 0))
                 ad_ctr = (ad_clicks / ad_imp * 100) if ad_imp > 0 else 0
 
+                # Extract conversions
+                parsed = ad.get('parsed_actions', {})
+                installs = int(parsed.get('omni_app_install', 0) or parsed.get('app_install', 0) or parsed.get('mobile_app_install', 0))
+                registrations = int(parsed.get('omni_complete_registration', 0) or parsed.get('complete_registration', 0))
+                checkouts = int(parsed.get('omni_initiated_checkout', 0) or parsed.get('initiated_checkout', 0))
+                purchases = int(parsed.get('omni_purchase', 0) or parsed.get('purchase', 0))
+
                 status_emoji = self._get_status_emoji(ad_status)
 
                 ad_text = (
@@ -223,7 +334,24 @@ class SlackFormatter:
                     f"{ad_imp:,} imp | "
                     f"{ad_clicks:,} clicks ({ad_ctr:.2f}%)"
                 )
-                
+
+                # Add conversions if available
+                conv_parts = []
+                if installs > 0:
+                    cpi = ad_spend / installs
+                    conv_parts.append(f"{installs} inst (₹{cpi:.0f} CPI)")
+                if registrations > 0:
+                    cpr = ad_spend / registrations
+                    conv_parts.append(f"{registrations} reg (₹{cpr:.0f} CPR)")
+                if checkouts > 0:
+                    conv_parts.append(f"{checkouts} checkout")
+                if purchases > 0:
+                    cpa = ad_spend / purchases
+                    conv_parts.append(f"{purchases} pur (₹{cpa:.0f} CPA)")
+
+                if conv_parts:
+                    ad_text += f"\n   🎯 Conversions: {' | '.join(conv_parts)}"
+
                 message3_blocks.append({
                     "type": "section",
                     "text": {"type": "mrkdwn", "text": ad_text}

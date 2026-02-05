@@ -225,34 +225,51 @@ class MetaAdsAPIClient:
         return actions
     
     def fetch_account_balance(self) -> Dict:
-        """Fetch current ad account balance"""
+        """Fetch current ad account balance and spending limits"""
         try:
             logger.info(f"Fetching account balance for {self.account_id}")
-            
+
             account_info = self.ad_account.api_get(
-                fields=['account_id', 'balance', 'currency']
+                fields=['account_id', 'balance', 'currency', 'spend_cap', 'amount_spent']
             )
-            
-            # Meta returns balance in cents, convert to currency units
+
+            # Meta returns values in cents, convert to currency units
             balance_cents = float(account_info.get('balance', 0))
             balance = balance_cents / 100
+
+            spend_cap_cents = float(account_info.get('spend_cap', 0))
+            spend_cap = spend_cap_cents / 100
+
+            amount_spent_cents = float(account_info.get('amount_spent', 0))
+            amount_spent = amount_spent_cents / 100
+
+            # Calculate remaining budget
+            remaining_budget = spend_cap - amount_spent
+
             currency = account_info.get('currency', 'INR')
-            
+            currency_symbol = '₹' if currency == 'INR' else currency
+
             result = {
                 'account_id': account_info.get('account_id', ''),
                 'balance': balance,
+                'spend_cap': spend_cap,
+                'amount_spent': amount_spent,
+                'remaining_budget': remaining_budget,
                 'currency': currency,
-                'balance_formatted': f"{currency} {balance:,.2f}"
+                'balance_formatted': f"{currency_symbol}{remaining_budget:,.2f} available (of {currency_symbol}{spend_cap:,.2f} cap)"
             }
-            
-            logger.info(f"Account balance: {result['balance_formatted']}")
+
+            logger.info(f"Remaining budget: {currency_symbol}{remaining_budget:,.2f} | Prepaid: {currency_symbol}{balance:,.2f}")
             return result
-        
+
         except Exception as e:
             logger.error(f"Error fetching account balance: {e}")
             return {
                 'account_id': self.account_id,
                 'balance': 0,
+                'spend_cap': 0,
+                'amount_spent': 0,
+                'remaining_budget': 0,
                 'currency': 'INR',
-                'balance_formatted': 'INR 0.00'
+                'balance_formatted': '₹0.00 available'
             }

@@ -135,38 +135,41 @@ class ChartGenerator:
         except Exception as e:
             logger.error(f"Error generating PNG chart: {e}", exc_info=True)
 
-    def generate_multi_metric_chart(self, data: List[Dict], title: str, output_path: str) -> None:
+    def generate_traffic_chart(self, data: List[Dict], title: str, output_path: str) -> None:
         """
-        Generate a 2x2 grid chart with 4 metrics: Spend, Clicks, Reach, CTR
+        Generate traffic metrics chart: Spend, Clicks, Impressions, CTR
         Shows top 10 campaigns with proper labels
         """
         try:
             if not data:
-                logger.warning("No data to generate multi-metric chart")
+                logger.warning("No data to generate traffic chart")
                 return
 
+            # Filter out campaigns with 0 spend
+            data_with_spend = [d for d in data if float(d.get('spend', 0)) > 0]
+
             # Get top 10 items by spend
-            top_data = sorted(data, key=lambda x: float(x.get('spend', 0)), reverse=True)[:10]
+            top_data = sorted(data_with_spend, key=lambda x: float(x.get('spend', 0)), reverse=True)[:10]
 
             # Extract data
             names = [item.get('campaign_name', item.get('name', 'Unknown'))[:20] for item in top_data]
             spends = [float(item.get('spend', 0)) for item in top_data]
             clicks = [int(item.get('clicks', 0)) for item in top_data]
-            reaches = [int(item.get('reach', 0)) for item in top_data]
+            impressions = [int(item.get('impressions', 0)) for item in top_data]
 
             # Calculate CTR for each campaign
             ctrs = []
             for item in top_data:
-                impressions = int(item.get('impressions', 0))
-                campaign_clicks = int(item.get('clicks', 0))
-                ctr = (campaign_clicks / impressions * 100) if impressions > 0 else 0
+                imp = int(item.get('impressions', 0))
+                clk = int(item.get('clicks', 0))
+                ctr = (clk / imp * 100) if imp > 0 else 0
                 ctrs.append(ctr)
 
             # Reverse for top-to-bottom display
             names = names[::-1]
             spends = spends[::-1]
             clicks = clicks[::-1]
-            reaches = reaches[::-1]
+            impressions = impressions[::-1]
             ctrs = ctrs[::-1]
 
             # Create 2x2 subplot figure
@@ -201,16 +204,16 @@ class ChartGenerator:
                 ax2.text(value, bar.get_y() + bar.get_height()/2, f' {value:,}',
                         ha='left', va='center', fontsize=8, fontweight='bold')
 
-            # 3. REACH (Bottom Left) - Oranges colormap
-            colors3 = plt.cm.Oranges(np.linspace(0.4, 0.9, len(reaches)))
-            bars3 = ax3.barh(y_pos, reaches, color=colors3, edgecolor='black', linewidth=0.5)
+            # 3. IMPRESSIONS (Bottom Left) - Oranges colormap
+            colors3 = plt.cm.Oranges(np.linspace(0.4, 0.9, len(impressions)))
+            bars3 = ax3.barh(y_pos, impressions, color=colors3, edgecolor='black', linewidth=0.5)
             ax3.set_yticks(y_pos)
             ax3.set_yticklabels(names, fontsize=9)
-            ax3.set_xlabel('Reach', fontsize=11, fontweight='bold')
-            ax3.set_title('Total Reach', fontsize=12, fontweight='bold', pad=10)
+            ax3.set_xlabel('Impressions', fontsize=11, fontweight='bold')
+            ax3.set_title('Total Impressions', fontsize=12, fontweight='bold', pad=10)
             ax3.grid(axis='x', alpha=0.3, linestyle='--')
             ax3.set_axisbelow(True)
-            for bar, value in zip(bars3, reaches):
+            for bar, value in zip(bars3, impressions):
                 ax3.text(value, bar.get_y() + bar.get_height()/2, f' {value:,}',
                         ha='left', va='center', fontsize=8, fontweight='bold')
 
@@ -225,6 +228,124 @@ class ChartGenerator:
             ax4.set_axisbelow(True)
             for bar, value in zip(bars4, ctrs):
                 ax4.text(value, bar.get_y() + bar.get_height()/2, f' {value:.2f}%',
+                        ha='left', va='center', fontsize=8, fontweight='bold')
+
+            # Tight layout
+            plt.tight_layout()
+
+            # Save
+            plt.savefig(output_path, dpi=150, bbox_inches='tight', facecolor='white')
+            plt.close()
+
+            logger.info(f"Traffic chart saved to {output_path}")
+
+        except Exception as e:
+            logger.error(f"Error generating traffic chart: {e}", exc_info=True)
+
+    def generate_conversion_chart(self, data: List[Dict], title: str, output_path: str) -> None:
+        """
+        Generate a 2x2 grid chart with 4 metrics: Spend, Installs (CPI), Registrations (CPR), Purchases (CPA)
+        Shows top 10 campaigns with proper labels
+        """
+        try:
+            if not data:
+                logger.warning("No data to generate multi-metric chart")
+                return
+
+            # Filter out campaigns with 0 spend
+            data_with_spend = [d for d in data if float(d.get('spend', 0)) > 0]
+
+            # Get top 10 items by spend
+            top_data = sorted(data_with_spend, key=lambda x: float(x.get('spend', 0)), reverse=True)[:10]
+
+            # Extract data
+            names = [item.get('campaign_name', item.get('name', 'Unknown'))[:20] for item in top_data]
+            spends = [float(item.get('spend', 0)) for item in top_data]
+
+            # Extract conversion metrics
+            installs_list = []
+            registrations_list = []
+            purchases_list = []
+
+            for item in top_data:
+                parsed = item.get('parsed_actions', {})
+                installs = int(parsed.get('omni_app_install', 0) or parsed.get('app_install', 0) or parsed.get('mobile_app_install', 0))
+                registrations = int(parsed.get('omni_complete_registration', 0) or parsed.get('complete_registration', 0))
+                purchases = int(parsed.get('omni_purchase', 0) or parsed.get('purchase', 0))
+
+                installs_list.append(installs)
+                registrations_list.append(registrations)
+                purchases_list.append(purchases)
+
+            # Reverse for top-to-bottom display
+            names = names[::-1]
+            spends = spends[::-1]
+            installs_list = installs_list[::-1]
+            registrations_list = registrations_list[::-1]
+            purchases_list = purchases_list[::-1]
+
+            # Create 2x2 subplot figure
+            fig, ((ax1, ax2), (ax3, ax4)) = plt.subplots(2, 2, figsize=(16, 10))
+            fig.suptitle(title, fontsize=16, fontweight='bold', y=0.995)
+
+            y_pos = np.arange(len(names))
+
+            # 1. SPEND (Top Left) - Blues colormap
+            colors1 = plt.cm.Blues(np.linspace(0.4, 0.9, len(spends)))
+            bars1 = ax1.barh(y_pos, spends, color=colors1, edgecolor='black', linewidth=0.5)
+            ax1.set_yticks(y_pos)
+            ax1.set_yticklabels(names, fontsize=9)
+            ax1.set_xlabel('Spend (₹)', fontsize=11, fontweight='bold')
+            ax1.set_title('Campaign Spend', fontsize=12, fontweight='bold', pad=10)
+            ax1.grid(axis='x', alpha=0.3, linestyle='--')
+            ax1.set_axisbelow(True)
+            for bar, value in zip(bars1, spends):
+                ax1.text(value, bar.get_y() + bar.get_height()/2, f' ₹{value:,.0f}',
+                        ha='left', va='center', fontsize=8, fontweight='bold')
+
+            # 2. INSTALLS (Top Right) - Greens colormap
+            colors2 = plt.cm.Greens(np.linspace(0.4, 0.9, len(installs_list)))
+            bars2 = ax2.barh(y_pos, installs_list, color=colors2, edgecolor='black', linewidth=0.5)
+            ax2.set_yticks(y_pos)
+            ax2.set_yticklabels(names, fontsize=9)
+            ax2.set_xlabel('App Installs', fontsize=11, fontweight='bold')
+            ax2.set_title('App Installs (with CPI)', fontsize=12, fontweight='bold', pad=10)
+            ax2.grid(axis='x', alpha=0.3, linestyle='--')
+            ax2.set_axisbelow(True)
+            for bar, value, spend in zip(bars2, installs_list, spends[::-1]):
+                cpi = (spend / value) if value > 0 else 0
+                label_text = f' {value:,} inst (CPI ₹{cpi:.0f})' if value > 0 else ' 0'
+                ax2.text(value, bar.get_y() + bar.get_height()/2, label_text,
+                        ha='left', va='center', fontsize=8, fontweight='bold')
+
+            # 3. REGISTRATIONS (Bottom Left) - Oranges colormap
+            colors3 = plt.cm.Oranges(np.linspace(0.4, 0.9, len(registrations_list)))
+            bars3 = ax3.barh(y_pos, registrations_list, color=colors3, edgecolor='black', linewidth=0.5)
+            ax3.set_yticks(y_pos)
+            ax3.set_yticklabels(names, fontsize=9)
+            ax3.set_xlabel('User Registrations', fontsize=11, fontweight='bold')
+            ax3.set_title('User Registrations (with CPR)', fontsize=12, fontweight='bold', pad=10)
+            ax3.grid(axis='x', alpha=0.3, linestyle='--')
+            ax3.set_axisbelow(True)
+            for bar, value, spend in zip(bars3, registrations_list, spends[::-1]):
+                cpr = (spend / value) if value > 0 else 0
+                label_text = f' {value:,} reg (CPR ₹{cpr:.0f})' if value > 0 else ' 0'
+                ax3.text(value, bar.get_y() + bar.get_height()/2, label_text,
+                        ha='left', va='center', fontsize=8, fontweight='bold')
+
+            # 4. PURCHASES (Bottom Right) - Purples colormap
+            colors4 = plt.cm.Purples(np.linspace(0.4, 0.9, len(purchases_list)))
+            bars4 = ax4.barh(y_pos, purchases_list, color=colors4, edgecolor='black', linewidth=0.5)
+            ax4.set_yticks(y_pos)
+            ax4.set_yticklabels(names, fontsize=9)
+            ax4.set_xlabel('Purchases', fontsize=11, fontweight='bold')
+            ax4.set_title('Purchases (with CPA)', fontsize=12, fontweight='bold', pad=10)
+            ax4.grid(axis='x', alpha=0.3, linestyle='--')
+            ax4.set_axisbelow(True)
+            for bar, value, spend in zip(bars4, purchases_list, spends[::-1]):
+                cpa = (spend / value) if value > 0 else 0
+                label_text = f' {value:,} pur (CPA ₹{cpa:.0f})' if value > 0 else ' 0'
+                ax4.text(value, bar.get_y() + bar.get_height()/2, label_text,
                         ha='left', va='center', fontsize=8, fontweight='bold')
 
             # Tight layout

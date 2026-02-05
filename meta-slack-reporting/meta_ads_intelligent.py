@@ -194,30 +194,47 @@ def main():
                            for c in snapshot_data.get('campaigns', [])]
             emoji_chart = chart_gen.generate_emoji_chart(campaign_data[:10], 'spend')
             
-            # Generate multi-metric PNG chart for first run
-            png_path = CHARTS_PATH / f'campaigns_{snapshot_id}.png'
+            # Generate PNG charts for first run
             campaigns_for_chart = snapshot_data.get('campaigns', [])
 
-            png_url = None
+            traffic_png_path = CHARTS_PATH / f'traffic_{snapshot_id}.png'
+            conversion_png_path = CHARTS_PATH / f'conversions_{snapshot_id}.png'
+
+            traffic_url = None
+            conversion_url = None
+
             if campaigns_for_chart:
-                chart_gen.generate_multi_metric_chart(
+                # Generate traffic chart
+                chart_gen.generate_traffic_chart(
                     campaigns_for_chart,
-                    f'{ACCOUNT_NAME} - Campaign Performance (Yesterday)',
-                    str(png_path)
+                    f'{ACCOUNT_NAME} - Traffic Metrics (Yesterday)',
+                    str(traffic_png_path)
+                )
+
+                # Generate conversion chart
+                chart_gen.generate_conversion_chart(
+                    campaigns_for_chart,
+                    f'{ACCOUNT_NAME} - Conversion Metrics (Yesterday)',
+                    str(conversion_png_path)
                 )
                 
                 # Upload to S3
-                logger.info("Uploading first run chart to S3...")
+                logger.info("Uploading first run charts to S3...")
                 s3_uploader = S3ChartUploader(bucket_name=S3_BUCKET, region=AWS_REGION)
                 s3_uploader.ensure_bucket_exists()
-                png_url = s3_uploader.upload_chart(str(png_path))
-                
-                if png_url:
-                    logger.info(f"First run chart uploaded to S3: {png_url}")
-            
+
+                traffic_url = s3_uploader.upload_chart(str(traffic_png_path))
+                conversion_url = s3_uploader.upload_chart(str(conversion_png_path))
+
+                if traffic_url:
+                    logger.info(f"Traffic chart uploaded to S3: {traffic_url}")
+                if conversion_url:
+                    logger.info(f"Conversion chart uploaded to S3: {conversion_url}")
+
             charts = {
                 'emoji_chart': emoji_chart,
-                'png_url': png_url
+                'traffic_url': traffic_url,
+                'conversion_url': conversion_url
             }
             
             slack.send_first_run_message(snapshot_data, current_analysis, charts, ACCOUNT_NAME)
@@ -259,32 +276,45 @@ def main():
         campaign_deltas = deltas.get('campaigns', [])
         emoji_chart = chart_gen.generate_emoji_chart(campaign_deltas[:10], 'spend')
 
-        # Generate multi-metric chart with raw campaign data
-        png_path = CHARTS_PATH / f'campaigns_{snapshot_id}.png'
-        chart_gen.generate_multi_metric_chart(
+        # Generate both traffic and conversion charts with raw campaign data
+        traffic_png_path = CHARTS_PATH / f'traffic_{snapshot_id}.png'
+        conversion_png_path = CHARTS_PATH / f'conversions_{snapshot_id}.png'
+
+        chart_gen.generate_traffic_chart(
             campaigns,
-            f'{ACCOUNT_NAME} - Campaign Performance (Yesterday)',
-            str(png_path)
+            f'{ACCOUNT_NAME} - Traffic Metrics (Yesterday)',
+            str(traffic_png_path)
         )
-        
+
+        chart_gen.generate_conversion_chart(
+            campaigns,
+            f'{ACCOUNT_NAME} - Conversion Metrics (Yesterday)',
+            str(conversion_png_path)
+        )
+
         # Upload to S3
-        logger.info("Uploading chart to S3...")
+        logger.info("Uploading charts to S3...")
         s3_uploader = S3ChartUploader(bucket_name=S3_BUCKET, region=AWS_REGION)
         s3_uploader.ensure_bucket_exists()
-        png_url = s3_uploader.upload_chart(str(png_path))
-        
-        if png_url:
-            logger.info(f"Chart uploaded to S3: {png_url}")
-        else:
-            logger.warning("Failed to upload chart to S3, will skip image in Slack")
-        
+
+        traffic_url = s3_uploader.upload_chart(str(traffic_png_path))
+        conversion_url = s3_uploader.upload_chart(str(conversion_png_path))
+
+        if traffic_url:
+            logger.info(f"Traffic chart uploaded to S3: {traffic_url}")
+        if conversion_url:
+            logger.info(f"Conversion chart uploaded to S3: {conversion_url}")
+
+        if not traffic_url and not conversion_url:
+            logger.warning("Failed to upload charts to S3, will skip images in Slack")
+
         # 8. Format and send to Slack
         logger.info("Formatting and sending Slack report...")
-        
+
         charts = {
             'emoji_chart': emoji_chart,
-            'png_chart': str(png_path),
-            'png_url': png_url if png_url else None
+            'traffic_url': traffic_url if traffic_url else None,
+            'conversion_url': conversion_url if conversion_url else None
         }
         
         messages = slack.format_6hour_report(
