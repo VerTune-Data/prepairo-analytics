@@ -1,12 +1,16 @@
 ---
 name: meta-ads-audit
-description: Check platform configuration (Facebook vs Instagram) for all campaigns and adsets
-version: 1.0.0
-author: Analytics Team
-tags: [meta-ads, audit, platform-config, troubleshooting]
+description: "Check platform configuration (Facebook vs Instagram) for all campaigns and adsets"
+version: "1.0.0"
+author: "Analytics Team"
+tags:
+  - meta-ads
+  - audit
+  - platform-config
+  - troubleshooting
 requirements:
-  - Meta Ads API access
-  - Python 3.8+
+  - "Meta Ads API access"
+  - "Python 3.8+"
 output: terminal
 ---
 

@@ -1,13 +1,17 @@
 ---
 name: meta-ads-quick
-description: Fast daily Meta Ads performance snapshot with top campaigns and metrics
-version: 1.0.0
-author: Analytics Team
-tags: [meta-ads, reporting, analytics, slack]
+description: "Fast daily Meta Ads performance snapshot with top campaigns and metrics"
+version: "1.0.0"
+author: "Analytics Team"
+tags:
+  - meta-ads
+  - reporting
+  - analytics
+  - slack
 requirements:
-  - Meta Ads API access
-  - Slack webhook configured
-  - Python 3.8+
+  - "Meta Ads API access"
+  - "Slack webhook configured"
+  - "Python 3.8+"
 ---
 
 # Meta Ads Quick Report
