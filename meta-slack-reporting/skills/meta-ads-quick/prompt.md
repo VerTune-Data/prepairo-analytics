@@ -34,6 +34,23 @@ Report is delivered directly to your configured Slack channel.
 
 Completes in ~30 seconds - faster than the full intelligent analysis.
 
+## When to Use This Skill
+
+✅ **Use /meta-ads-quick when:**
+- You need a quick morning check-in
+- You want to see yesterday's or last week's performance
+- You need a fast overview without deep analysis
+- You're in a hurry and don't need AI insights
+- You want to check top campaigns by spend
+- You need daily metrics for a standup meeting
+
+❌ **Don't use this when:**
+- You need conversion metrics (CPI, CPR, CPA) → Use /meta-ads-analyze
+- You want AI-powered insights → Use /meta-ads-analyze
+- You need historical trends → Use /meta-ads-analyze
+- You want to check platform configuration → Use /meta-ads-audit
+- You need visual charts → Use /meta-ads-analyze
+
 ## Examples
 
 ```bash

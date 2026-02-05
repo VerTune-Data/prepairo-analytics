@@ -38,6 +38,25 @@ Terminal report showing:
 - Warnings for Facebook-enabled active adsets
 - Summary with actionable recommendations
 
+## When to Use This Skill
+
+✅ **Use /meta-ads-audit when:**
+- Facebook ads are appearing despite being turned off
+- You want to verify Instagram-only configuration
+- You need to check which platforms campaigns are targeting
+- You're troubleshooting unexpected platform delivery
+- You want to audit where your ad budget is going
+- You need to validate Meta Ads Manager configuration
+- Someone on team asks "Are we running on Facebook?"
+- You're investigating platform-related issues
+
+❌ **Don't use this when:**
+- You need performance metrics → Use /meta-ads-quick or /meta-ads-analyze
+- You want to see spend/conversions → Use /meta-ads-quick or /meta-ads-analyze
+- You need AI insights → Use /meta-ads-analyze
+
+💡 **Pro tip:** Run this after making platform changes in Meta Ads Manager to verify they took effect (allow 15-30 minutes for changes to propagate).
+
 ## Use Cases
 
 - **Verify Instagram-Only Configuration**: Ensure campaigns only run on Instagram

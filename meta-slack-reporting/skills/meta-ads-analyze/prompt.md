@@ -62,6 +62,25 @@ Multi-message report delivered to your configured Slack channel with:
 
 Completes in ~2-3 minutes depending on data volume and AI analysis.
 
+## When to Use This Skill
+
+✅ **Use /meta-ads-analyze when:**
+- You need deep AI-powered insights and recommendations
+- You want to see conversion metrics (installs, registrations, purchases)
+- You need historical trend analysis vs previous period
+- You're preparing for a team meeting or presentation
+- You want visual charts to share
+- You need to optimize campaign performance
+- You want to identify money-bleeding campaigns
+- You're doing weekly or monthly performance reviews
+
+❌ **Don't use this when:**
+- You just need a quick overview → Use /meta-ads-quick (faster)
+- You want to check platform configuration → Use /meta-ads-audit
+- You're in a hurry (this takes 2-3 minutes)
+
+⚠️ **Note:** First run has no historical comparison. Run it at least twice to get trend analysis.
+
 ## Examples
 
 ```bash
