@@ -49,6 +49,7 @@ DB_PATH = os.getenv('DB_PATH', 'meta_ads_history.db')
 CHARTS_DIR = os.getenv('CHARTS_DIR', 'charts')
 S3_BUCKET = os.getenv('S3_BUCKET', 'prepairo-analytics-reports')
 REPORT_INTERVAL_HOURS = int(os.getenv('REPORT_INTERVAL_HOURS', '8'))  # Reporting interval in hours
+PLATFORMS = os.getenv('PLATFORMS')  # Optional: filter by platforms (e.g., "instagram" or "facebook,instagram")
 
 # Logging setup
 LOG_DIR = Path(__file__).parent / 'logs'
@@ -99,11 +100,11 @@ def main():
     try:
         # 1. Initialize components
         logger.info("Initializing components...")
-        
+
         db = MetaAdsDatabase(DB_PATH)
         db.initialize_schema()
-        
-        meta_client = MetaAdsAPIClient(META_ADS_ACCOUNT_ID, META_ACCESS_TOKEN)
+
+        meta_client = MetaAdsAPIClient(META_ADS_ACCOUNT_ID, META_ACCESS_TOKEN, platforms=PLATFORMS)
         slack = SlackFormatter(SLACK_WEBHOOK_URL)
         
         # 2. Fetch Claude API key from AWS Secrets Manager (with fallback)

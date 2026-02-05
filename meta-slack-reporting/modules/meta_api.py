@@ -14,13 +14,84 @@ logger = logging.getLogger(__name__)
 
 class MetaAdsAPIClient:
     """Wrapper for Meta Ads API with conversion tracking"""
-    
-    def __init__(self, account_id: str, access_token: str):
+
+    def __init__(self, account_id: str, access_token: str, platforms: str = None):
         self.account_id = account_id
         self.access_token = access_token
+        self.platforms = self._parse_platforms(platforms) if platforms else None
         FacebookAdsApi.init(access_token=access_token)
         self.ad_account = AdAccount(account_id)
-    
+
+    def _parse_platforms(self, platforms_str: str) -> List[str]:
+        """Parse comma-separated platforms string into list"""
+        if not platforms_str:
+            return None
+        return [p.strip().lower() for p in platforms_str.split(',')]
+
+    def _filter_by_platform(self, insights_data: List[Dict], level: str) -> List[Dict]:
+        """Filter insights by configured platforms"""
+        if not self.platforms or not insights_data:
+            return insights_data
+
+        try:
+            from facebook_business.adobjects.campaign import Campaign
+            from facebook_business.adobjects.adset import AdSet
+
+            # Build map of campaign/adset IDs to their publisher platforms
+            platform_map = {}
+
+            # Collect unique campaign/adset IDs
+            ids_to_check = set()
+            for insight in insights_data:
+                if level == 'campaign':
+                    campaign_id = insight.get('campaign_id')
+                    if campaign_id:
+                        ids_to_check.add(campaign_id)
+                elif level in ['adset', 'ad']:
+                    # For adsets and ads, we need to check the adset's publisher_platforms
+                    adset_id = insight.get('adset_id')
+                    if adset_id:
+                        ids_to_check.add(adset_id)
+
+            # Fetch publisher_platforms for each ID
+            for obj_id in ids_to_check:
+                try:
+                    if level == 'campaign':
+                        obj = Campaign(obj_id).api_get(fields=['publisher_platforms'])
+                        platforms = obj.get('publisher_platforms', [])
+                    else:
+                        obj = AdSet(obj_id).api_get(fields=['publisher_platforms'])
+                        platforms = obj.get('publisher_platforms', [])
+
+                    # Normalize platform names to lowercase
+                    platform_map[obj_id] = [p.lower() for p in platforms]
+                except Exception as e:
+                    logger.warning(f"Could not fetch platforms for {obj_id}: {e}")
+                    platform_map[obj_id] = []
+
+            # Filter insights based on platform
+            filtered_insights = []
+            for insight in insights_data:
+                if level == 'campaign':
+                    obj_id = insight.get('campaign_id')
+                else:
+                    obj_id = insight.get('adset_id')
+
+                obj_platforms = platform_map.get(obj_id, [])
+
+                # Check if any of the object's platforms match our filter
+                if any(p in self.platforms for p in obj_platforms):
+                    filtered_insights.append(insight)
+                else:
+                    logger.debug(f"Filtered out {level} {obj_id} with platforms {obj_platforms}")
+
+            logger.info(f"Platform filtering: {len(insights_data)} -> {len(filtered_insights)} records (keeping only {self.platforms})")
+            return filtered_insights
+
+        except Exception as e:
+            logger.error(f"Error filtering by platform: {e}")
+            return insights_data
+
     def fetch_todays_insights(self, level='campaign') -> List[Dict]:
         """
         Fetch today's cumulative insights (from midnight to now)
@@ -66,8 +137,12 @@ class MetaAdsAPIClient:
                 # Extract and add conversion actions
                 data['parsed_actions'] = self.extract_actions(data)
                 insights_data.append(data)
-            
+
             logger.info(f"Fetched {len(insights_data)} {level}-level records for today")
+
+            # Filter by platform if configured
+            insights_data = self._filter_by_platform(insights_data, level)
+
             return insights_data
         
         except Exception as e:
@@ -128,6 +203,9 @@ class MetaAdsAPIClient:
 
             # Fetch and merge status information
             insights_data = self._add_status_info(insights_data, level)
+
+            # Filter by platform if configured
+            insights_data = self._filter_by_platform(insights_data, level)
 
             return insights_data
 
