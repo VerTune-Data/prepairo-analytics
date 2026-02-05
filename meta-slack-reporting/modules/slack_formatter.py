@@ -211,6 +211,16 @@ class SlackFormatter:
                     "text": {"type": "mrkdwn", "text": ad_text}
                 })
             
+            # Add end separator to last message
+            message3_blocks.append({"type": "divider"})
+            message3_blocks.append({
+                "type": "section",
+                "text": {
+                    "type": "mrkdwn",
+                    "text": "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+                }
+            })
+            
             return [message1_blocks, message2_blocks, message3_blocks]
         
         except Exception as e:
@@ -240,6 +250,33 @@ class SlackFormatter:
         elif delta_pct < -5:
             return "⚠️"
         return ""
+    
+    def _format_conversion_metrics(self, parsed_actions: dict) -> str:
+        """Format conversion metrics for display"""
+        if not parsed_actions:
+            return ""
+        
+        lines = []
+        
+        # Check for installs
+        installs = parsed_actions.get("omni_app_install", 0) or parsed_actions.get("app_install", 0) or parsed_actions.get("mobile_app_install", 0)
+        cpi = parsed_actions.get("omni_app_install_cost", 0) or parsed_actions.get("app_install_cost", 0) or parsed_actions.get("mobile_app_install_cost", 0)
+        if installs > 0:
+            lines.append(f"📲 {int(installs):,} installs (CPI: ₹{cpi:.2f})")
+        
+        # Check for registrations
+        registrations = parsed_actions.get("omni_complete_registration", 0) or parsed_actions.get("complete_registration", 0)
+        cpr = parsed_actions.get("omni_complete_registration_cost", 0) or parsed_actions.get("complete_registration_cost", 0)
+        if registrations > 0:
+            lines.append(f"✍️ {int(registrations):,} registrations (CPR: ₹{cpr:.2f})")
+        
+        # Check for purchases
+        purchases = parsed_actions.get("omni_purchase", 0) or parsed_actions.get("purchase", 0)
+        cpa = parsed_actions.get("omni_purchase_cost", 0) or parsed_actions.get("purchase_cost", 0)
+        if purchases > 0:
+            lines.append(f"💰 {int(purchases):,} purchases (CPA: ₹{cpa:.2f})")
+        
+        return " | ".join(lines) if lines else "No conversions"
     
     def send_to_slack(self, messages: List[List[Dict]], attachments: Optional[List[str]] = None) -> bool:
         """Send multiple messages to Slack"""

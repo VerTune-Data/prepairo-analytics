@@ -3,7 +3,7 @@ Claude AI analyzer with Slack-compatible formatting
 """
 
 import logging
-from typing import Dict, Optional, Tuple
+from typing import Dict, Optional, Tuple, List
 from anthropic import Anthropic
 
 logger = logging.getLogger(__name__)
@@ -55,6 +55,33 @@ class ClaudeAnalyzer:
         logger.info(f"Claude analysis received ({len(analysis)} chars)")
         
         return analysis
+    
+    def _extract_conversion_summary(self, campaigns: List) -> str:
+        """Extract and summarize conversion data from campaigns"""
+        total_installs = 0
+        total_registrations = 0
+        total_purchases = 0
+        total_spend = 0
+        
+        for campaign in campaigns:
+            parsed = campaign.get("parsed_actions", {})
+            total_installs += parsed.get("omni_app_install", 0) or parsed.get("app_install", 0) or parsed.get("mobile_app_install", 0)
+            total_registrations += parsed.get("omni_complete_registration", 0) or parsed.get("complete_registration", 0)
+            total_purchases += parsed.get("omni_purchase", 0) or parsed.get("purchase", 0)
+            total_spend += float(campaign.get("spend", 0))
+        
+        lines = []
+        if total_installs > 0:
+            cpi = total_spend / total_installs
+            lines.append(f"- App Installs: {int(total_installs):,} (CPI: ₹{cpi:.2f})")
+        if total_registrations > 0:
+            cpr = total_spend / total_registrations
+            lines.append(f"- Registrations: {int(total_registrations):,} (CPR: ₹{cpr:.2f})")
+        if total_purchases > 0:
+            cpa = total_spend / total_purchases
+            lines.append(f"- Purchases: {int(total_purchases):,} (CPA: ₹{cpa:.2f})")
+        
+        return "\n".join(lines) if lines else "No conversion data available"
     
     def _build_current_analysis_prompt(self, current_data: Dict, account_name: str) -> str:
         """Build prompt for current window analysis with Slack formatting"""

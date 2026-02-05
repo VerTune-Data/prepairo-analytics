@@ -22,6 +22,7 @@ from modules.claude_analyzer import ClaudeAnalyzer
 from modules.chart_generator import ChartGenerator
 from modules.slack_formatter import SlackFormatter
 from modules.delta_calculator import DeltaCalculator
+from modules.s3_uploader import S3ChartUploader
 
 # Parse command line arguments
 parser = argparse.ArgumentParser(description='Meta Ads 8-Hour Intelligent Reporter')
@@ -46,6 +47,7 @@ AWS_REGION = os.getenv('AWS_REGION', 'ap-south-1')
 CLAUDE_MODEL = os.getenv('CLAUDE_MODEL', 'claude-sonnet-4-5-20250929')
 DB_PATH = os.getenv('DB_PATH', 'meta_ads_history.db')
 CHARTS_DIR = os.getenv('CHARTS_DIR', 'charts')
+S3_BUCKET = os.getenv('S3_BUCKET', 'prepairo-analytics-reports')
 
 # Logging setup
 LOG_DIR = Path(__file__).parent / 'logs'
@@ -186,7 +188,35 @@ def main():
                            for c in snapshot_data.get('campaigns', [])]
             emoji_chart = chart_gen.generate_emoji_chart(campaign_data[:10], 'spend')
             
-            charts = {'emoji_chart': emoji_chart}
+            # Generate PNG chart for first run too
+            png_path = CHARTS_PATH / f'campaigns_{snapshot_id}.png'
+            campaign_data_for_chart = [
+                {'name': c.get('campaign_name', 'Unknown'), 'spend': float(c.get('spend', 0))}
+                for c in snapshot_data.get('campaigns', [])
+            ]
+            
+            png_url = None
+            if campaign_data_for_chart:
+                chart_gen.generate_png_bar_chart(
+                    campaign_data_for_chart[:10],
+                    f'{ACCOUNT_NAME} - Campaign Performance',
+                    str(png_path),
+                    'spend'
+                )
+                
+                # Upload to S3
+                logger.info("Uploading first run chart to S3...")
+                s3_uploader = S3ChartUploader(bucket_name=S3_BUCKET, region=AWS_REGION)
+                s3_uploader.ensure_bucket_exists()
+                png_url = s3_uploader.upload_chart(str(png_path))
+                
+                if png_url:
+                    logger.info(f"First run chart uploaded to S3: {png_url}")
+            
+            charts = {
+                'emoji_chart': emoji_chart,
+                'png_url': png_url
+            }
             
             slack.send_first_run_message(snapshot_data, current_analysis, charts, ACCOUNT_NAME)
             db.cleanup_old_snapshots(days_to_keep=30)
@@ -235,12 +265,24 @@ def main():
             'spend'
         )
         
+        # Upload to S3
+        logger.info("Uploading chart to S3...")
+        s3_uploader = S3ChartUploader(bucket_name=S3_BUCKET, region=AWS_REGION)
+        s3_uploader.ensure_bucket_exists()
+        png_url = s3_uploader.upload_chart(str(png_path))
+        
+        if png_url:
+            logger.info(f"Chart uploaded to S3: {png_url}")
+        else:
+            logger.warning("Failed to upload chart to S3, will skip image in Slack")
+        
         # 8. Format and send to Slack
         logger.info("Formatting and sending Slack report...")
         
         charts = {
             'emoji_chart': emoji_chart,
-            'png_chart': str(png_path)
+            'png_chart': str(png_path),
+            'png_url': png_url if png_url else None
         }
         
         messages = slack.format_6hour_report(
