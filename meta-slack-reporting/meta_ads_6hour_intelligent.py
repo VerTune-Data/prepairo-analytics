@@ -10,6 +10,7 @@ import logging
 from datetime import datetime
 from pathlib import Path
 from dotenv import load_dotenv
+import argparse
 
 # Add modules to path
 sys.path.insert(0, str(Path(__file__).parent))
@@ -22,10 +23,19 @@ from modules.chart_generator import ChartGenerator
 from modules.slack_formatter import SlackFormatter
 from modules.delta_calculator import DeltaCalculator
 
-# Load environment variables
-env_file = Path(__file__).parent / '.env'
+# Parse command line arguments
+parser = argparse.ArgumentParser(description='Meta Ads 8-Hour Intelligent Reporter')
+parser.add_argument('--account', type=str, required=True, choices=['upsc', 'gre'], 
+                    help='Account to run report for (upsc or gre)')
+args = parser.parse_args()
+
+# Load environment variables for specific account
+env_file = Path(__file__).parent / f'.env.{args.account}'
 if env_file.exists():
     load_dotenv(env_file)
+else:
+    print(f"Error: Environment file not found: {env_file}")
+    sys.exit(1)
 
 # Configuration
 META_ADS_ACCOUNT_ID = os.getenv('META_ADS_ACCOUNT_ID')

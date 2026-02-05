@@ -58,7 +58,7 @@ class SlackFormatter:
                     "type": "header",
                     "text": {
                         "type": "plain_text",
-                        "text": f"📊 {account_name} - 6-Hour Report",
+                        "text": f"📊 {account_name} - 8-Hour Report",
                         "emoji": True
                     }
                 },
@@ -75,7 +75,7 @@ class SlackFormatter:
                     "text": {
                         "type": "mrkdwn",
                         "text": (
-                            f"*📈 Account Summary (vs. 6hrs ago)*\n"
+                            f"*📈 Account Summary (vs. 8hrs ago)*\n"
                             f"• Spend: ₹{spend_delta.get('current', 0):,.2f} ({self._format_delta(spend_delta.get('percent', 0))})\n"
                             f"• Impressions: {int(imp_delta.get('current', 0)):,} ({self._format_delta(imp_delta.get('percent', 0))})\n"
                             f"• Clicks: {int(clicks_delta.get('current', 0)):,} ({self._format_delta(clicks_delta.get('percent', 0))})"
