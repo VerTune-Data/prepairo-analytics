@@ -4,10 +4,11 @@ Automated analytics reporting for PrepAiro app that tracks conversions, installs
 
 ## Features
 
-- **8 Automated Reports** - 5 times daily (4x 6-hour + 1x daily summary)
+- **9 Automated Reports** - 5 times daily (4x 6-hour + 1x daily summary)
 - **Channel Attribution** - Track installs by Google Ads, Meta, Telegram, etc.
 - **Conversion Funnel** - From installs → phone verified → conversions
 - **Drop-off Analysis** - By channel conversion rates
+- **💎 Converted Users Details** - Complete user information for all conversions
 - **💎 CONVERTED Indicator** - Premium visual for converted users
 - **IST Timezone** - All times in 12-hour AM/PM format
 
@@ -50,8 +51,9 @@ python3 prepairo_analytics.py 24 12  # Yesterday's 24 hours
 3. **Purchase Intents** - Summary metrics
 4. **Subscribe Clicks** - Detailed user list with 💎 CONVERTED
 5. **Payment Clicks** - Payment method tracking with 💎 CONVERTED
+6. **Converted Users** - Complete details of all users who converted with platform, channel, campaign, plan, and amount
 
-Total: 8 messages (6 content + 2 delimiters)
+Total: 9 messages (7 content + 2 delimiters)
 
 ## Schedule
 

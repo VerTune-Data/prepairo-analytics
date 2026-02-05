@@ -353,8 +353,15 @@ You'll know it's working when:
 - **9 messages total** (up from 7): 7 content + 2 delimiters
 - **offset_hours parameter** enables time-shifted reports
 
+## 🆕 Version 2.2 Changes (2026-02-05)
+
+- **💎 Converted Users Details message** - New dedicated message showing complete information for all converted users
+- Includes: name, phone, email, platform, channel, campaign, plan type, amount, and conversion time
+- Better tracking of conversion attribution and user journey
+- **9 messages total**: 7 content + 2 delimiters (added 1 new message)
+
 ---
 
 **Deployed by:** Claude Code
-**Date:** 2026-02-04
-**Version:** 2.1
+**Date:** 2026-02-05
+**Version:** 2.2

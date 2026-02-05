@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
 """
-PrepAiro Analytics - 6-Message Format
+PrepAiro Analytics - 7-Message Format
 - Message 1: App Installs with channel attribution and drop-off analysis
 - Message 2: Conversions with channel breakdown
 - Message 3: Purchase Intents Summary
 - Message 4: Subscribe Now clicks
 - Message 5: Payment Method clicks
-- (Plus 2 delimiter messages = 8 total)
+- Message 6: Converted Users Details
+- (Plus 2 delimiter messages = 9 total)
 """
 
 import os
@@ -1069,6 +1070,83 @@ def format_payment_clicks_message(data: Dict, hours: int, time_range: str) -> Di
     return {"blocks": blocks}
 
 
+def format_converted_users_message(conversion_data: Dict, hours: int, time_range: str) -> Dict:
+    """Format Message 6: Converted Users Details"""
+
+    now_ist = to_ist(datetime.utcnow())
+    conversions = conversion_data['raw_data']
+
+    blocks = [
+        {
+            "type": "header",
+            "text": {
+                "type": "plain_text",
+                "text": f"💎 Converted Users - {time_range}",
+                "emoji": True
+            }
+        },
+        {
+            "type": "context",
+            "elements": [{
+                "type": "mrkdwn",
+                "text": f"_{now_ist.strftime('%Y-%m-%d %H:%M IST')}_"
+            }]
+        },
+        {"type": "divider"}
+    ]
+
+    blocks.append({
+        "type": "section",
+        "text": {
+            "type": "mrkdwn",
+            "text": f"*Total Conversions: {conversion_data['total']}*"
+        }
+    })
+
+    if conversion_data['total'] > 0:
+        blocks.append({"type": "divider"})
+
+        for conversion in conversions[:20]:
+            conversion_time_ist = to_ist(conversion['created_at'])
+            platform = (conversion['signup_platform'] or 'Unknown').upper()
+
+            # Determine channel
+            if platform.lower() == 'ios':
+                channel = 'iOS (No Attribution)'
+            else:
+                channel = parse_install_channel(conversion['play_refer'])
+
+            # Extract campaign if available
+            campaign = None
+            if conversion['play_refer']:
+                if 'attribution' in conversion['play_refer']:
+                    campaign = conversion['play_refer']['attribution'].get('campaign')
+                elif 'installReferrer' in conversion['play_refer']:
+                    campaign = extract_param(conversion['play_refer']['installReferrer'], 'campaign')
+
+            campaign_text = f" | 🎯 {campaign}" if campaign else ""
+
+            blocks.append({
+                "type": "section",
+                "text": {
+                    "type": "mrkdwn",
+                    "text": f"💎 *{conversion['full_name']}*\n"
+                           f"  📱 `{conversion['phone_number']}` | 📧 `{conversion['email']}`\n"
+                           f"  📱 Platform: {platform} | 📡 Channel: {channel}{campaign_text}\n"
+                           f"  💰 ₹{conversion['amount']} | 📋 {conversion['plan_type']}\n"
+                           f"  🕐 {conversion_time_ist.strftime('%b %d, %I:%M %p IST')}"
+                }
+            })
+
+        if conversion_data['total'] > 20:
+            blocks.append({
+                "type": "context",
+                "elements": [{"type": "mrkdwn", "text": f"_...and {conversion_data['total']-20} more conversions_"}]
+            })
+
+    return {"blocks": blocks}
+
+
 def send_to_slack(message: Dict, message_name: str):
     """Send formatted message to Slack webhook"""
     try:
@@ -1127,10 +1205,13 @@ def main():
         msg5 = format_payment_clicks_message(purchase_intent_data, hours, time_range)
         send_to_slack(msg5, "Message 5: Payment Clicks")
 
+        msg6 = format_converted_users_message(conversion_data, hours, time_range)
+        send_to_slack(msg6, "Message 6: Converted Users")
+
         # End delimiter
         send_to_slack(delimiter, "End Delimiter")
 
-        logger.info("✅ All 8 messages sent successfully (6 content + 2 delimiters)")
+        logger.info("✅ All 9 messages sent successfully (7 content + 2 delimiters)")
 
     except Exception as e:
         logger.error(f"❌ Report generation failed: {e}")
