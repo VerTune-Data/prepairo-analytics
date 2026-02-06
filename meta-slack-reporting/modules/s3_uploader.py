@@ -65,7 +65,57 @@ class S3ChartUploader:
         except Exception as e:
             logger.error(f"Error uploading chart to S3: {e}", exc_info=True)
             return None
-    
+
+    def upload_file(self, file_path: str, content_type: str = 'text/html') -> Optional[str]:
+        """
+        Upload any file to S3 with specified content type. Returns public URL or None.
+
+        Args:
+            file_path: Path to the local file
+            content_type: MIME type for the file (default: 'text/html')
+
+        Returns:
+            Public URL of the uploaded file, or None if upload fails
+        """
+        try:
+            if not Path(file_path).exists():
+                logger.error(f"Local file not found: {file_path}")
+                return None
+
+            # Generate object key from filename with timestamp
+            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+            filename = Path(file_path).name
+            object_key = f"meta-ads-charts/{timestamp}_{filename}"
+
+            # Upload to S3
+            logger.info(f"Uploading {file_path} to s3://{self.bucket_name}/{object_key}")
+
+            extra_args = {
+                "ContentType": content_type,
+                "CacheControl": "max-age=86400"  # 24 hours
+            }
+
+            # For HTML files, set inline disposition so they render in browser
+            if content_type == 'text/html':
+                extra_args["ContentDisposition"] = "inline"
+
+            self.s3_client.upload_file(
+                file_path,
+                self.bucket_name,
+                object_key,
+                ExtraArgs=extra_args
+            )
+
+            # Generate public URL
+            public_url = f"{self.base_url}/{object_key}"
+            logger.info(f"File uploaded successfully: {public_url}")
+
+            return public_url
+
+        except Exception as e:
+            logger.error(f"Error uploading file to S3: {e}", exc_info=True)
+            return None
+
     def ensure_bucket_exists(self) -> bool:
         """Create bucket if it doesn't exist"""
         try:

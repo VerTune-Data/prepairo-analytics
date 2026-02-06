@@ -6,6 +6,7 @@ import requests
 import logging
 from typing import Dict, List, Optional, Tuple
 from datetime import datetime
+from modules.table_formatter import TableFormatter
 
 logger = logging.getLogger(__name__)
 
@@ -78,15 +79,15 @@ class SlackFormatter:
                     "type": "header",
                     "text": {
                         "type": "plain_text",
-                        "text": f"📊 {account_name} - Daily Report",
-                        "emoji": True
+                        "text": f"{account_name} - Daily Performance Report",
+                        "emoji": False
                     }
                 },
                 {
                     "type": "section",
                     "text": {
                         "type": "mrkdwn",
-                        "text": f"*📅 Data:* {date_display} (Full Day - IST)\n*🕐 Report Generated:* {time_str}\n*💰 Budget:* {balance.get('balance_formatted', '₹0.00 available')}"
+                        "text": f"*Date:* {date_display} | *Generated:* {time_str}\n*Budget Remaining:* {balance.get('balance_formatted', '₹0.00')}"
                     }
                 },
                 {"type": "divider"},
@@ -95,15 +96,14 @@ class SlackFormatter:
                     "text": {
                         "type": "mrkdwn",
                         "text": (
-                            f"*📈 Account Summary (vs. Previous Day)*\n"
-                            f"• Spend: ₹{spend_delta.get('current', 0):,.2f} ({self._format_delta(spend_delta.get('percent', 0))})\n"
-                            f"• Impressions: {int(imp_delta.get('current', 0)):,} ({self._format_delta(imp_delta.get('percent', 0))})\n"
-                            f"• Clicks: {int(clicks_delta.get('current', 0)):,} ({self._format_delta(clicks_delta.get('percent', 0))})\n\n"
-                            f"*🎯 Conversions Yesterday:*\n"
-                            f"• App Installs: {total_installs} (Avg CPI: ₹{avg_cpi:.0f})\n"
-                            f"• Registrations: {total_registrations} (Avg CPR: ₹{avg_cpr:.0f})\n"
-                            f"• Checkouts: {total_checkouts}\n"
-                            f"• Purchases: {total_purchases} (Avg CPA: ₹{avg_cpa:.0f})"
+                            f"*Account Summary*\n"
+                            f"Spend: ₹{spend_delta.get('current', 0):,.2f} ({self._format_delta(spend_delta.get('percent', 0))})\n"
+                            f"Impressions: {int(imp_delta.get('current', 0)):,} ({self._format_delta(imp_delta.get('percent', 0))})\n"
+                            f"Clicks: {int(clicks_delta.get('current', 0)):,} ({self._format_delta(clicks_delta.get('percent', 0))})\n\n"
+                            f"*Conversions*\n"
+                            f"Installs: {total_installs} | CPI: ₹{avg_cpi:.0f}\n"
+                            f"Registrations: {total_registrations} | CPR: ₹{avg_cpr:.0f}\n"
+                            f"Purchases: {total_purchases} | CPA: ₹{avg_cpa:.0f}"
                         )
                     }
                 },
@@ -112,24 +112,23 @@ class SlackFormatter:
             
             # Add AI insights (truncate if too long)
             if current_analysis and not current_analysis.startswith("⚠️"):
-                # Truncate to 2500 chars if needed
                 truncated_current = current_analysis[:2500] + "..." if len(current_analysis) > 2500 else current_analysis
                 message1_blocks.append({
                     "type": "section",
                     "text": {
                         "type": "mrkdwn",
-                        "text": f"*🤖 AI Analysis: This Window*\n{truncated_current}"
+                        "text": f"*AI Analysis*\n{truncated_current}"
                     }
                 })
                 message1_blocks.append({"type": "divider"})
-            
+
             if trend_analysis and not trend_analysis.startswith("⏳"):
                 truncated_trend = trend_analysis[:2500] + "..." if len(trend_analysis) > 2500 else trend_analysis
                 message1_blocks.append({
                     "type": "section",
                     "text": {
                         "type": "mrkdwn",
-                        "text": f"*📊 AI Analysis: Trends*\n{truncated_trend}"
+                        "text": f"*Trend Analysis*\n{truncated_trend}"
                     }
                 })
             elif trend_analysis.startswith("⏳"):
@@ -137,32 +136,40 @@ class SlackFormatter:
                     "type": "section",
                     "text": {"type": "mrkdwn", "text": trend_analysis}
                 })
-            
+
             # Add PNG chart images if available
             if charts.get('traffic_url'):
                 message1_blocks.append({"type": "divider"})
                 message1_blocks.append({
                     "type": "section",
-                    "text": {"type": "mrkdwn", "text": "*📊 Traffic Metrics Chart*"}
+                    "text": {"type": "mrkdwn", "text": "*Traffic Metrics*"}
                 })
                 message1_blocks.append({
                     "type": "image",
                     "image_url": charts['traffic_url'],
-                    "alt_text": "Traffic Metrics Chart (Spend, Clicks, Impressions, CTR)"
+                    "alt_text": "Traffic Metrics Chart"
                 })
 
             if charts.get('conversion_url'):
                 message1_blocks.append({"type": "divider"})
                 message1_blocks.append({
                     "type": "section",
-                    "text": {"type": "mrkdwn", "text": "*🎯 Conversion Metrics Chart*"}
+                    "text": {"type": "mrkdwn", "text": "*Conversion Metrics*"}
                 })
                 message1_blocks.append({
                     "type": "image",
                     "image_url": charts['conversion_url'],
-                    "alt_text": "Conversion Metrics Chart (Installs, Registrations, Purchases)"
+                    "alt_text": "Conversion Metrics Chart"
                 })
-            
+
+            # Add dashboard link if available
+            if charts.get('dashboard_url'):
+                message1_blocks.append({"type": "divider"})
+                message1_blocks.append({
+                    "type": "section",
+                    "text": {"type": "mrkdwn", "text": f"*Dashboard:* <{charts['dashboard_url']}|View Interactive Dashboard>"}
+                })
+
             # MESSAGE 2: Campaign Details
             # Filter campaigns with spend > 0
             campaigns_with_spend = [c for c in campaigns if float(c.get('spend', 0)) > 0]
@@ -173,8 +180,8 @@ class SlackFormatter:
                     "type": "header",
                     "text": {
                         "type": "plain_text",
-                        "text": f"📊 Campaign Breakdown ({len(campaigns_sorted)} Active)",
-                        "emoji": True
+                        "text": f"Campaign Breakdown ({len(campaigns_sorted)} Active)",
+                        "emoji": False
                     }
                 },
                 {"type": "divider"}
@@ -216,27 +223,25 @@ class SlackFormatter:
                         delta_pct = cd.get('delta_spend', {}).get('percent', 0)
                         break
 
-                trend_emoji = self._get_trend_emoji(delta_pct)
-                status_emoji = self._get_status_emoji(camp_status)
+                trend_indicator = self._get_trend_text(delta_pct)
+                status_text = f"[{camp_status}]"
 
                 campaign_text = (
-                    f"*{actual_idx}. {camp_name[:45]}* {status_emoji} {trend_emoji}\n"
-                    f"💰 ₹{camp_spend:,.2f} | 👁️ {camp_imp:,} | 👥 {camp_reach:,} | 🖱️ {camp_clicks} | 📊 {camp_ctr:.2f}%\n"
+                    f"*{actual_idx}. {camp_name[:45]}* {status_text}\n"
+                    f"Spend: ₹{camp_spend:,.2f} | Impr: {camp_imp:,} | Clicks: {camp_clicks} | CTR: {camp_ctr:.2f}%\n"
                 )
 
                 # Add conversion metrics if available
                 conv_parts = []
                 if installs > 0:
-                    conv_parts.append(f"📲 {installs} installs (CPI ₹{cpi:.0f})")
+                    conv_parts.append(f"{installs} installs (CPI ₹{cpi:.0f})")
                 if registrations > 0:
-                    conv_parts.append(f"✍️ {registrations} regs (CPR ₹{cpr:.0f})")
-                if checkouts > 0:
-                    conv_parts.append(f"🛒 {checkouts} checkouts")
+                    conv_parts.append(f"{registrations} regs (CPR ₹{cpr:.0f})")
                 if purchases > 0:
-                    conv_parts.append(f"💳 {purchases} purchases (CPA ₹{cpa:.0f})")
+                    conv_parts.append(f"{purchases} purchases (CPA ₹{cpa:.0f})")
 
                 if conv_parts:
-                    campaign_text += f"🎯 {' | '.join(conv_parts)}\n"
+                    campaign_text += f"Conversions: {' | '.join(conv_parts)}\n"
                 
                 # AdSets for this campaign
                 camp_adsets = [a for a in adsets if a.get('campaign_id') == camp_id]
@@ -254,7 +259,6 @@ class SlackFormatter:
                             adset_clicks = int(adset.get('clicks', 0))
                             adset_ctr = (adset_clicks / adset_imp * 100) if adset_imp > 0 else 0
                             adset_status = adset.get('effective_status', 'UNKNOWN')
-                            adset_status_emoji = self._get_status_emoji(adset_status)
 
                             # Extract conversions
                             parsed = adset.get('parsed_actions', {})
@@ -265,17 +269,17 @@ class SlackFormatter:
                             conv_summary = []
                             if installs > 0:
                                 adset_cpi = adset_spend / installs
-                                conv_summary.append(f"{installs}inst(₹{adset_cpi:.0f})")
+                                conv_summary.append(f"{installs} inst (₹{adset_cpi:.0f})")
                             if registrations > 0:
                                 adset_cpr = adset_spend / registrations
-                                conv_summary.append(f"{registrations}reg(₹{adset_cpr:.0f})")
+                                conv_summary.append(f"{registrations} reg (₹{adset_cpr:.0f})")
                             if purchases > 0:
                                 adset_cpa = adset_spend / purchases
-                                conv_summary.append(f"{purchases}pur(₹{adset_cpa:.0f})")
+                                conv_summary.append(f"{purchases} pur (₹{adset_cpa:.0f})")
 
-                            conv_str = f" | {' '.join(conv_summary)}" if conv_summary else ""
+                            conv_str = f" | {', '.join(conv_summary)}" if conv_summary else ""
 
-                            campaign_text += f"  • {adset_status_emoji} {adset_name}: ₹{adset_spend:,.2f} | {adset_imp:,} imp | {adset_clicks} clicks | {adset_ctr:.2f}%{conv_str}\n"
+                            campaign_text += f"  - {adset_name}: ₹{adset_spend:,.2f} | {adset_imp:,} imp | {adset_clicks} clicks | {adset_ctr:.2f}%{conv_str}\n"
                 
                 message2_blocks.append({
                     "type": "section",
@@ -292,8 +296,8 @@ class SlackFormatter:
                     "type": "header",
                     "text": {
                         "type": "plain_text",
-                        "text": f"🎨 Ad Performance ({len(ads_sorted)} Active)",
-                        "emoji": True
+                        "text": f"Ad Performance ({len(ads_sorted)} Active)",
+                        "emoji": False
                     }
                 },
                 {"type": "divider"}
@@ -396,6 +400,15 @@ class SlackFormatter:
         elif delta_pct < -5:
             return "⚠️"
         return ""
+
+    def _get_trend_text(self, delta_pct: float) -> str:
+        """Get trend indicator as text instead of emoji"""
+        if abs(delta_pct) < 5:
+            return ""
+        elif delta_pct > 0:
+            return f"(+{delta_pct:.0f}%)"
+        else:
+            return f"({delta_pct:.0f}%)"
 
     def _get_status_emoji(self, status: str) -> str:
         """Get status emoji for campaign/adset/ad status"""

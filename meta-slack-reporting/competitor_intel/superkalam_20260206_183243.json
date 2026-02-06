@@ -1,0 +1,480 @@
+{
+  "competitor": "SuperKalam",
+  "page_id": "102666082828113",
+  "category": "UPSC",
+  "scraped_at": "2026-02-06T18:30:18.307969",
+  "url": "https://www.facebook.com/ads/library/?active_status=active&ad_type=all&country=IN&is_targeted_country=false&media_type=all&search_type=page&view_all_page_id=102666082828113",
+  "summary": {
+    "total_ads": 21,
+    "with_video": 21,
+    "with_carousel": 21,
+    "image_only": 0,
+    "platforms": {},
+    "cta_types": {
+      "Get Offer": 21
+    },
+    "landing_domains": {
+      "superkalam.com": 21
+    },
+    "avg_days_running": 8.0,
+    "new_ads_7d": 0,
+    "long_running_30d": 0
+  },
+  "insights": {
+    "strategy_signals": [
+      "\ud83c\udfac Video-heavy strategy (21/21 ads use video)"
+    ],
+    "creative_patterns": [
+      "Primary CTA: 'Get Offer' (21 ads)"
+    ],
+    "messaging_themes": [
+      "pricing/offers"
+    ],
+    "recommendations": [
+      "Consider increasing video content in your ads"
+    ]
+  },
+  "ads": [
+    {
+      "library_id": "1447801440263879",
+      "ad_url": "https://www.facebook.com/ads/library/?id=1447801440263879",
+      "start_date": "29 Jan 2026",
+      "days_running": 8,
+      "status": "active",
+      "platforms": [],
+      "ad_text": "COM/PRICING/TRIAL\nPrepare like a Topper for UPSC\n\u2b50\u2b50\u2b50\u2b50\u2b50 (8223 Reviews)\nLearn more\n\u200b\nActive\nLibrary ID: 874437535403584\nStarted running on 5 Feb 2026 \u00b7 Total active time 18 hrs\nPlatforms\n\u200b\n\u200b\n\u200b\n\u200b\nOpen Drop-down\n\u200b\nSee ad details\nSuperKalam\nSponsored\nSave your UPSC attempt by attempting Full Length Diagnostic test and following daily targets with SuperKalam \u26a1\n0:00 / 0:50\nSUPERKALAM.",
+      "cta_type": "Get Offer",
+      "landing_url": "http://superkalam.com/pricing/trial?utm_source=%7B%7Badset.name%7D%7D&utm_medium=%7B%7Bplacement%7D%7D&utm_campaign=%7B%7Bcampaign.name%7D%7D&utm_content=%7B%7Bad.name%7D%7D",
+      "landing_domain": "superkalam.com",
+      "media_type": "video",
+      "media_urls": [
+        "https://scontent.fblr1-5.fna.fbcdn.net/v/t39.30808-1/370369004_202272702849324_6404886308834501351_n.jpg?stp=dst-jpg_s148x148_tt6&_nc_cat=103&ccb=1-7&_nc_sid=418b77&_nc_ohc=r01WuqrTJ7UQ7kNvwGGrQdd&_nc_oc=AdnECw5gsjwErLSu6MvDczoJQ1TggL-37Hj9f95Iv2xK07oesK3u6yFyhUGbHP89c78&_nc_zt=24&_nc_ht=scontent.fblr1-5.fna&_nc_gid=5Clq5xmPq7E4zgA3NvPd3g&oh=00_AfuS8ja3F5Ndq3RlvifhEHMuBmrmjBLK9DbaOVjSu9xEKA&oe=698BD2F6",
+        "https://scontent.fblr1-7.fna.fbcdn.net/v/t39.35426-6/624348124_1443173257418514_4114493688948439489_n.jpg?stp=dst-jpg_s60x60_tt6&_nc_cat=110&ccb=1-7&_nc_sid=c53f8f&_nc_ohc=ntLaI2_qGTMQ7kNvwF2AJ44&_nc_oc=AdkYGkGnTETM6ZG6cpy6Bc6ai8TUf8iA9mu2EkDvwRrmqzRLQK1sGDZuP2ZKizHrnng&_nc_zt=14&_nc_ht=scontent.fblr1-7.fna&_nc_gid=5Clq5xmPq7E4zgA3NvPd3g&oh=00_AfvulEBBa3nQF8iW2Tj2vFaW9DGA_TGxuD-7TxZhA5TG4A&oe=698BA863",
+        "https://scontent.fblr1-4.fna.fbcdn.net/v/t39.35426-6/627127896_1660378601637260_4229640340177764051_n.jpg?stp=dst-jpg_s60x60_tt6&_nc_cat=108&ccb=1-7&_nc_sid=c53f8f&_nc_ohc=tROX5Os2mUkQ7kNvwHzGaRU&_nc_oc=AdnCbguZ8TWGeoKt791PNtSbNshyeZycBqqff4vDm88SaTpgC26-RBRWRRCGIPXCdlQ&_nc_zt=14&_nc_ht=scontent.fblr1-4.fna&_nc_gid=5Clq5xmPq7E4zgA3NvPd3g&oh=00_AfvV4MNP58bRPjq3-P8HkgRzbC30cpcFGGJvNJAUgPiMag&oe=698BC6D6"
+      ],
+      "has_video": true,
+      "has_carousel": true,
+      "variations_count": 1
+    },
+    {
+      "library_id": "874437535403584",
+      "ad_url": "https://www.facebook.com/ads/library/?id=874437535403584",
+      "start_date": "29 Jan 2026",
+      "days_running": 8,
+      "status": "active",
+      "platforms": [],
+      "ad_text": "COM/PRICING/TRIAL\nPrepare like a Topper for UPSC\n\u2b50\u2b50\u2b50\u2b50\u2b50 (8223 Reviews)\nLearn more\n\u200b\nActive\nLibrary ID: 874437535403584\nStarted running on 5 Feb 2026 \u00b7 Total active time 18 hrs\nPlatforms\n\u200b\n\u200b\n\u200b\n\u200b\nOpen Drop-down\n\u200b\nSee ad details\nSuperKalam\nSponsored\nSave your UPSC attempt by attempting Full Length Diagnostic test and following daily targets with SuperKalam \u26a1\n0:00 / 0:50\nSUPERKALAM.",
+      "cta_type": "Get Offer",
+      "landing_url": "https://superkalam.com/prelims-revision-trial",
+      "landing_domain": "superkalam.com",
+      "media_type": "video",
+      "media_urls": [
+        "https://scontent.fblr1-5.fna.fbcdn.net/v/t39.30808-1/370369004_202272702849324_6404886308834501351_n.jpg?stp=dst-jpg_s148x148_tt6&_nc_cat=103&ccb=1-7&_nc_sid=418b77&_nc_ohc=r01WuqrTJ7UQ7kNvwGGrQdd&_nc_oc=AdnECw5gsjwErLSu6MvDczoJQ1TggL-37Hj9f95Iv2xK07oesK3u6yFyhUGbHP89c78&_nc_zt=24&_nc_ht=scontent.fblr1-5.fna&_nc_gid=fG_ABfS1cHDRcNCJf6PcxA&oh=00_AfsafBiPOGcMI2msZ09vBSxi1WrbpFyIV-zau1N9jcdisg&oe=698BD2F6",
+        "https://scontent.fblr1-7.fna.fbcdn.net/v/t39.35426-6/624348124_1443173257418514_4114493688948439489_n.jpg?stp=dst-jpg_s60x60_tt6&_nc_cat=110&ccb=1-7&_nc_sid=c53f8f&_nc_ohc=ntLaI2_qGTMQ7kNvwF2AJ44&_nc_oc=AdkYGkGnTETM6ZG6cpy6Bc6ai8TUf8iA9mu2EkDvwRrmqzRLQK1sGDZuP2ZKizHrnng&_nc_zt=14&_nc_ht=scontent.fblr1-7.fna&_nc_gid=fG_ABfS1cHDRcNCJf6PcxA&oh=00_AfuZX6JrjVhoEgQLtR3xJ00F7MWzsW1rzUqL_kb8lBobng&oe=698BA863",
+        "https://scontent.fblr1-4.fna.fbcdn.net/v/t39.35426-6/627127896_1660378601637260_4229640340177764051_n.jpg?stp=dst-jpg_s60x60_tt6&_nc_cat=108&ccb=1-7&_nc_sid=c53f8f&_nc_ohc=tROX5Os2mUkQ7kNvwHzGaRU&_nc_oc=AdnCbguZ8TWGeoKt791PNtSbNshyeZycBqqff4vDm88SaTpgC26-RBRWRRCGIPXCdlQ&_nc_zt=14&_nc_ht=scontent.fblr1-4.fna&_nc_gid=fG_ABfS1cHDRcNCJf6PcxA&oh=00_AftnBcg0sDt294KeegH5Dm8W32tf-USkzjx1F-10SkuGSA&oe=698BC6D6"
+      ],
+      "has_video": true,
+      "has_carousel": true,
+      "variations_count": 1
+    },
+    {
+      "library_id": "723486680630214",
+      "ad_url": "https://www.facebook.com/ads/library/?id=723486680630214",
+      "start_date": "29 Jan 2026",
+      "days_running": 8,
+      "status": "active",
+      "platforms": [],
+      "ad_text": "COM/PRICING/TRIAL\nPrepare like a Topper for UPSC\n\u2b50\u2b50\u2b50\u2b50\u2b50 (8223 Reviews)\nLearn more\n\u200b\nActive\nLibrary ID: 874437535403584\nStarted running on 5 Feb 2026 \u00b7 Total active time 18 hrs\nPlatforms\n\u200b\n\u200b\n\u200b\n\u200b\nOpen Drop-down\n\u200b\nSee ad details\nSuperKalam\nSponsored\nSave your UPSC attempt by attempting Full Length Diagnostic test and following daily targets with SuperKalam \u26a1\n0:00 / 0:50\nSUPERKALAM.",
+      "cta_type": "Get Offer",
+      "landing_url": "https://superkalam.com/pricing/super-trial",
+      "landing_domain": "superkalam.com",
+      "media_type": "video",
+      "media_urls": [
+        "https://scontent.fblr1-5.fna.fbcdn.net/v/t39.30808-1/370369004_202272702849324_6404886308834501351_n.jpg?stp=dst-jpg_s148x148_tt6&_nc_cat=103&ccb=1-7&_nc_sid=418b77&_nc_ohc=r01WuqrTJ7UQ7kNvwGGrQdd&_nc_oc=AdnECw5gsjwErLSu6MvDczoJQ1TggL-37Hj9f95Iv2xK07oesK3u6yFyhUGbHP89c78&_nc_zt=24&_nc_ht=scontent.fblr1-5.fna&_nc_gid=MGM-gbT7xU2vVJgzsV-mCg&oh=00_Afs4Df2UErt6U42rOEJqE6Ug12fsM6AYIcMnnEnFvS22eQ&oe=698BD2F6",
+        "https://scontent.fblr1-7.fna.fbcdn.net/v/t39.35426-6/624348124_1443173257418514_4114493688948439489_n.jpg?stp=dst-jpg_s60x60_tt6&_nc_cat=110&ccb=1-7&_nc_sid=c53f8f&_nc_ohc=ntLaI2_qGTMQ7kNvwF2AJ44&_nc_oc=AdkYGkGnTETM6ZG6cpy6Bc6ai8TUf8iA9mu2EkDvwRrmqzRLQK1sGDZuP2ZKizHrnng&_nc_zt=14&_nc_ht=scontent.fblr1-7.fna&_nc_gid=MGM-gbT7xU2vVJgzsV-mCg&oh=00_AfvA3d9lmMB8uxYixmaqoTCKGgcSmB1gsz0TFvZqfPbSig&oe=698BA863",
+        "https://scontent.fblr1-4.fna.fbcdn.net/v/t39.35426-6/627127896_1660378601637260_4229640340177764051_n.jpg?stp=dst-jpg_s60x60_tt6&_nc_cat=108&ccb=1-7&_nc_sid=c53f8f&_nc_ohc=tROX5Os2mUkQ7kNvwHzGaRU&_nc_oc=AdnCbguZ8TWGeoKt791PNtSbNshyeZycBqqff4vDm88SaTpgC26-RBRWRRCGIPXCdlQ&_nc_zt=14&_nc_ht=scontent.fblr1-4.fna&_nc_gid=MGM-gbT7xU2vVJgzsV-mCg&oh=00_Aft-t7kUsDL43J4LoMlpiKVjM9-hUfBFeG6ITTBoHcjJYw&oe=698BC6D6"
+      ],
+      "has_video": true,
+      "has_carousel": true,
+      "variations_count": 1
+    },
+    {
+      "library_id": "25440226422346668",
+      "ad_url": "https://www.facebook.com/ads/library/?id=25440226422346668",
+      "start_date": "29 Jan 2026",
+      "days_running": 8,
+      "status": "active",
+      "platforms": [],
+      "ad_text": "COM/PRICING/TRIAL\nPrepare like a Topper for UPSC\n\u2b50\u2b50\u2b50\u2b50\u2b50 (8223 Reviews)\nLearn more\n\u200b\nActive\nLibrary ID: 874437535403584\nStarted running on 5 Feb 2026 \u00b7 Total active time 18 hrs\nPlatforms\n\u200b\n\u200b\n\u200b\n\u200b\nOpen Drop-down\n\u200b\nSee ad details\nSuperKalam\nSponsored\nSave your UPSC attempt by attempting Full Length Diagnostic test and following daily targets with SuperKalam \u26a1\n0:00 / 0:50\nSUPERKALAM.",
+      "cta_type": "Get Offer",
+      "landing_url": "http://superkalam.com/pricing/trial?utm_source=%7B%7Badset.name%7D%7D&utm_medium=%7B%7Bplacement%7D%7D&utm_campaign=%7B%7Bcampaign.name%7D%7D&utm_content=%7B%7Bad.name%7D%7D",
+      "landing_domain": "superkalam.com",
+      "media_type": "video",
+      "media_urls": [
+        "https://scontent.fblr1-5.fna.fbcdn.net/v/t39.30808-1/370369004_202272702849324_6404886308834501351_n.jpg?stp=dst-jpg_s148x148_tt6&_nc_cat=103&ccb=1-7&_nc_sid=418b77&_nc_ohc=r01WuqrTJ7UQ7kNvwGGrQdd&_nc_oc=AdnECw5gsjwErLSu6MvDczoJQ1TggL-37Hj9f95Iv2xK07oesK3u6yFyhUGbHP89c78&_nc_zt=24&_nc_ht=scontent.fblr1-5.fna&_nc_gid=Z-Q7JFpGyR2sBgNuO_e_ZA&oh=00_Afu1o91fSZx-OU1wI379NxA6nIC2_U9LR0bhBJR0yPm4mg&oe=698BD2F6",
+        "https://scontent.fblr1-7.fna.fbcdn.net/v/t39.35426-6/624348124_1443173257418514_4114493688948439489_n.jpg?stp=dst-jpg_s60x60_tt6&_nc_cat=110&ccb=1-7&_nc_sid=c53f8f&_nc_ohc=ntLaI2_qGTMQ7kNvwF2AJ44&_nc_oc=AdkYGkGnTETM6ZG6cpy6Bc6ai8TUf8iA9mu2EkDvwRrmqzRLQK1sGDZuP2ZKizHrnng&_nc_zt=14&_nc_ht=scontent.fblr1-7.fna&_nc_gid=Z-Q7JFpGyR2sBgNuO_e_ZA&oh=00_AfvY4_Jf-R1TLEa1FwZlAvOFeNfzywoY_DP3kRlSC7lc2Q&oe=698BA863",
+        "https://scontent.fblr1-4.fna.fbcdn.net/v/t39.35426-6/627127896_1660378601637260_4229640340177764051_n.jpg?stp=dst-jpg_s60x60_tt6&_nc_cat=108&ccb=1-7&_nc_sid=c53f8f&_nc_ohc=tROX5Os2mUkQ7kNvwHzGaRU&_nc_oc=AdnCbguZ8TWGeoKt791PNtSbNshyeZycBqqff4vDm88SaTpgC26-RBRWRRCGIPXCdlQ&_nc_zt=14&_nc_ht=scontent.fblr1-4.fna&_nc_gid=Z-Q7JFpGyR2sBgNuO_e_ZA&oh=00_AfsUrLsujynUMVO9J3v_3CpXnAV-lby2KLX0H7QIrXtxig&oe=698BC6D6"
+      ],
+      "has_video": true,
+      "has_carousel": true,
+      "variations_count": 1
+    },
+    {
+      "library_id": "896802713061324",
+      "ad_url": "https://www.facebook.com/ads/library/?id=896802713061324",
+      "start_date": "29 Jan 2026",
+      "days_running": 8,
+      "status": "active",
+      "platforms": [],
+      "ad_text": "COM/PRICING/TRIAL\nPrepare like a Topper for UPSC\n\u2b50\u2b50\u2b50\u2b50\u2b50 (8223 Reviews)\nLearn more\n\u200b\nActive\nLibrary ID: 874437535403584\nStarted running on 5 Feb 2026 \u00b7 Total active time 18 hrs\nPlatforms\n\u200b\n\u200b\n\u200b\n\u200b\nOpen Drop-down\n\u200b\nSee ad details\nSuperKalam\nSponsored\nSave your UPSC attempt by attempting Full Length Diagnostic test and following daily targets with SuperKalam \u26a1\n0:00 / 0:50\nSUPERKALAM.",
+      "cta_type": "Get Offer",
+      "landing_url": "https://superkalam.com/prelims-revision-trial",
+      "landing_domain": "superkalam.com",
+      "media_type": "video",
+      "media_urls": [
+        "https://scontent.fblr1-5.fna.fbcdn.net/v/t39.30808-1/370369004_202272702849324_6404886308834501351_n.jpg?stp=dst-jpg_s148x148_tt6&_nc_cat=103&ccb=1-7&_nc_sid=418b77&_nc_ohc=r01WuqrTJ7UQ7kNvwGGrQdd&_nc_oc=AdnECw5gsjwErLSu6MvDczoJQ1TggL-37Hj9f95Iv2xK07oesK3u6yFyhUGbHP89c78&_nc_zt=24&_nc_ht=scontent.fblr1-5.fna&_nc_gid=ZrbT3ozvSorVY6GAeqwmTA&oh=00_Aft1RHIPPWwpQQviD2a-x5alaA0t98Ui4C461_DSFFG7Zw&oe=698BD2F6",
+        "https://scontent.fblr1-7.fna.fbcdn.net/v/t39.35426-6/624348124_1443173257418514_4114493688948439489_n.jpg?stp=dst-jpg_s60x60_tt6&_nc_cat=110&ccb=1-7&_nc_sid=c53f8f&_nc_ohc=ntLaI2_qGTMQ7kNvwF2AJ44&_nc_oc=AdkYGkGnTETM6ZG6cpy6Bc6ai8TUf8iA9mu2EkDvwRrmqzRLQK1sGDZuP2ZKizHrnng&_nc_zt=14&_nc_ht=scontent.fblr1-7.fna&_nc_gid=ZrbT3ozvSorVY6GAeqwmTA&oh=00_Aft25NM445cxTsmOeCU7WoAgZvMCdAI10qfFPpLcRcCffQ&oe=698BA863",
+        "https://scontent.fblr1-4.fna.fbcdn.net/v/t39.35426-6/627127896_1660378601637260_4229640340177764051_n.jpg?stp=dst-jpg_s60x60_tt6&_nc_cat=108&ccb=1-7&_nc_sid=c53f8f&_nc_ohc=tROX5Os2mUkQ7kNvwHzGaRU&_nc_oc=AdnCbguZ8TWGeoKt791PNtSbNshyeZycBqqff4vDm88SaTpgC26-RBRWRRCGIPXCdlQ&_nc_zt=14&_nc_ht=scontent.fblr1-4.fna&_nc_gid=ZrbT3ozvSorVY6GAeqwmTA&oh=00_AftcVyIGi0oeQuXBXb2VDbNQuXVNGwDQ_QvVoW-4V9jMsg&oe=698BC6D6"
+      ],
+      "has_video": true,
+      "has_carousel": true,
+      "variations_count": 1
+    },
+    {
+      "library_id": "919805107111122",
+      "ad_url": "https://www.facebook.com/ads/library/?id=919805107111122",
+      "start_date": "29 Jan 2026",
+      "days_running": 8,
+      "status": "active",
+      "platforms": [],
+      "ad_text": "COM/PRICING/TRIAL\nPrepare like a Topper for UPSC\n\u2b50\u2b50\u2b50\u2b50\u2b50 (8223 Reviews)\nLearn more\n\u200b\nActive\nLibrary ID: 874437535403584\nStarted running on 5 Feb 2026 \u00b7 Total active time 18 hrs\nPlatforms\n\u200b\n\u200b\n\u200b\n\u200b\nOpen Drop-down\n\u200b\nSee ad details\nSuperKalam\nSponsored\nSave your UPSC attempt by attempting Full Length Diagnostic test and following daily targets with SuperKalam \u26a1\n0:00 / 0:50\nSUPERKALAM.",
+      "cta_type": "Get Offer",
+      "landing_url": "http://superkalam.com/pricing/trial?utm_source=%7B%7Badset.name%7D%7D&utm_medium=%7B%7Bplacement%7D%7D&utm_campaign=%7B%7Bcampaign.name%7D%7D&utm_content=%7B%7Bad.name%7D%7D",
+      "landing_domain": "superkalam.com",
+      "media_type": "video",
+      "media_urls": [
+        "https://scontent.fblr1-5.fna.fbcdn.net/v/t39.30808-1/370369004_202272702849324_6404886308834501351_n.jpg?stp=dst-jpg_s148x148_tt6&_nc_cat=103&ccb=1-7&_nc_sid=418b77&_nc_ohc=r01WuqrTJ7UQ7kNvwGGrQdd&_nc_oc=AdnECw5gsjwErLSu6MvDczoJQ1TggL-37Hj9f95Iv2xK07oesK3u6yFyhUGbHP89c78&_nc_zt=24&_nc_ht=scontent.fblr1-5.fna&_nc_gid=M8IB_9Jn7usGhLlLrY9pow&oh=00_Afu2lnc2MQHen99es9b6eYPrVlmlJVtYLKILiFb_PEstnA&oe=698BD2F6",
+        "https://scontent.fblr1-7.fna.fbcdn.net/v/t39.35426-6/624348124_1443173257418514_4114493688948439489_n.jpg?stp=dst-jpg_s60x60_tt6&_nc_cat=110&ccb=1-7&_nc_sid=c53f8f&_nc_ohc=ntLaI2_qGTMQ7kNvwF2AJ44&_nc_oc=AdkYGkGnTETM6ZG6cpy6Bc6ai8TUf8iA9mu2EkDvwRrmqzRLQK1sGDZuP2ZKizHrnng&_nc_zt=14&_nc_ht=scontent.fblr1-7.fna&_nc_gid=M8IB_9Jn7usGhLlLrY9pow&oh=00_AfvfOiVFoUMi1DOjNS8uxCoBQL-nZ9IxmTymvq_E8z8vVw&oe=698BA863",
+        "https://scontent.fblr1-4.fna.fbcdn.net/v/t39.35426-6/627127896_1660378601637260_4229640340177764051_n.jpg?stp=dst-jpg_s60x60_tt6&_nc_cat=108&ccb=1-7&_nc_sid=c53f8f&_nc_ohc=tROX5Os2mUkQ7kNvwHzGaRU&_nc_oc=AdnCbguZ8TWGeoKt791PNtSbNshyeZycBqqff4vDm88SaTpgC26-RBRWRRCGIPXCdlQ&_nc_zt=14&_nc_ht=scontent.fblr1-4.fna&_nc_gid=M8IB_9Jn7usGhLlLrY9pow&oh=00_AfuRQOr7n6u2xUFU79irfWvqdRLsasznIcc0WEhj3TVz1w&oe=698BC6D6"
+      ],
+      "has_video": true,
+      "has_carousel": true,
+      "variations_count": 1
+    },
+    {
+      "library_id": "1981089159476093",
+      "ad_url": "https://www.facebook.com/ads/library/?id=1981089159476093",
+      "start_date": "29 Jan 2026",
+      "days_running": 8,
+      "status": "active",
+      "platforms": [],
+      "ad_text": "COM/PRICING/TRIAL\nPrepare like a Topper for UPSC\n\u2b50\u2b50\u2b50\u2b50\u2b50 (8223 Reviews)\nLearn more\n\u200b\nActive\nLibrary ID: 874437535403584\nStarted running on 5 Feb 2026 \u00b7 Total active time 18 hrs\nPlatforms\n\u200b\n\u200b\n\u200b\n\u200b\nOpen Drop-down\n\u200b\nSee ad details\nSuperKalam\nSponsored\nSave your UPSC attempt by attempting Full Length Diagnostic test and following daily targets with SuperKalam \u26a1\n0:00 / 0:50\nSUPERKALAM.",
+      "cta_type": "Get Offer",
+      "landing_url": "http://superkalam.com/pricing/trial?utm_source=%7B%7Badset.name%7D%7D&utm_medium=%7B%7Bplacement%7D%7D&utm_campaign=%7B%7Bcampaign.name%7D%7D&utm_content=%7B%7Bad.name%7D%7D",
+      "landing_domain": "superkalam.com",
+      "media_type": "video",
+      "media_urls": [
+        "https://scontent.fblr1-5.fna.fbcdn.net/v/t39.30808-1/370369004_202272702849324_6404886308834501351_n.jpg?stp=dst-jpg_s148x148_tt6&_nc_cat=103&ccb=1-7&_nc_sid=418b77&_nc_ohc=r01WuqrTJ7UQ7kNvwGGrQdd&_nc_oc=AdnECw5gsjwErLSu6MvDczoJQ1TggL-37Hj9f95Iv2xK07oesK3u6yFyhUGbHP89c78&_nc_zt=24&_nc_ht=scontent.fblr1-5.fna&_nc_gid=cfeqysR3UkYbZuWpH2R6Cg&oh=00_AfuAwRa9jbsVKW2uXJnGQYpXzZ6ZOKGckpaWyDO08AhGzQ&oe=698BD2F6",
+        "https://scontent.fblr1-7.fna.fbcdn.net/v/t39.35426-6/624348124_1443173257418514_4114493688948439489_n.jpg?stp=dst-jpg_s60x60_tt6&_nc_cat=110&ccb=1-7&_nc_sid=c53f8f&_nc_ohc=ntLaI2_qGTMQ7kNvwF2AJ44&_nc_oc=AdkYGkGnTETM6ZG6cpy6Bc6ai8TUf8iA9mu2EkDvwRrmqzRLQK1sGDZuP2ZKizHrnng&_nc_zt=14&_nc_ht=scontent.fblr1-7.fna&_nc_gid=cfeqysR3UkYbZuWpH2R6Cg&oh=00_AfvdvzXroxBbrL8SternOxKlQSw0MkMjudxTx5_SvE5h8Q&oe=698BA863",
+        "https://scontent.fblr1-4.fna.fbcdn.net/v/t39.35426-6/627127896_1660378601637260_4229640340177764051_n.jpg?stp=dst-jpg_s60x60_tt6&_nc_cat=108&ccb=1-7&_nc_sid=c53f8f&_nc_ohc=tROX5Os2mUkQ7kNvwHzGaRU&_nc_oc=AdnCbguZ8TWGeoKt791PNtSbNshyeZycBqqff4vDm88SaTpgC26-RBRWRRCGIPXCdlQ&_nc_zt=14&_nc_ht=scontent.fblr1-4.fna&_nc_gid=cfeqysR3UkYbZuWpH2R6Cg&oh=00_AfsEHajH4iIVCeJVHfV-w9sXv8tdf8kYSRFcCWNfG_Nbhg&oe=698BC6D6"
+      ],
+      "has_video": true,
+      "has_carousel": true,
+      "variations_count": 1
+    },
+    {
+      "library_id": "873495538828594",
+      "ad_url": "https://www.facebook.com/ads/library/?id=873495538828594",
+      "start_date": "29 Jan 2026",
+      "days_running": 8,
+      "status": "active",
+      "platforms": [],
+      "ad_text": "COM/PRICING/TRIAL\nPrepare like a Topper for UPSC\n\u2b50\u2b50\u2b50\u2b50\u2b50 (8223 Reviews)\nLearn more\n\u200b\nActive\nLibrary ID: 874437535403584\nStarted running on 5 Feb 2026 \u00b7 Total active time 18 hrs\nPlatforms\n\u200b\n\u200b\n\u200b\n\u200b\nOpen Drop-down\n\u200b\nSee ad details\nSuperKalam\nSponsored\nSave your UPSC attempt by attempting Full Length Diagnostic test and following daily targets with SuperKalam \u26a1\n0:00 / 0:50\nSUPERKALAM.",
+      "cta_type": "Get Offer",
+      "landing_url": "http://superkalam.com/pricing/trial?utm_source=%7B%7Badset.name%7D%7D&utm_medium=%7B%7Bplacement%7D%7D&utm_campaign=%7B%7Bcampaign.name%7D%7D&utm_content=%7B%7Bad.name%7D%7D",
+      "landing_domain": "superkalam.com",
+      "media_type": "video",
+      "media_urls": [
+        "https://scontent.fblr1-5.fna.fbcdn.net/v/t39.30808-1/370369004_202272702849324_6404886308834501351_n.jpg?stp=dst-jpg_s148x148_tt6&_nc_cat=103&ccb=1-7&_nc_sid=418b77&_nc_ohc=r01WuqrTJ7UQ7kNvwGGrQdd&_nc_oc=AdnECw5gsjwErLSu6MvDczoJQ1TggL-37Hj9f95Iv2xK07oesK3u6yFyhUGbHP89c78&_nc_zt=24&_nc_ht=scontent.fblr1-5.fna&_nc_gid=x2ncWOyWJC3JkkND1f9-ow&oh=00_AfvZv5ynbM5EhnnyoZN4cON0-YyD5DY4EnxLxI8sk167nQ&oe=698BD2F6",
+        "https://scontent.fblr1-7.fna.fbcdn.net/v/t39.35426-6/624348124_1443173257418514_4114493688948439489_n.jpg?stp=dst-jpg_s60x60_tt6&_nc_cat=110&ccb=1-7&_nc_sid=c53f8f&_nc_ohc=ntLaI2_qGTMQ7kNvwF2AJ44&_nc_oc=AdkYGkGnTETM6ZG6cpy6Bc6ai8TUf8iA9mu2EkDvwRrmqzRLQK1sGDZuP2ZKizHrnng&_nc_zt=14&_nc_ht=scontent.fblr1-7.fna&_nc_gid=x2ncWOyWJC3JkkND1f9-ow&oh=00_AfvgkaVmmUarMZ1aJGQwKdgx4Ek12f0CWlwNr75HP6C38w&oe=698BA863",
+        "https://scontent.fblr1-4.fna.fbcdn.net/v/t39.35426-6/627127896_1660378601637260_4229640340177764051_n.jpg?stp=dst-jpg_s60x60_tt6&_nc_cat=108&ccb=1-7&_nc_sid=c53f8f&_nc_ohc=tROX5Os2mUkQ7kNvwHzGaRU&_nc_oc=AdnCbguZ8TWGeoKt791PNtSbNshyeZycBqqff4vDm88SaTpgC26-RBRWRRCGIPXCdlQ&_nc_zt=14&_nc_ht=scontent.fblr1-4.fna&_nc_gid=x2ncWOyWJC3JkkND1f9-ow&oh=00_AfswoUiI2K7uAnM1t_ycDui8ctw_CnrK7CaQN-6Gpuao-A&oe=698BC6D6"
+      ],
+      "has_video": true,
+      "has_carousel": true,
+      "variations_count": 1
+    },
+    {
+      "library_id": "1231106551765803",
+      "ad_url": "https://www.facebook.com/ads/library/?id=1231106551765803",
+      "start_date": "29 Jan 2026",
+      "days_running": 8,
+      "status": "active",
+      "platforms": [],
+      "ad_text": "COM/PRICING/TRIAL\nPrepare like a Topper for UPSC\n\u2b50\u2b50\u2b50\u2b50\u2b50 (8223 Reviews)\nLearn more\n\u200b\nActive\nLibrary ID: 874437535403584\nStarted running on 5 Feb 2026 \u00b7 Total active time 18 hrs\nPlatforms\n\u200b\n\u200b\n\u200b\n\u200b\nOpen Drop-down\n\u200b\nSee ad details\nSuperKalam\nSponsored\nSave your UPSC attempt by attempting Full Length Diagnostic test and following daily targets with SuperKalam \u26a1\n0:00 / 0:50\nSUPERKALAM.",
+      "cta_type": "Get Offer",
+      "landing_url": "http://superkalam.com/pricing/trial?utm_source=%7B%7Badset.name%7D%7D&utm_medium=%7B%7Bplacement%7D%7D&utm_campaign=%7B%7Bcampaign.name%7D%7D&utm_content=%7B%7Bad.name%7D%7D",
+      "landing_domain": "superkalam.com",
+      "media_type": "video",
+      "media_urls": [
+        "https://scontent.fblr1-5.fna.fbcdn.net/v/t39.30808-1/370369004_202272702849324_6404886308834501351_n.jpg?stp=dst-jpg_s148x148_tt6&_nc_cat=103&ccb=1-7&_nc_sid=418b77&_nc_ohc=r01WuqrTJ7UQ7kNvwGGrQdd&_nc_oc=AdnECw5gsjwErLSu6MvDczoJQ1TggL-37Hj9f95Iv2xK07oesK3u6yFyhUGbHP89c78&_nc_zt=24&_nc_ht=scontent.fblr1-5.fna&_nc_gid=btGEL1EW6AdOk5QyoN1nTA&oh=00_Afumfce8EhYIk3mckvR_AFi8dGQWUoaTj0pCMCf9Sv1fow&oe=698BD2F6",
+        "https://scontent.fblr1-7.fna.fbcdn.net/v/t39.35426-6/624348124_1443173257418514_4114493688948439489_n.jpg?stp=dst-jpg_s60x60_tt6&_nc_cat=110&ccb=1-7&_nc_sid=c53f8f&_nc_ohc=ntLaI2_qGTMQ7kNvwF2AJ44&_nc_oc=AdkYGkGnTETM6ZG6cpy6Bc6ai8TUf8iA9mu2EkDvwRrmqzRLQK1sGDZuP2ZKizHrnng&_nc_zt=14&_nc_ht=scontent.fblr1-7.fna&_nc_gid=btGEL1EW6AdOk5QyoN1nTA&oh=00_AfsqKb4u-V9mUN0loKMGZQjdf1OrHAFh2sRILoUdUW9T6g&oe=698BA863",
+        "https://scontent.fblr1-4.fna.fbcdn.net/v/t39.35426-6/627127896_1660378601637260_4229640340177764051_n.jpg?stp=dst-jpg_s60x60_tt6&_nc_cat=108&ccb=1-7&_nc_sid=c53f8f&_nc_ohc=tROX5Os2mUkQ7kNvwHzGaRU&_nc_oc=AdnCbguZ8TWGeoKt791PNtSbNshyeZycBqqff4vDm88SaTpgC26-RBRWRRCGIPXCdlQ&_nc_zt=14&_nc_ht=scontent.fblr1-4.fna&_nc_gid=btGEL1EW6AdOk5QyoN1nTA&oh=00_Afv1oTt8_L0nbmExPAyr49CPwJYnZeETJqyf7XzWtMfVyw&oe=698BC6D6"
+      ],
+      "has_video": true,
+      "has_carousel": true,
+      "variations_count": 1
+    },
+    {
+      "library_id": "1447324763421360",
+      "ad_url": "https://www.facebook.com/ads/library/?id=1447324763421360",
+      "start_date": "29 Jan 2026",
+      "days_running": 8,
+      "status": "active",
+      "platforms": [],
+      "ad_text": "COM/PRICING/TRIAL\nPrepare like a Topper for UPSC\n\u2b50\u2b50\u2b50\u2b50\u2b50 (8223 Reviews)\nLearn more\n\u200b\nActive\nLibrary ID: 874437535403584\nStarted running on 5 Feb 2026 \u00b7 Total active time 18 hrs\nPlatforms\n\u200b\n\u200b\n\u200b\n\u200b\nOpen Drop-down\n\u200b\nSee ad details\nSuperKalam\nSponsored\nSave your UPSC attempt by attempting Full Length Diagnostic test and following daily targets with SuperKalam \u26a1\n0:00 / 0:50\nSUPERKALAM.",
+      "cta_type": "Get Offer",
+      "landing_url": "http://superkalam.com/pricing/trial?utm_source=%7B%7Badset.name%7D%7D&utm_medium=%7B%7Bplacement%7D%7D&utm_campaign=%7B%7Bcampaign.name%7D%7D&utm_content=%7B%7Bad.name%7D%7D",
+      "landing_domain": "superkalam.com",
+      "media_type": "video",
+      "media_urls": [
+        "https://scontent.fblr1-5.fna.fbcdn.net/v/t39.30808-1/370369004_202272702849324_6404886308834501351_n.jpg?stp=dst-jpg_s148x148_tt6&_nc_cat=103&ccb=1-7&_nc_sid=418b77&_nc_ohc=r01WuqrTJ7UQ7kNvwGGrQdd&_nc_oc=AdnECw5gsjwErLSu6MvDczoJQ1TggL-37Hj9f95Iv2xK07oesK3u6yFyhUGbHP89c78&_nc_zt=24&_nc_ht=scontent.fblr1-5.fna&_nc_gid=uuw5o64WNfB2XUN4TZB1WA&oh=00_Aft3wmTyrqSt0cYUoCgNOjBCeLwe6wSballnmwgynZ-62w&oe=698BD2F6",
+        "https://scontent.fblr1-7.fna.fbcdn.net/v/t39.35426-6/624348124_1443173257418514_4114493688948439489_n.jpg?stp=dst-jpg_s60x60_tt6&_nc_cat=110&ccb=1-7&_nc_sid=c53f8f&_nc_ohc=ntLaI2_qGTMQ7kNvwF2AJ44&_nc_oc=AdkYGkGnTETM6ZG6cpy6Bc6ai8TUf8iA9mu2EkDvwRrmqzRLQK1sGDZuP2ZKizHrnng&_nc_zt=14&_nc_ht=scontent.fblr1-7.fna&_nc_gid=uuw5o64WNfB2XUN4TZB1WA&oh=00_AftwcbfcPtTM0faRBEtg_4E2ghfpn8HKz4rFeBfrsBPgAQ&oe=698BA863",
+        "https://scontent.fblr1-4.fna.fbcdn.net/v/t39.35426-6/627127896_1660378601637260_4229640340177764051_n.jpg?stp=dst-jpg_s60x60_tt6&_nc_cat=108&ccb=1-7&_nc_sid=c53f8f&_nc_ohc=tROX5Os2mUkQ7kNvwHzGaRU&_nc_oc=AdnCbguZ8TWGeoKt791PNtSbNshyeZycBqqff4vDm88SaTpgC26-RBRWRRCGIPXCdlQ&_nc_zt=14&_nc_ht=scontent.fblr1-4.fna&_nc_gid=uuw5o64WNfB2XUN4TZB1WA&oh=00_AfsFYY_vbuN89Z1-Bwe9zbUvlrUcOCGLx3OCmbOXOR2FaA&oe=698BC6D6"
+      ],
+      "has_video": true,
+      "has_carousel": true,
+      "variations_count": 1
+    },
+    {
+      "library_id": "1583765759556241",
+      "ad_url": "https://www.facebook.com/ads/library/?id=1583765759556241",
+      "start_date": "29 Jan 2026",
+      "days_running": 8,
+      "status": "active",
+      "platforms": [],
+      "ad_text": "COM/PRICING/TRIAL\nPrepare like a Topper for UPSC\n\u2b50\u2b50\u2b50\u2b50\u2b50 (8223 Reviews)\nLearn more\n\u200b\nActive\nLibrary ID: 874437535403584\nStarted running on 5 Feb 2026 \u00b7 Total active time 18 hrs\nPlatforms\n\u200b\n\u200b\n\u200b\n\u200b\nOpen Drop-down\n\u200b\nSee ad details\nSuperKalam\nSponsored\nSave your UPSC attempt by attempting Full Length Diagnostic test and following daily targets with SuperKalam \u26a1\n0:00 / 0:50\nSUPERKALAM.",
+      "cta_type": "Get Offer",
+      "landing_url": "https://superkalam.com/pricing/super-trial",
+      "landing_domain": "superkalam.com",
+      "media_type": "video",
+      "media_urls": [
+        "https://scontent.fblr1-5.fna.fbcdn.net/v/t39.30808-1/370369004_202272702849324_6404886308834501351_n.jpg?stp=dst-jpg_s148x148_tt6&_nc_cat=103&ccb=1-7&_nc_sid=418b77&_nc_ohc=r01WuqrTJ7UQ7kNvwGGrQdd&_nc_oc=AdnECw5gsjwErLSu6MvDczoJQ1TggL-37Hj9f95Iv2xK07oesK3u6yFyhUGbHP89c78&_nc_zt=24&_nc_ht=scontent.fblr1-5.fna&_nc_gid=r0bOtpnCBrSANmil1Syv9g&oh=00_AftWAoo8moHMq2pb4K71aR0BsExRA5mXv0qApC5lhcSc3Q&oe=698BD2F6",
+        "https://scontent.fblr1-7.fna.fbcdn.net/v/t39.35426-6/624348124_1443173257418514_4114493688948439489_n.jpg?stp=dst-jpg_s60x60_tt6&_nc_cat=110&ccb=1-7&_nc_sid=c53f8f&_nc_ohc=ntLaI2_qGTMQ7kNvwF2AJ44&_nc_oc=AdkYGkGnTETM6ZG6cpy6Bc6ai8TUf8iA9mu2EkDvwRrmqzRLQK1sGDZuP2ZKizHrnng&_nc_zt=14&_nc_ht=scontent.fblr1-7.fna&_nc_gid=r0bOtpnCBrSANmil1Syv9g&oh=00_Afv6n7hw5n7o_PDQuO1vsFQ_7DG8-DGkZeAG46rVAzPOFQ&oe=698BA863",
+        "https://scontent.fblr1-4.fna.fbcdn.net/v/t39.35426-6/627127896_1660378601637260_4229640340177764051_n.jpg?stp=dst-jpg_s60x60_tt6&_nc_cat=108&ccb=1-7&_nc_sid=c53f8f&_nc_ohc=tROX5Os2mUkQ7kNvwHzGaRU&_nc_oc=AdnCbguZ8TWGeoKt791PNtSbNshyeZycBqqff4vDm88SaTpgC26-RBRWRRCGIPXCdlQ&_nc_zt=14&_nc_ht=scontent.fblr1-4.fna&_nc_gid=r0bOtpnCBrSANmil1Syv9g&oh=00_AfvNgyH9V1zaY0BBmk7DgV4v3r5l88nG089uANPrOWK16Q&oe=698BC6D6"
+      ],
+      "has_video": true,
+      "has_carousel": true,
+      "variations_count": 1
+    },
+    {
+      "library_id": "769030026239429",
+      "ad_url": "https://www.facebook.com/ads/library/?id=769030026239429",
+      "start_date": "29 Jan 2026",
+      "days_running": 8,
+      "status": "active",
+      "platforms": [],
+      "ad_text": "COM/PRICING/TRIAL\nPrepare like a Topper for UPSC\n\u2b50\u2b50\u2b50\u2b50\u2b50 (8223 Reviews)\nLearn more\n\u200b\nActive\nLibrary ID: 874437535403584\nStarted running on 5 Feb 2026 \u00b7 Total active time 18 hrs\nPlatforms\n\u200b\n\u200b\n\u200b\n\u200b\nOpen Drop-down\n\u200b\nSee ad details\nSuperKalam\nSponsored\nSave your UPSC attempt by attempting Full Length Diagnostic test and following daily targets with SuperKalam \u26a1\n0:00 / 0:50\nSUPERKALAM.",
+      "cta_type": "Get Offer",
+      "landing_url": "http://superkalam.com/pricing/trial?utm_source=%7B%7Badset.name%7D%7D&utm_medium=%7B%7Bplacement%7D%7D&utm_campaign=%7B%7Bcampaign.name%7D%7D&utm_content=%7B%7Bad.name%7D%7D",
+      "landing_domain": "superkalam.com",
+      "media_type": "video",
+      "media_urls": [
+        "https://scontent.fblr1-5.fna.fbcdn.net/v/t39.30808-1/370369004_202272702849324_6404886308834501351_n.jpg?stp=dst-jpg_s148x148_tt6&_nc_cat=103&ccb=1-7&_nc_sid=418b77&_nc_ohc=r01WuqrTJ7UQ7kNvwGGrQdd&_nc_oc=AdnECw5gsjwErLSu6MvDczoJQ1TggL-37Hj9f95Iv2xK07oesK3u6yFyhUGbHP89c78&_nc_zt=24&_nc_ht=scontent.fblr1-5.fna&_nc_gid=x1w9oqySr2_SqBfBh_uhlQ&oh=00_AfstsFEhDaz0iXnlM6wEHt3Rzf35476_djC-CPR4yRa5YQ&oe=698BD2F6",
+        "https://scontent.fblr1-7.fna.fbcdn.net/v/t39.35426-6/624348124_1443173257418514_4114493688948439489_n.jpg?stp=dst-jpg_s60x60_tt6&_nc_cat=110&ccb=1-7&_nc_sid=c53f8f&_nc_ohc=ntLaI2_qGTMQ7kNvwF2AJ44&_nc_oc=AdkYGkGnTETM6ZG6cpy6Bc6ai8TUf8iA9mu2EkDvwRrmqzRLQK1sGDZuP2ZKizHrnng&_nc_zt=14&_nc_ht=scontent.fblr1-7.fna&_nc_gid=x1w9oqySr2_SqBfBh_uhlQ&oh=00_AftIeyBpRtpGwyrXcvfGxhrMEpG8ycpZg4Wp1VXr_LUd9g&oe=698BA863",
+        "https://scontent.fblr1-4.fna.fbcdn.net/v/t39.35426-6/627127896_1660378601637260_4229640340177764051_n.jpg?stp=dst-jpg_s60x60_tt6&_nc_cat=108&ccb=1-7&_nc_sid=c53f8f&_nc_ohc=tROX5Os2mUkQ7kNvwHzGaRU&_nc_oc=AdnCbguZ8TWGeoKt791PNtSbNshyeZycBqqff4vDm88SaTpgC26-RBRWRRCGIPXCdlQ&_nc_zt=14&_nc_ht=scontent.fblr1-4.fna&_nc_gid=x1w9oqySr2_SqBfBh_uhlQ&oh=00_AfvFnoqmLTeF3rYhxbDc-fPWBq5wGiVDRmrtV4SB3i-u-Q&oe=698BC6D6"
+      ],
+      "has_video": true,
+      "has_carousel": true,
+      "variations_count": 1
+    },
+    {
+      "library_id": "896549209417650",
+      "ad_url": "https://www.facebook.com/ads/library/?id=896549209417650",
+      "start_date": "29 Jan 2026",
+      "days_running": 8,
+      "status": "active",
+      "platforms": [],
+      "ad_text": "COM/PRICING/TRIAL\nPrepare like a Topper for UPSC\n\u2b50\u2b50\u2b50\u2b50\u2b50 (8223 Reviews)\nLearn more\n\u200b\nActive\nLibrary ID: 874437535403584\nStarted running on 5 Feb 2026 \u00b7 Total active time 18 hrs\nPlatforms\n\u200b\n\u200b\n\u200b\n\u200b\nOpen Drop-down\n\u200b\nSee ad details\nSuperKalam\nSponsored\nSave your UPSC attempt by attempting Full Length Diagnostic test and following daily targets with SuperKalam \u26a1\n0:00 / 0:50\nSUPERKALAM.",
+      "cta_type": "Get Offer",
+      "landing_url": "http://superkalam.com/pricing/trial?utm_source=%7B%7Badset.name%7D%7D&utm_medium=%7B%7Bplacement%7D%7D&utm_campaign=%7B%7Bcampaign.name%7D%7D&utm_content=%7B%7Bad.name%7D%7D",
+      "landing_domain": "superkalam.com",
+      "media_type": "video",
+      "media_urls": [
+        "https://scontent.fblr1-5.fna.fbcdn.net/v/t39.30808-1/370369004_202272702849324_6404886308834501351_n.jpg?stp=dst-jpg_s148x148_tt6&_nc_cat=103&ccb=1-7&_nc_sid=418b77&_nc_ohc=r01WuqrTJ7UQ7kNvwGGrQdd&_nc_oc=AdnECw5gsjwErLSu6MvDczoJQ1TggL-37Hj9f95Iv2xK07oesK3u6yFyhUGbHP89c78&_nc_zt=24&_nc_ht=scontent.fblr1-5.fna&_nc_gid=AVdOAeZvt33aQ69VqwhMeA&oh=00_AfuKGonSC2kedNKqmXbV7E4yTZtZJuJWW_Z-XfU2dFJ1jQ&oe=698BD2F6",
+        "https://scontent.fblr1-7.fna.fbcdn.net/v/t39.35426-6/624348124_1443173257418514_4114493688948439489_n.jpg?stp=dst-jpg_s60x60_tt6&_nc_cat=110&ccb=1-7&_nc_sid=c53f8f&_nc_ohc=ntLaI2_qGTMQ7kNvwF2AJ44&_nc_oc=AdkYGkGnTETM6ZG6cpy6Bc6ai8TUf8iA9mu2EkDvwRrmqzRLQK1sGDZuP2ZKizHrnng&_nc_zt=14&_nc_ht=scontent.fblr1-7.fna&_nc_gid=AVdOAeZvt33aQ69VqwhMeA&oh=00_Afvy93ReGmbqiNr6ne5lG8O7sY7MoApgwqfbnXwIW7IBoQ&oe=698BA863",
+        "https://scontent.fblr1-4.fna.fbcdn.net/v/t39.35426-6/627127896_1660378601637260_4229640340177764051_n.jpg?stp=dst-jpg_s60x60_tt6&_nc_cat=108&ccb=1-7&_nc_sid=c53f8f&_nc_ohc=tROX5Os2mUkQ7kNvwHzGaRU&_nc_oc=AdnCbguZ8TWGeoKt791PNtSbNshyeZycBqqff4vDm88SaTpgC26-RBRWRRCGIPXCdlQ&_nc_zt=14&_nc_ht=scontent.fblr1-4.fna&_nc_gid=AVdOAeZvt33aQ69VqwhMeA&oh=00_AfseRlQnUArXEi0GRr69-0mgYI-m_E3h09Kxam0a2XLOeg&oe=698BC6D6"
+      ],
+      "has_video": true,
+      "has_carousel": true,
+      "variations_count": 1
+    },
+    {
+      "library_id": "909574344976270",
+      "ad_url": "https://www.facebook.com/ads/library/?id=909574344976270",
+      "start_date": "29 Jan 2026",
+      "days_running": 8,
+      "status": "active",
+      "platforms": [],
+      "ad_text": "COM/PRICING/TRIAL\nPrepare like a Topper for UPSC\n\u2b50\u2b50\u2b50\u2b50\u2b50 (8223 Reviews)\nLearn more\n\u200b\nActive\nLibrary ID: 874437535403584\nStarted running on 5 Feb 2026 \u00b7 Total active time 18 hrs\nPlatforms\n\u200b\n\u200b\n\u200b\n\u200b\nOpen Drop-down\n\u200b\nSee ad details\nSuperKalam\nSponsored\nSave your UPSC attempt by attempting Full Length Diagnostic test and following daily targets with SuperKalam \u26a1\n0:00 / 0:50\nSUPERKALAM.",
+      "cta_type": "Get Offer",
+      "landing_url": "https://superkalam.com/pricing/super-trial",
+      "landing_domain": "superkalam.com",
+      "media_type": "video",
+      "media_urls": [
+        "https://scontent.fblr1-5.fna.fbcdn.net/v/t39.30808-1/370369004_202272702849324_6404886308834501351_n.jpg?stp=dst-jpg_s148x148_tt6&_nc_cat=103&ccb=1-7&_nc_sid=418b77&_nc_ohc=r01WuqrTJ7UQ7kNvwGGrQdd&_nc_oc=AdnECw5gsjwErLSu6MvDczoJQ1TggL-37Hj9f95Iv2xK07oesK3u6yFyhUGbHP89c78&_nc_zt=24&_nc_ht=scontent.fblr1-5.fna&_nc_gid=tmj1ahbEovu6O7Jr0kKEag&oh=00_AfvfQTsi4XtuwV97rI9ydIznQTv4EMCQvyacWQndA7c5eA&oe=698BD2F6",
+        "https://scontent.fblr1-7.fna.fbcdn.net/v/t39.35426-6/624348124_1443173257418514_4114493688948439489_n.jpg?stp=dst-jpg_s60x60_tt6&_nc_cat=110&ccb=1-7&_nc_sid=c53f8f&_nc_ohc=ntLaI2_qGTMQ7kNvwF2AJ44&_nc_oc=AdkYGkGnTETM6ZG6cpy6Bc6ai8TUf8iA9mu2EkDvwRrmqzRLQK1sGDZuP2ZKizHrnng&_nc_zt=14&_nc_ht=scontent.fblr1-7.fna&_nc_gid=tmj1ahbEovu6O7Jr0kKEag&oh=00_AftYfzBYP1xO25_EnToBz4xAgDhdF0vKfa20JDeCsk1J2Q&oe=698BA863",
+        "https://scontent.fblr1-4.fna.fbcdn.net/v/t39.35426-6/627127896_1660378601637260_4229640340177764051_n.jpg?stp=dst-jpg_s60x60_tt6&_nc_cat=108&ccb=1-7&_nc_sid=c53f8f&_nc_ohc=tROX5Os2mUkQ7kNvwHzGaRU&_nc_oc=AdnCbguZ8TWGeoKt791PNtSbNshyeZycBqqff4vDm88SaTpgC26-RBRWRRCGIPXCdlQ&_nc_zt=14&_nc_ht=scontent.fblr1-4.fna&_nc_gid=tmj1ahbEovu6O7Jr0kKEag&oh=00_AfsYyAZ8VlAxROQwpYCdsDWedw9wGuBLM4jO6eTwrduHsA&oe=698BC6D6"
+      ],
+      "has_video": true,
+      "has_carousel": true,
+      "variations_count": 1
+    },
+    {
+      "library_id": "4324666681193507",
+      "ad_url": "https://www.facebook.com/ads/library/?id=4324666681193507",
+      "start_date": "29 Jan 2026",
+      "days_running": 8,
+      "status": "active",
+      "platforms": [],
+      "ad_text": "COM/PRICING/TRIAL\nPrepare like a Topper for UPSC\n\u2b50\u2b50\u2b50\u2b50\u2b50 (8223 Reviews)\nLearn more\n\u200b\nActive\nLibrary ID: 874437535403584\nStarted running on 5 Feb 2026 \u00b7 Total active time 18 hrs\nPlatforms\n\u200b\n\u200b\n\u200b\n\u200b\nOpen Drop-down\n\u200b\nSee ad details\nSuperKalam\nSponsored\nSave your UPSC attempt by attempting Full Length Diagnostic test and following daily targets with SuperKalam \u26a1\n0:00 / 0:50\nSUPERKALAM.",
+      "cta_type": "Get Offer",
+      "landing_url": "https://superkalam.com/prelims-revision-trial",
+      "landing_domain": "superkalam.com",
+      "media_type": "video",
+      "media_urls": [
+        "https://scontent.fblr1-5.fna.fbcdn.net/v/t39.30808-1/370369004_202272702849324_6404886308834501351_n.jpg?stp=dst-jpg_s148x148_tt6&_nc_cat=103&ccb=1-7&_nc_sid=418b77&_nc_ohc=r01WuqrTJ7UQ7kNvwGGrQdd&_nc_oc=AdnECw5gsjwErLSu6MvDczoJQ1TggL-37Hj9f95Iv2xK07oesK3u6yFyhUGbHP89c78&_nc_zt=24&_nc_ht=scontent.fblr1-5.fna&_nc_gid=YqFpJVjck80RS_6Qdf2wyA&oh=00_Afvw7Y2hLNtExTyMzvSEF6LRqE1CHW9L7E1R5RoBIYYNQA&oe=698BD2F6",
+        "https://scontent.fblr1-7.fna.fbcdn.net/v/t39.35426-6/624348124_1443173257418514_4114493688948439489_n.jpg?stp=dst-jpg_s60x60_tt6&_nc_cat=110&ccb=1-7&_nc_sid=c53f8f&_nc_ohc=ntLaI2_qGTMQ7kNvwF2AJ44&_nc_oc=AdkYGkGnTETM6ZG6cpy6Bc6ai8TUf8iA9mu2EkDvwRrmqzRLQK1sGDZuP2ZKizHrnng&_nc_zt=14&_nc_ht=scontent.fblr1-7.fna&_nc_gid=YqFpJVjck80RS_6Qdf2wyA&oh=00_Afu79KCUC2OCUbjfbZ-W-XTrzShXqwH5oZtrA4YM6FZxcg&oe=698BA863",
+        "https://scontent.fblr1-4.fna.fbcdn.net/v/t39.35426-6/627127896_1660378601637260_4229640340177764051_n.jpg?stp=dst-jpg_s60x60_tt6&_nc_cat=108&ccb=1-7&_nc_sid=c53f8f&_nc_ohc=tROX5Os2mUkQ7kNvwHzGaRU&_nc_oc=AdnCbguZ8TWGeoKt791PNtSbNshyeZycBqqff4vDm88SaTpgC26-RBRWRRCGIPXCdlQ&_nc_zt=14&_nc_ht=scontent.fblr1-4.fna&_nc_gid=YqFpJVjck80RS_6Qdf2wyA&oh=00_AfuR3GdU1X75XmYMs9x2CgZqqbSwmNWSLPEzVb2qV-9aGQ&oe=698BC6D6"
+      ],
+      "has_video": true,
+      "has_carousel": true,
+      "variations_count": 1
+    },
+    {
+      "library_id": "791002800679128",
+      "ad_url": "https://www.facebook.com/ads/library/?id=791002800679128",
+      "start_date": "29 Jan 2026",
+      "days_running": 8,
+      "status": "active",
+      "platforms": [],
+      "ad_text": "COM/PRICING/TRIAL\nPrepare like a Topper for UPSC\n\u2b50\u2b50\u2b50\u2b50\u2b50 (8223 Reviews)\nLearn more\n\u200b\nActive\nLibrary ID: 874437535403584\nStarted running on 5 Feb 2026 \u00b7 Total active time 18 hrs\nPlatforms\n\u200b\n\u200b\n\u200b\n\u200b\nOpen Drop-down\n\u200b\nSee ad details\nSuperKalam\nSponsored\nSave your UPSC attempt by attempting Full Length Diagnostic test and following daily targets with SuperKalam \u26a1\n0:00 / 0:50\nSUPERKALAM.",
+      "cta_type": "Get Offer",
+      "landing_url": "https://superkalam.com/prelims-revision-trial",
+      "landing_domain": "superkalam.com",
+      "media_type": "video",
+      "media_urls": [
+        "https://scontent.fblr1-5.fna.fbcdn.net/v/t39.30808-1/370369004_202272702849324_6404886308834501351_n.jpg?stp=dst-jpg_s148x148_tt6&_nc_cat=103&ccb=1-7&_nc_sid=418b77&_nc_ohc=r01WuqrTJ7UQ7kNvwGGrQdd&_nc_oc=AdnECw5gsjwErLSu6MvDczoJQ1TggL-37Hj9f95Iv2xK07oesK3u6yFyhUGbHP89c78&_nc_zt=24&_nc_ht=scontent.fblr1-5.fna&_nc_gid=D2fbiRgDzfpvmzumwgn0Tw&oh=00_AfvtH-rqNQRqq1MjXsfNq3ByNVtsjyYl1fKTY6HKvVhCHA&oe=698BD2F6",
+        "https://scontent.fblr1-7.fna.fbcdn.net/v/t39.35426-6/624348124_1443173257418514_4114493688948439489_n.jpg?stp=dst-jpg_s60x60_tt6&_nc_cat=110&ccb=1-7&_nc_sid=c53f8f&_nc_ohc=ntLaI2_qGTMQ7kNvwF2AJ44&_nc_oc=AdkYGkGnTETM6ZG6cpy6Bc6ai8TUf8iA9mu2EkDvwRrmqzRLQK1sGDZuP2ZKizHrnng&_nc_zt=14&_nc_ht=scontent.fblr1-7.fna&_nc_gid=D2fbiRgDzfpvmzumwgn0Tw&oh=00_AfvFD-2A0Zkht8-OD9eZkjgdjsF-6-Qnei6LhME5vIXp0w&oe=698BA863",
+        "https://scontent.fblr1-4.fna.fbcdn.net/v/t39.35426-6/627127896_1660378601637260_4229640340177764051_n.jpg?stp=dst-jpg_s60x60_tt6&_nc_cat=108&ccb=1-7&_nc_sid=c53f8f&_nc_ohc=tROX5Os2mUkQ7kNvwHzGaRU&_nc_oc=AdnCbguZ8TWGeoKt791PNtSbNshyeZycBqqff4vDm88SaTpgC26-RBRWRRCGIPXCdlQ&_nc_zt=14&_nc_ht=scontent.fblr1-4.fna&_nc_gid=D2fbiRgDzfpvmzumwgn0Tw&oh=00_Afs9lTc_JQKlhnc9sjfJmGz8xrUalds8s81oeA9AmuG_tw&oe=698BC6D6"
+      ],
+      "has_video": true,
+      "has_carousel": true,
+      "variations_count": 1
+    },
+    {
+      "library_id": "2161517674604420",
+      "ad_url": "https://www.facebook.com/ads/library/?id=2161517674604420",
+      "start_date": "29 Jan 2026",
+      "days_running": 8,
+      "status": "active",
+      "platforms": [],
+      "ad_text": "COM/PRICING/TRIAL\nPrepare like a Topper for UPSC\n\u2b50\u2b50\u2b50\u2b50\u2b50 (8223 Reviews)\nLearn more\n\u200b\nActive\nLibrary ID: 874437535403584\nStarted running on 5 Feb 2026 \u00b7 Total active time 18 hrs\nPlatforms\n\u200b\n\u200b\n\u200b\n\u200b\nOpen Drop-down\n\u200b\nSee ad details\nSuperKalam\nSponsored\nSave your UPSC attempt by attempting Full Length Diagnostic test and following daily targets with SuperKalam \u26a1\n0:00 / 0:50\nSUPERKALAM.",
+      "cta_type": "Get Offer",
+      "landing_url": "https://superkalam.com/pricing/super-trial",
+      "landing_domain": "superkalam.com",
+      "media_type": "video",
+      "media_urls": [
+        "https://scontent.fblr1-5.fna.fbcdn.net/v/t39.30808-1/370369004_202272702849324_6404886308834501351_n.jpg?stp=dst-jpg_s148x148_tt6&_nc_cat=103&ccb=1-7&_nc_sid=418b77&_nc_ohc=r01WuqrTJ7UQ7kNvwGGrQdd&_nc_oc=AdnECw5gsjwErLSu6MvDczoJQ1TggL-37Hj9f95Iv2xK07oesK3u6yFyhUGbHP89c78&_nc_zt=24&_nc_ht=scontent.fblr1-5.fna&_nc_gid=GVPugS4-LMOwmwPy1uMviw&oh=00_Afsznh9C-wvvaQfNm6er8F9T2tAo165_k7YOYVZVkCqxLQ&oe=698BD2F6",
+        "https://scontent.fblr1-7.fna.fbcdn.net/v/t39.35426-6/624348124_1443173257418514_4114493688948439489_n.jpg?stp=dst-jpg_s60x60_tt6&_nc_cat=110&ccb=1-7&_nc_sid=c53f8f&_nc_ohc=ntLaI2_qGTMQ7kNvwF2AJ44&_nc_oc=AdkYGkGnTETM6ZG6cpy6Bc6ai8TUf8iA9mu2EkDvwRrmqzRLQK1sGDZuP2ZKizHrnng&_nc_zt=14&_nc_ht=scontent.fblr1-7.fna&_nc_gid=GVPugS4-LMOwmwPy1uMviw&oh=00_AfsRYqnAPS7SPSphgXu2LI_g6x1IScJNBk9pgHtQW7VOmQ&oe=698BA863",
+        "https://scontent.fblr1-4.fna.fbcdn.net/v/t39.35426-6/627127896_1660378601637260_4229640340177764051_n.jpg?stp=dst-jpg_s60x60_tt6&_nc_cat=108&ccb=1-7&_nc_sid=c53f8f&_nc_ohc=tROX5Os2mUkQ7kNvwHzGaRU&_nc_oc=AdnCbguZ8TWGeoKt791PNtSbNshyeZycBqqff4vDm88SaTpgC26-RBRWRRCGIPXCdlQ&_nc_zt=14&_nc_ht=scontent.fblr1-4.fna&_nc_gid=GVPugS4-LMOwmwPy1uMviw&oh=00_AftJf6cfAWnBgzNcI8tpccpXj4KOdA6Drp_EFCCJQjwnEw&oe=698BC6D6"
+      ],
+      "has_video": true,
+      "has_carousel": true,
+      "variations_count": 1
+    },
+    {
+      "library_id": "917126020781350",
+      "ad_url": "https://www.facebook.com/ads/library/?id=917126020781350",
+      "start_date": "29 Jan 2026",
+      "days_running": 8,
+      "status": "active",
+      "platforms": [],
+      "ad_text": "COM/PRICING/TRIAL\nPrepare like a Topper for UPSC\n\u2b50\u2b50\u2b50\u2b50\u2b50 (8223 Reviews)\nLearn more\n\u200b\nActive\nLibrary ID: 874437535403584\nStarted running on 5 Feb 2026 \u00b7 Total active time 18 hrs\nPlatforms\n\u200b\n\u200b\n\u200b\n\u200b\nOpen Drop-down\n\u200b\nSee ad details\nSuperKalam\nSponsored\nSave your UPSC attempt by attempting Full Length Diagnostic test and following daily targets with SuperKalam \u26a1\n0:00 / 0:50\nSUPERKALAM.",
+      "cta_type": "Get Offer",
+      "landing_url": "https://superkalam.com/pricing/super-trial",
+      "landing_domain": "superkalam.com",
+      "media_type": "video",
+      "media_urls": [
+        "https://scontent.fblr1-5.fna.fbcdn.net/v/t39.30808-1/370369004_202272702849324_6404886308834501351_n.jpg?stp=dst-jpg_s148x148_tt6&_nc_cat=103&ccb=1-7&_nc_sid=418b77&_nc_ohc=r01WuqrTJ7UQ7kNvwGGrQdd&_nc_oc=AdnECw5gsjwErLSu6MvDczoJQ1TggL-37Hj9f95Iv2xK07oesK3u6yFyhUGbHP89c78&_nc_zt=24&_nc_ht=scontent.fblr1-5.fna&_nc_gid=TvbU_4289_BNBXY2mpY18w&oh=00_Afv03shKaU45Aoi2IuG7ZeRJnx31JtaroiGWimcVa8Ad0g&oe=698BD2F6",
+        "https://scontent.fblr1-7.fna.fbcdn.net/v/t39.35426-6/624348124_1443173257418514_4114493688948439489_n.jpg?stp=dst-jpg_s60x60_tt6&_nc_cat=110&ccb=1-7&_nc_sid=c53f8f&_nc_ohc=ntLaI2_qGTMQ7kNvwF2AJ44&_nc_oc=AdkYGkGnTETM6ZG6cpy6Bc6ai8TUf8iA9mu2EkDvwRrmqzRLQK1sGDZuP2ZKizHrnng&_nc_zt=14&_nc_ht=scontent.fblr1-7.fna&_nc_gid=TvbU_4289_BNBXY2mpY18w&oh=00_Aftgb1s2ZNghfAvXEBzNMhfYpX_337SeBAIdaSMC64BU8A&oe=698BA863",
+        "https://scontent.fblr1-4.fna.fbcdn.net/v/t39.35426-6/627127896_1660378601637260_4229640340177764051_n.jpg?stp=dst-jpg_s60x60_tt6&_nc_cat=108&ccb=1-7&_nc_sid=c53f8f&_nc_ohc=tROX5Os2mUkQ7kNvwHzGaRU&_nc_oc=AdnCbguZ8TWGeoKt791PNtSbNshyeZycBqqff4vDm88SaTpgC26-RBRWRRCGIPXCdlQ&_nc_zt=14&_nc_ht=scontent.fblr1-4.fna&_nc_gid=TvbU_4289_BNBXY2mpY18w&oh=00_AfsaMo8lF17RW7jcafIDReYyfHiVPGye5fCPTdeDfQDBug&oe=698BC6D6"
+      ],
+      "has_video": true,
+      "has_carousel": true,
+      "variations_count": 1
+    },
+    {
+      "library_id": "1223697146535443",
+      "ad_url": "https://www.facebook.com/ads/library/?id=1223697146535443",
+      "start_date": "29 Jan 2026",
+      "days_running": 8,
+      "status": "active",
+      "platforms": [],
+      "ad_text": "COM/PRICING/TRIAL\nPrepare like a Topper for UPSC\n\u2b50\u2b50\u2b50\u2b50\u2b50 (8223 Reviews)\nLearn more\n\u200b\nActive\nLibrary ID: 874437535403584\nStarted running on 5 Feb 2026 \u00b7 Total active time 18 hrs\nPlatforms\n\u200b\n\u200b\n\u200b\n\u200b\nOpen Drop-down\n\u200b\nSee ad details\nSuperKalam\nSponsored\nSave your UPSC attempt by attempting Full Length Diagnostic test and following daily targets with SuperKalam \u26a1\n0:00 / 0:50\nSUPERKALAM.",
+      "cta_type": "Get Offer",
+      "landing_url": "https://superkalam.com/pricing/super-trial",
+      "landing_domain": "superkalam.com",
+      "media_type": "video",
+      "media_urls": [
+        "https://scontent.fblr1-5.fna.fbcdn.net/v/t39.30808-1/370369004_202272702849324_6404886308834501351_n.jpg?stp=dst-jpg_s148x148_tt6&_nc_cat=103&ccb=1-7&_nc_sid=418b77&_nc_ohc=r01WuqrTJ7UQ7kNvwGGrQdd&_nc_oc=AdnECw5gsjwErLSu6MvDczoJQ1TggL-37Hj9f95Iv2xK07oesK3u6yFyhUGbHP89c78&_nc_zt=24&_nc_ht=scontent.fblr1-5.fna&_nc_gid=A0KCosVHxCsPiMVjlQiNpg&oh=00_AfuWAyEX9GKR6JILBYiBmBirXV81GqcF81ruIRF8u31Psg&oe=698BD2F6",
+        "https://scontent.fblr1-7.fna.fbcdn.net/v/t39.35426-6/624348124_1443173257418514_4114493688948439489_n.jpg?stp=dst-jpg_s60x60_tt6&_nc_cat=110&ccb=1-7&_nc_sid=c53f8f&_nc_ohc=ntLaI2_qGTMQ7kNvwF2AJ44&_nc_oc=AdkYGkGnTETM6ZG6cpy6Bc6ai8TUf8iA9mu2EkDvwRrmqzRLQK1sGDZuP2ZKizHrnng&_nc_zt=14&_nc_ht=scontent.fblr1-7.fna&_nc_gid=A0KCosVHxCsPiMVjlQiNpg&oh=00_AfuVz5-2KnRLfNDnRs6wc7q59YGYg6T7X6eEXKjmJq-8wQ&oe=698BA863",
+        "https://scontent.fblr1-4.fna.fbcdn.net/v/t39.35426-6/627127896_1660378601637260_4229640340177764051_n.jpg?stp=dst-jpg_s60x60_tt6&_nc_cat=108&ccb=1-7&_nc_sid=c53f8f&_nc_ohc=tROX5Os2mUkQ7kNvwHzGaRU&_nc_oc=AdnCbguZ8TWGeoKt791PNtSbNshyeZycBqqff4vDm88SaTpgC26-RBRWRRCGIPXCdlQ&_nc_zt=14&_nc_ht=scontent.fblr1-4.fna&_nc_gid=A0KCosVHxCsPiMVjlQiNpg&oh=00_AftzhTJXo1raLV6PUryy-zZU4rS3BPtBgWKJCmwuv3Bdtg&oe=698BC6D6"
+      ],
+      "has_video": true,
+      "has_carousel": true,
+      "variations_count": 1
+    },
+    {
+      "library_id": "914294970985773",
+      "ad_url": "https://www.facebook.com/ads/library/?id=914294970985773",
+      "start_date": "29 Jan 2026",
+      "days_running": 8,
+      "status": "active",
+      "platforms": [],
+      "ad_text": "COM/PRICING/TRIAL\nPrepare like a Topper for UPSC\n\u2b50\u2b50\u2b50\u2b50\u2b50 (8223 Reviews)\nLearn more\n\u200b\nActive\nLibrary ID: 874437535403584\nStarted running on 5 Feb 2026 \u00b7 Total active time 18 hrs\nPlatforms\n\u200b\n\u200b\n\u200b\n\u200b\nOpen Drop-down\n\u200b\nSee ad details\nSuperKalam\nSponsored\nSave your UPSC attempt by attempting Full Length Diagnostic test and following daily targets with SuperKalam \u26a1\n0:00 / 0:50\nSUPERKALAM.",
+      "cta_type": "Get Offer",
+      "landing_url": "https://superkalam.com/pricing/super-trial",
+      "landing_domain": "superkalam.com",
+      "media_type": "video",
+      "media_urls": [
+        "https://scontent.fblr1-5.fna.fbcdn.net/v/t39.30808-1/370369004_202272702849324_6404886308834501351_n.jpg?stp=dst-jpg_s148x148_tt6&_nc_cat=103&ccb=1-7&_nc_sid=418b77&_nc_ohc=r01WuqrTJ7UQ7kNvwGGrQdd&_nc_oc=AdnECw5gsjwErLSu6MvDczoJQ1TggL-37Hj9f95Iv2xK07oesK3u6yFyhUGbHP89c78&_nc_zt=24&_nc_ht=scontent.fblr1-5.fna&_nc_gid=5ZU_BaCslYj5x-So8LdEpA&oh=00_Afu9CKb2iJX6vBfkjWZE3xp_xxfWvRKCVoYF_vCjw6hNuw&oe=698BD2F6",
+        "https://scontent.fblr1-7.fna.fbcdn.net/v/t39.35426-6/624348124_1443173257418514_4114493688948439489_n.jpg?stp=dst-jpg_s60x60_tt6&_nc_cat=110&ccb=1-7&_nc_sid=c53f8f&_nc_ohc=ntLaI2_qGTMQ7kNvwF2AJ44&_nc_oc=AdkYGkGnTETM6ZG6cpy6Bc6ai8TUf8iA9mu2EkDvwRrmqzRLQK1sGDZuP2ZKizHrnng&_nc_zt=14&_nc_ht=scontent.fblr1-7.fna&_nc_gid=5ZU_BaCslYj5x-So8LdEpA&oh=00_AfuJ_wBomTfX1Wm6ZB6_ZDRm3gVoN-OaZcYaxBoAmiKGJw&oe=698BA863",
+        "https://scontent.fblr1-4.fna.fbcdn.net/v/t39.35426-6/627127896_1660378601637260_4229640340177764051_n.jpg?stp=dst-jpg_s60x60_tt6&_nc_cat=108&ccb=1-7&_nc_sid=c53f8f&_nc_ohc=tROX5Os2mUkQ7kNvwHzGaRU&_nc_oc=AdnCbguZ8TWGeoKt791PNtSbNshyeZycBqqff4vDm88SaTpgC26-RBRWRRCGIPXCdlQ&_nc_zt=14&_nc_ht=scontent.fblr1-4.fna&_nc_gid=5ZU_BaCslYj5x-So8LdEpA&oh=00_Aft3nm3kfZVWYVT3a1943Vg61tGnTKGXOHkuZ4ZN_y3rGg&oe=698BC6D6"
+      ],
+      "has_video": true,
+      "has_carousel": true,
+      "variations_count": 1
+    },
+    {
+      "library_id": "3195261803987785",
+      "ad_url": "https://www.facebook.com/ads/library/?id=3195261803987785",
+      "start_date": "29 Jan 2026",
+      "days_running": 8,
+      "status": "active",
+      "platforms": [],
+      "ad_text": "COM/PRICING/TRIAL\nPrepare like a Topper for UPSC\n\u2b50\u2b50\u2b50\u2b50\u2b50 (8223 Reviews)\nLearn more\n\u200b\nActive\nLibrary ID: 874437535403584\nStarted running on 5 Feb 2026 \u00b7 Total active time 18 hrs\nPlatforms\n\u200b\n\u200b\n\u200b\n\u200b\nOpen Drop-down\n\u200b\nSee ad details\nSuperKalam\nSponsored\nSave your UPSC attempt by attempting Full Length Diagnostic test and following daily targets with SuperKalam \u26a1\n0:00 / 0:50\nSUPERKALAM.",
+      "cta_type": "Get Offer",
+      "landing_url": "http://superkalam.com/pricing/trial?utm_source=%7B%7Badset.name%7D%7D&utm_medium=%7B%7Bplacement%7D%7D&utm_campaign=%7B%7Bcampaign.name%7D%7D&utm_content=%7B%7Bad.name%7D%7D",
+      "landing_domain": "superkalam.com",
+      "media_type": "video",
+      "media_urls": [
+        "https://scontent.fblr1-5.fna.fbcdn.net/v/t39.30808-1/370369004_202272702849324_6404886308834501351_n.jpg?stp=dst-jpg_s148x148_tt6&_nc_cat=103&ccb=1-7&_nc_sid=418b77&_nc_ohc=r01WuqrTJ7UQ7kNvwGGrQdd&_nc_oc=AdnECw5gsjwErLSu6MvDczoJQ1TggL-37Hj9f95Iv2xK07oesK3u6yFyhUGbHP89c78&_nc_zt=24&_nc_ht=scontent.fblr1-5.fna&_nc_gid=mcPN5HPRfQpVsyU7vmd_kw&oh=00_AftUcZoyDzzTw1Wvg-Y_lEAVowxsXx_PpWDelXPRhpttpg&oe=698BD2F6",
+        "https://scontent.fblr1-7.fna.fbcdn.net/v/t39.35426-6/624348124_1443173257418514_4114493688948439489_n.jpg?stp=dst-jpg_s60x60_tt6&_nc_cat=110&ccb=1-7&_nc_sid=c53f8f&_nc_ohc=ntLaI2_qGTMQ7kNvwF2AJ44&_nc_oc=AdkYGkGnTETM6ZG6cpy6Bc6ai8TUf8iA9mu2EkDvwRrmqzRLQK1sGDZuP2ZKizHrnng&_nc_zt=14&_nc_ht=scontent.fblr1-7.fna&_nc_gid=mcPN5HPRfQpVsyU7vmd_kw&oh=00_Aft_Jbsb56MpEv5izmdKYSTHJhQQojco4FXxptJSTkdoBw&oe=698BA863",
+        "https://scontent.fblr1-4.fna.fbcdn.net/v/t39.35426-6/627127896_1660378601637260_4229640340177764051_n.jpg?stp=dst-jpg_s60x60_tt6&_nc_cat=108&ccb=1-7&_nc_sid=c53f8f&_nc_ohc=tROX5Os2mUkQ7kNvwHzGaRU&_nc_oc=AdnCbguZ8TWGeoKt791PNtSbNshyeZycBqqff4vDm88SaTpgC26-RBRWRRCGIPXCdlQ&_nc_zt=14&_nc_ht=scontent.fblr1-4.fna&_nc_gid=mcPN5HPRfQpVsyU7vmd_kw&oh=00_AfsN2WWA_xq27x4UzW-1m9zSdDsLXrgF-WN6E9RIAbtrFg&oe=698BC6D6"
+      ],
+      "has_video": true,
+      "has_carousel": true,
+      "variations_count": 1
+    }
+  ]
+}

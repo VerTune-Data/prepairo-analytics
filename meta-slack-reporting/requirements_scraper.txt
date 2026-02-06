@@ -1,0 +1,2 @@
+# Requirements for competitor_ads_scraper.py
+playwright==1.41.0

@@ -23,11 +23,34 @@ from modules.chart_generator import ChartGenerator
 from modules.slack_formatter import SlackFormatter
 from modules.delta_calculator import DeltaCalculator
 from modules.s3_uploader import S3ChartUploader
+from modules.dashboard_generator import DashboardGenerator
+
+# Competitor scraping (optional)
+async def scrape_competitors_async():
+    """Scrape competitor intelligence if enabled."""
+    try:
+        from competitor_intel_scraper import CompetitorIntelScraper
+        scraper = CompetitorIntelScraper(headless=True)
+        results = []
+        await scraper.start()
+        for comp in ['superkalam', 'csewhy', 'prepairo']:
+            try:
+                result = await scraper.scrape_competitor(comp)
+                results.append(result)
+            except Exception as e:
+                logging.warning(f"Failed to scrape {comp}: {e}")
+        await scraper.stop()
+        return results
+    except Exception as e:
+        logging.error(f"Competitor scraping failed: {e}")
+        return None
 
 # Parse command line arguments
 parser = argparse.ArgumentParser(description='Meta Ads 8-Hour Intelligent Reporter')
-parser.add_argument('--account', type=str, required=True, choices=['upsc', 'gre', 'test'], 
+parser.add_argument('--account', type=str, required=True, choices=['upsc', 'gre', 'test'],
                     help='Account to run report for (upsc, gre, or test)')
+parser.add_argument('--with-competitors', action='store_true',
+                    help='Include competitor intelligence scraping (adds ~5 min)')
 args = parser.parse_args()
 
 # Load environment variables for specific account
@@ -91,6 +114,15 @@ def main():
     logger.info("=" * 80)
     logger.info(f"Starting Meta Ads {REPORT_INTERVAL_HOURS}-Hour Intelligent Reporter for {ACCOUNT_NAME}")
     logger.info("=" * 80)
+
+    # Scrape competitors if enabled
+    competitor_intel = None
+    if args.with_competitors:
+        logger.info("Scraping competitor intelligence...")
+        import asyncio
+        competitor_intel = asyncio.run(scrape_competitors_async())
+        if competitor_intel:
+            logger.info(f"Scraped {len(competitor_intel)} competitors")
     
     # Validate environment
     if not all([META_ADS_ACCOUNT_ID, META_ACCESS_TOKEN, SLACK_WEBHOOK_URL]):
@@ -232,12 +264,30 @@ def main():
                 if conversion_url:
                     logger.info(f"Conversion chart uploaded to S3: {conversion_url}")
 
+            # Generate HTML Dashboard for first run
+            dashboard_url = None
+            if claude_api_key:
+                logger.info("Generating HTML dashboard...")
+                dashboard_gen = DashboardGenerator(claude_api_key, model=CLAUDE_MODEL)
+                dashboard_html = dashboard_gen.generate_dashboard(snapshot_data, None, ACCOUNT_NAME, competitor_intel=competitor_intel)
+
+                # Save dashboard locally
+                dashboard_path = CHARTS_PATH / f'dashboard_{snapshot_id}.html'
+                with open(dashboard_path, 'w', encoding='utf-8') as f:
+                    f.write(dashboard_html)
+
+                # Upload to S3
+                dashboard_url = s3_uploader.upload_file(str(dashboard_path), content_type='text/html')
+                if dashboard_url:
+                    logger.info(f"Dashboard uploaded to S3: {dashboard_url}")
+
             charts = {
                 'emoji_chart': emoji_chart,
                 'traffic_url': traffic_url,
-                'conversion_url': conversion_url
+                'conversion_url': conversion_url,
+                'dashboard_url': dashboard_url
             }
-            
+
             slack.send_first_run_message(snapshot_data, current_analysis, charts, ACCOUNT_NAME)
             db.cleanup_old_snapshots(days_to_keep=30)
             db.close()
@@ -309,13 +359,31 @@ def main():
         if not traffic_url and not conversion_url:
             logger.warning("Failed to upload charts to S3, will skip images in Slack")
 
+        # Generate HTML Dashboard
+        dashboard_url = None
+        if claude_api_key:
+            logger.info("Generating HTML dashboard...")
+            dashboard_gen = DashboardGenerator(claude_api_key, model=CLAUDE_MODEL)
+            dashboard_html = dashboard_gen.generate_dashboard(snapshot_data, deltas, ACCOUNT_NAME, competitor_intel=competitor_intel)
+
+            # Save dashboard locally
+            dashboard_path = CHARTS_PATH / f'dashboard_{snapshot_id}.html'
+            with open(dashboard_path, 'w', encoding='utf-8') as f:
+                f.write(dashboard_html)
+
+            # Upload to S3
+            dashboard_url = s3_uploader.upload_file(str(dashboard_path), content_type='text/html')
+            if dashboard_url:
+                logger.info(f"Dashboard uploaded to S3: {dashboard_url}")
+
         # 8. Format and send to Slack
         logger.info("Formatting and sending Slack report...")
 
         charts = {
             'emoji_chart': emoji_chart,
             'traffic_url': traffic_url if traffic_url else None,
-            'conversion_url': conversion_url if conversion_url else None
+            'conversion_url': conversion_url if conversion_url else None,
+            'dashboard_url': dashboard_url
         }
         
         messages = slack.format_6hour_report(

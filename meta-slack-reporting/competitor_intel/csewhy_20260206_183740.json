@@ -1,0 +1,104 @@
+{
+  "competitor": "CSEWhy",
+  "page_id": "110849375441011",
+  "category": "UPSC",
+  "scraped_at": "2026-02-06T18:37:14.602907",
+  "url": "https://www.facebook.com/ads/library/?active_status=active&ad_type=all&country=IN&is_targeted_country=false&media_type=all&search_type=page&sort_data[direction]=desc&sort_data[mode]=total_impressions&view_all_page_id=110849375441011",
+  "summary": {
+    "total_ads": 3,
+    "with_video": 3,
+    "with_carousel": 3,
+    "image_only": 0,
+    "platforms": {},
+    "cta_types": {
+      "Download": 3
+    },
+    "landing_domains": {
+      "www.csewhy.com": 3
+    },
+    "avg_days_running": 2.0,
+    "new_ads_7d": 3,
+    "long_running_30d": 0
+  },
+  "insights": {
+    "strategy_signals": [
+      "\ud83c\udfac Video-heavy strategy (3/3 ads use video)"
+    ],
+    "creative_patterns": [
+      "Primary CTA: 'Download' (3 ads)"
+    ],
+    "messaging_themes": [
+      "pricing/offers",
+      "social proof",
+      "fear/motivation"
+    ],
+    "recommendations": [
+      "Consider increasing video content in your ads"
+    ]
+  },
+  "ads": [
+    {
+      "library_id": "1243730197668547",
+      "ad_url": "https://www.facebook.com/ads/library/?id=1243730197668547",
+      "start_date": "4 Feb 2026",
+      "days_running": 2,
+      "status": "active",
+      "platforms": [],
+      "ad_text": "Our UPSC PYQ Success Course gives you:\n\u2714\ufe0f 17+ years of solved PYQs (2025 analysis) \n\u2714\ufe0f Strategy breakdowns used by rankers\n\u2714\ufe0f Smart techniques to crack Prelims & Mains faster\n\n\ud83c\udfaf Don\u2019t just prepare.",
+      "cta_type": "Download",
+      "landing_url": "https://www.csewhy.com/upsc",
+      "landing_domain": "www.csewhy.com",
+      "media_type": "video",
+      "media_urls": [
+        "https://scontent.fblr1-8.fna.fbcdn.net/v/t39.30808-1/393351681_152027521325927_6877522017315346786_n.jpg?stp=dst-jpg_s148x148_tt6&_nc_cat=101&ccb=1-7&_nc_sid=418b77&_nc_ohc=_-WCNlIhobkQ7kNvwESuV3p&_nc_oc=AdmanWXDhcHO8Jjm1dyF9v3Lc7Lr_rrXGg3BVDexrfUv6h4FJ0AoV2h8d3Lf6Zxo86g&_nc_zt=24&_nc_ht=scontent.fblr1-8.fna&_nc_gid=q_SJiLbnfH_u4K39nQoCeQ&oh=00_AfvnLt1MHZlsCzbsWwB_w_SqddQMTwsZxZM4XtA44LPG5g&oe=698BB207",
+        "https://scontent.fblr1-8.fna.fbcdn.net/v/t39.35426-6/616407922_1562781601612586_3107920821385921864_n.jpg?stp=dst-jpg_s60x60_tt6&_nc_cat=101&ccb=1-7&_nc_sid=c53f8f&_nc_ohc=-11EUaG3dycQ7kNvwES1CX1&_nc_oc=AdmaN6wQiGxKv1AOKauHigNdrCsfI04fXLHTuANcipw2Aq0ClgYQ6CyK-gIfViSjKiA&_nc_zt=14&_nc_ht=scontent.fblr1-8.fna&_nc_gid=q_SJiLbnfH_u4K39nQoCeQ&oh=00_Afvpia5fl7YXshHgzkwK4pGdkSnKhdrED1JWM6qnVPI7dA&oe=698BA768",
+        "https://scontent.fblr1-6.fna.fbcdn.net/v/t39.35426-6/612714581_874796688585351_3931296226449737575_n.jpg?stp=dst-jpg_s60x60_tt6&_nc_cat=100&ccb=1-7&_nc_sid=c53f8f&_nc_ohc=naVuBUCJ_48Q7kNvwFlvfhJ&_nc_oc=AdmSdQNq58QIXaOmtVvZ9fc11f3CKg0Zz0CKEzRAkHA1-6lwJEWSQH8ZJJKk0JHad7A&_nc_zt=14&_nc_ht=scontent.fblr1-6.fna&_nc_gid=q_SJiLbnfH_u4K39nQoCeQ&oh=00_Afs491ehNLQrKU6igsS9gbSZ25XkuPdIxE2nc0Y3ALKASA&oe=698BD195"
+      ],
+      "has_video": true,
+      "has_carousel": true,
+      "variations_count": 1
+    },
+    {
+      "library_id": "917405380753008",
+      "ad_url": "https://www.facebook.com/ads/library/?id=917405380753008",
+      "start_date": "4 Feb 2026",
+      "days_running": 2,
+      "status": "active",
+      "platforms": [],
+      "ad_text": "Our UPSC PYQ Success Course gives you:\n\u2714\ufe0f 17+ years of solved PYQs (2025 analysis) \n\u2714\ufe0f Strategy breakdowns used by rankers\n\u2714\ufe0f Smart techniques to crack Prelims & Mains faster\n\n\ud83c\udfaf Don\u2019t just prepare.",
+      "cta_type": "Download",
+      "landing_url": "https://www.csewhy.com/upsc",
+      "landing_domain": "www.csewhy.com",
+      "media_type": "video",
+      "media_urls": [
+        "https://scontent.fblr1-8.fna.fbcdn.net/v/t39.30808-1/393351681_152027521325927_6877522017315346786_n.jpg?stp=dst-jpg_s148x148_tt6&_nc_cat=101&ccb=1-7&_nc_sid=418b77&_nc_ohc=_-WCNlIhobkQ7kNvwESuV3p&_nc_oc=AdmanWXDhcHO8Jjm1dyF9v3Lc7Lr_rrXGg3BVDexrfUv6h4FJ0AoV2h8d3Lf6Zxo86g&_nc_zt=24&_nc_ht=scontent.fblr1-8.fna&_nc_gid=QasBuliySWdCIF9-6_yd2g&oh=00_AftUuBH5Wz9aqcLItEHZJoVxwXf47qBY-0bXyb6_4L143A&oe=698BB207",
+        "https://scontent.fblr1-8.fna.fbcdn.net/v/t39.35426-6/616407922_1562781601612586_3107920821385921864_n.jpg?stp=dst-jpg_s60x60_tt6&_nc_cat=101&ccb=1-7&_nc_sid=c53f8f&_nc_ohc=-11EUaG3dycQ7kNvwES1CX1&_nc_oc=AdmaN6wQiGxKv1AOKauHigNdrCsfI04fXLHTuANcipw2Aq0ClgYQ6CyK-gIfViSjKiA&_nc_zt=14&_nc_ht=scontent.fblr1-8.fna&_nc_gid=QasBuliySWdCIF9-6_yd2g&oh=00_AfuPa_mzpyQpAB1a8pj_TfTKq8HQ2g40AdkeV4io15lwlw&oe=698BA768",
+        "https://scontent.fblr1-6.fna.fbcdn.net/v/t39.35426-6/612714581_874796688585351_3931296226449737575_n.jpg?stp=dst-jpg_s60x60_tt6&_nc_cat=100&ccb=1-7&_nc_sid=c53f8f&_nc_ohc=naVuBUCJ_48Q7kNvwFlvfhJ&_nc_oc=AdmSdQNq58QIXaOmtVvZ9fc11f3CKg0Zz0CKEzRAkHA1-6lwJEWSQH8ZJJKk0JHad7A&_nc_zt=14&_nc_ht=scontent.fblr1-6.fna&_nc_gid=QasBuliySWdCIF9-6_yd2g&oh=00_Aft_1rvAJSmlqhoP6LMjP5hjWz44OoKYQZ8wN8B8djfKgA&oe=698BD195"
+      ],
+      "has_video": true,
+      "has_carousel": true,
+      "variations_count": 1
+    },
+    {
+      "library_id": "956711570861959",
+      "ad_url": "https://www.facebook.com/ads/library/?id=956711570861959",
+      "start_date": "4 Feb 2026",
+      "days_running": 2,
+      "status": "active",
+      "platforms": [],
+      "ad_text": "Our UPSC PYQ Success Course gives you:\n\u2714\ufe0f 17+ years of solved PYQs (2025 analysis) \n\u2714\ufe0f Strategy breakdowns used by rankers\n\u2714\ufe0f Smart techniques to crack Prelims & Mains faster\n\n\ud83c\udfaf Don\u2019t just prepare.",
+      "cta_type": "Download",
+      "landing_url": "https://www.csewhy.com/upsc",
+      "landing_domain": "www.csewhy.com",
+      "media_type": "video",
+      "media_urls": [
+        "https://scontent.fblr1-8.fna.fbcdn.net/v/t39.30808-1/393351681_152027521325927_6877522017315346786_n.jpg?stp=dst-jpg_s148x148_tt6&_nc_cat=101&ccb=1-7&_nc_sid=418b77&_nc_ohc=_-WCNlIhobkQ7kNvwESuV3p&_nc_oc=AdmanWXDhcHO8Jjm1dyF9v3Lc7Lr_rrXGg3BVDexrfUv6h4FJ0AoV2h8d3Lf6Zxo86g&_nc_zt=24&_nc_ht=scontent.fblr1-8.fna&_nc_gid=08efLHTlvIo-gVPX3ZU96Q&oh=00_Afsw5roEvBgwNVPQAKpki0GlvEgN7-fdWECChNq6ujT3MQ&oe=698BB207",
+        "https://scontent.fblr1-8.fna.fbcdn.net/v/t39.35426-6/616407922_1562781601612586_3107920821385921864_n.jpg?stp=dst-jpg_s60x60_tt6&_nc_cat=101&ccb=1-7&_nc_sid=c53f8f&_nc_ohc=-11EUaG3dycQ7kNvwES1CX1&_nc_oc=AdmaN6wQiGxKv1AOKauHigNdrCsfI04fXLHTuANcipw2Aq0ClgYQ6CyK-gIfViSjKiA&_nc_zt=14&_nc_ht=scontent.fblr1-8.fna&_nc_gid=08efLHTlvIo-gVPX3ZU96Q&oh=00_Afvl1vOP9_eueIdBd8ETv3om1l9YZKxqG-pT0q1a3RjlTA&oe=698BA768",
+        "https://scontent.fblr1-6.fna.fbcdn.net/v/t39.35426-6/612714581_874796688585351_3931296226449737575_n.jpg?stp=dst-jpg_s60x60_tt6&_nc_cat=100&ccb=1-7&_nc_sid=c53f8f&_nc_ohc=naVuBUCJ_48Q7kNvwFlvfhJ&_nc_oc=AdmSdQNq58QIXaOmtVvZ9fc11f3CKg0Zz0CKEzRAkHA1-6lwJEWSQH8ZJJKk0JHad7A&_nc_zt=14&_nc_ht=scontent.fblr1-6.fna&_nc_gid=08efLHTlvIo-gVPX3ZU96Q&oh=00_Afux7x3x8qcdSStlUfSb3jdFi23viNunrT_Wo1BiP9-RDQ&oe=698BD195"
+      ],
+      "has_video": true,
+      "has_carousel": true,
+      "variations_count": 1
+    }
+  ]
+}
