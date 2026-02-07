@@ -1,0 +1,15 @@
+# Environment variables
+.env
+
+# State files
+.site_monitor_state.json
+
+# Logs
+logs/
+*.log
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+venv/
